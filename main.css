@@ -27,6 +27,7 @@ body {
 	height:60vh;
 	margin:1em auto;
 	margin-bottom:2em;
+	display:block;
 }
 
 #console {
@@ -38,14 +39,16 @@ body {
 	border: solid 1px #030;
 	overflow:hidden;
 	font-family:'FixedSys','FixedsysExcelsior301Regular', terminal, monospace;
+	padding:1em;
 }
 
 #controls {
 	width:95vw;
-	height:30vh;
+	height:25vh;
 	position:relative;
 	margin:0 auto;
 	padding:0;
+	margin-top:10vh;
 }
 
 #PS1 {

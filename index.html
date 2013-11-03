@@ -6,8 +6,8 @@
 	</head>
 	<body>
 		<img id='spritesheet' class='resource' src='spritesheet.png' />
-		<div id='viewscreen'>
-		</div>
+		<canvas id='viewscreen'>
+		</canvas>
 		<div id='controls'>
 			<div id='console'>
 				<div id='output'></div>
@@ -24,13 +24,17 @@
 		<script src="jquery.js"></script>
 		<script src="three.js"></script>
 		<script src="ship.js"></script>
+		<script src="starfield.js"></script>
 		<script>
+		var ship;
 			$(function() {
-				var ship = new Ship();
+				ship = new Ship();
 				ship.run();
 
 				var help = "Tutorial in the works.  For now, start by examining the 'ship' object ;)";
-
+				var clear = function() {
+					$("#output").html("");
+				}
 				$("#prompt").focus();
 				$("#prompt").on('keypress',function(e) {
 					e = e || window.event;
@@ -42,6 +46,7 @@
 						} catch(e) {
 							$("#output").append("Error: " + e + "<br />");
 						} finally {
+							$("#output").append("> " + $("#prompt").val() + "<br />");
 							$("#output").append(result + "<br />");
 							$("#prompt").val("");
 							$("#console").animate({scrollTop: $("#console")[0].scrollHeight},0);
