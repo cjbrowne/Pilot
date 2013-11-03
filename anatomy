@@ -1,0 +1,38 @@
+Anatomy of a ship:
+
+A ship has 6 boosters in total.
+
+There are 2 boosters to starboard and 2 boosters to port.  There's also one booster fore pointing vertically upwards and one booster aft pointing vertically downwards for pitching.
+
+The starboard vertical booster will roll the ship anti-clockwise, and the port vertical booster will roll it clockwise.  If you power both vertical boosters, the ship will accelerate vertically.  There is no way to accelerate the ship vertically downwards, you have to roll 180 degrees first then power both vertical boosters.
+
+The horizontal boosters can be used to yaw the ship or to accelerate the ship forwards.  Powering the port horizontal booster will yaw the ship clockwise (facing the ship from above) and the starboard booster yaws it anti-clockwise.  Powering both boosters will accelerate the ship forward.  Again, the only way to accelerate the ship backwards is to yaw 180 degrees then power both boosters.
+
+The weaponry aboard the vessel is advanced.  There is one rotating ion cannon at the fore of the ship and a heavy ion cannon at the aft.  These cannons can be rotated freely within the top hemisphere of the vessel.  There is no way to fire below your ship using these guns.  To rotate a gun, you should modify its 'pitch' and 'yaw' properties.  
+
+Deliberately, cannons are implemented as JavaScript objects.  You can add functions to them by modifying their prototype, for example:
+
+ship.Cannon.prototype.rotateLeft = function(amount) {
+	cannon.rotation.yaw -= amount;
+}
+
+Then call the function on the cannon of your choice:
+
+ship.foreCannon.rotateLeft(5);
+
+Of course you can also modify this within functions on the ship's prototype:
+
+Ship.prototype.rotateBothCannons = function(position) {
+	var s = this;
+	this.Cannon.prototype.facePosition = function(p) {
+		var shipLocation = {
+			position: s.getPosition(),
+			rotation: s.getRotation()
+		};
+		// check if the position is above or below the ship at its current orientation
+		if(shipLocation.rotation.roll)
+	}
+}
+
+Warnings:
+BOOSTER: something is wrong with one of the boosters.  Inspect "warningStrings.booster" for more information.

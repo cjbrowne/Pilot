@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pilot</title>
+		<link rel='stylesheet' href='main.css' type='text/css' />
+	</head>
+	<body>
+		<img id='spritesheet' class='resource' src='spritesheet.png' />
+		<div id='viewscreen'>
+		</div>
+		<div id='controls'>
+			<div id='console'>
+				<div id='output'></div>
+				<span id='PS1'>&gt;</span>
+				<input type='text' id='prompt'/>
+			</div>
+			<div id='indicators'>
+				<canvas id='booster' width='64' height='24'></canvas>
+				<canvas id='pitch' width='64' height='64'></canvas>
+				<canvas id='yaw'></canvas>
+				<canvas id='roll' width='64' height='64'></canvas>
+			</div>
+		</div>
+		<script src="jquery.js"></script>
+		<script src="three.js"></script>
+		<script src="ship.js"></script>
+		<script>
+			$(function() {
+				var ship = new Ship();
+				ship.run();
+
+				var help = "Tutorial in the works.  For now, start by examining the 'ship' object ;)";
+
+				$("#prompt").focus();
+				$("#prompt").on('keypress',function(e) {
+					e = e || window.event;
+					if(e.which == 13) {
+						e.preventDefault();
+						var result;
+						try {
+							result = eval($("#prompt").val());
+						} catch(e) {
+							$("#output").append("Error: " + e + "<br />");
+						} finally {
+							$("#output").append(result + "<br />");
+							$("#prompt").val("");
+							$("#console").animate({scrollTop: $("#console")[0].scrollHeight},0);
+						}
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
