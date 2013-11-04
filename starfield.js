@@ -57,6 +57,20 @@
 				stringLoc += 10;
 			}
 		}
+
+		ctx.save();
+
+		// render the health bar
+		for(var i = 0; i < Math.floor(ship.getHealth() / 10); i++) {
+			
+			if(i < 3) {
+				ctx.fillStyle = "rgba(255,0,0,0.5)";
+			} else {
+				ctx.fillStyle = "rgba(0,255,0,0.5)";
+			}
+			ctx.fillRect(32 + (i * 18), $viewer.height() - 64 , 16, 32);
+		}
+		ctx.restore();
 	}
 
 	function makeParticles() {

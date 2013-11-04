@@ -10,7 +10,7 @@ var Ship = (function() {
 			y: 0,
 			z: 0 
 		},
-		health: 100,
+		health: 100.0,
 		shields: {
 			fore: 100,
 			aft: 100,
@@ -144,7 +144,8 @@ var Ship = (function() {
 			if(ship.boosters.hasOwnProperty(booster) && ship.boosters[booster] > 0.01) {
 				ship.warnings.booster = true;
 				ship.warningStrings.booster[booster] = "Overpowered";
-				ship.health -= (booster - 0.01);
+				// once per second, diminish health
+				if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 0.01);
 			}
 		}
 
