@@ -1,5 +1,5 @@
 (function() {
-	var camera, scene, renderer, $viewer = $("#viewscreen");
+	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject;
 
 	var particles = [];
 
@@ -8,8 +8,18 @@
 	function init() {
 		camera = new THREE.PerspectiveCamera(80, $viewer.width() / $viewer.height(), 1, 4000);
 
+		camera.rotation.set(0,0,0);
+
+		pitchObject = new THREE.Object3D();
+		pitchObject.add(camera);
+
+		yawObject = new THREE.Object3D();
+		yawObject.position.y = 10;
+		yawObject.add(pitchObject);
+
+
 		scene = new THREE.Scene();
-		scene.add(camera);
+		scene.add(yawObject);
 
 		renderer = new THREE.CanvasRenderer({canvas:$viewer[0]});
 		renderer.setSize( $viewer.width(), $viewer.height() );
@@ -56,9 +66,13 @@
 			if(particle.position.z>1000) particle.position.z-=2000;
 		}
 		var rot = ship.getRotation();
-		camera.rotateOnAxis(new THREE.Vector3(1,0,0),rot.pitch);
-		camera.rotateOnAxis(new THREE.Vector3(0,1,0),rot.yaw);
-		camera.rotateOnAxis(new THREE.Vector3(0,0,1),rot.roll);
+		/* -- my attempt at making the camera rotate with the ship:
+		yawObject.rotation.y -= rot.yaw * 0.002;
+		pitchObject.rotation.x -= rot.pitch * 0.002;
+		var PI_2 = Math.PI * 2;
+		pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2,pitchObject.rotation.x));
+		*/
+
 	}
 
 
