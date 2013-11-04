@@ -1,5 +1,5 @@
 (function() {
-	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject;
+	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,audio_enabled = true;
 	var ctx = $("#viewscreen")[0].getContext('2d');
 
 	var particles = [];
@@ -27,7 +27,21 @@
 
 		makeParticles();
 
+		setupAudio();
+
 		requestAnimationFrame(update);
+	}
+
+	function setupAudio() {
+		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+		if('AudioContext' in window) {
+			speaker = new AudioContext();
+		} else {
+			console.log("Audio API unsupported on this browser.  Disabling audio.");
+			audio_enabled = false;
+			return;
+		}
 	}
 
 	function update() {
@@ -36,26 +50,73 @@
 		updateParticles();
 		renderer.render(scene,camera);
 		renderHud();
+		if(audio_enabled) doSounds();
+		frameNumber++;
+	}
+
+	function makeBeep(duration, type, freq, finishedCallback) {
+        duration = +duration;
+
+        freq = freq || 440;
+
+        // Only 0-4 are valid types.
+        type = (type % 5) || 0;
+
+        if (typeof finishedCallback != "function") {
+            finishedCallback = function () {};
+        }
+
+        var osc = speaker.createOscillator();
+
+        osc.type = type;
+
+        osc.connect(speaker.destination);
+        osc.frequency.value = freq;
+        osc.noteOn(0);
+
+        setTimeout(function () {
+            osc.noteOff(0);
+            finishedCallback();
+        }, duration);
+    };
+
+	function doSounds() {
+		switch(frameNumber) {
+			case 60:
+				makeBeep(200,1,440);
+				break;
+			case 180:
+				makeBeep(200,1,600);
+				break;
+		}
 	}
 
 	function renderHud() {
 		ctx.fillStyle = "rgb(255,255,255)";
 		ctx.font = "8pt monospace";
-		ctx.fillText("STARSHIP " + ship.designation,50,50);
-		ctx.fillText("Booster systems: ",50,60);
-		var stringLoc = 0;
-		for(var booster in ship.warningStrings.booster) {
-			if(ship.warningStrings.booster.hasOwnProperty(booster)) {
-				if(ship.warningStrings.booster[booster] == "") {
-					ctx.fillText(booster + ": OK",55,70 + stringLoc);
-				} else {
-					ctx.save();
-					ctx.fillStyle = "rgb(255,0,0)";
-					ctx.fillText(booster + ": " + ship.warningStrings.booster[booster],55,70 + stringLoc);
-					ctx.restore();
+		if(frameNumber > 60) {
+			ctx.fillText("STARSHIP " + ship.designation,50,50);
+			ctx.fillText("Booster systems: ",50,60);
+			var stringLoc = 0;
+			if(frameNumber > 180) {
+				for(var booster in ship.warningStrings.booster) {
+					if(ship.warningStrings.booster.hasOwnProperty(booster)) {
+						if(ship.warningStrings.booster[booster] == "") {
+							ctx.fillText(booster + ": OK",55,70 + stringLoc);
+						} else {
+							ctx.save();
+							ctx.fillStyle = "rgb(255,0,0)";
+							ctx.fillText(booster + ": " + ship.warningStrings.booster[booster],55,70 + stringLoc);
+							ctx.restore();
+						}
+						stringLoc += 10;
+					}
 				}
-				stringLoc += 10;
+			} else {
+				ctx.fillText("Loading" + Array(Math.floor((frameNumber / 10) % 5)).join("."),55,70);
 			}
+		} else {
+			ctx.fillText("Booting up" + Array(Math.floor((frameNumber / 10) % 5)).join("."),50,50);
 		}
 
 		ctx.save();
