@@ -83,10 +83,19 @@
 	function doSounds() {
 		switch(frameNumber) {
 			case 60:
-				makeBeep(200,1,440);
+				makeBeep(200,1,400);
 				break;
 			case 180:
-				makeBeep(200,1,600);
+				makeBeep(200,1,500);
+				break;
+			case 220:
+				makeBeep(100,1,400);
+				break;
+			case 225:
+				makeBeep(100,1,500);
+				break;
+			case 230:
+				makeBeep(100,1,600);
 				break;
 		}
 	}
@@ -122,14 +131,16 @@
 		ctx.save();
 
 		// render the health bar
-		for(var i = 0; i < Math.floor(ship.getHealth() / 10); i++) {
-			
-			if(i < 3) {
-				ctx.fillStyle = "rgba(255,0,0,0.5)";
-			} else {
-				ctx.fillStyle = "rgba(0,255,0,0.5)";
+		if(frameNumber < 200 || frameNumber > 230 || frameNumber % 16 < 8) {
+			for(var i = 0; i < Math.floor(ship.getHealth() / 10) && i*20 < frameNumber; i++) {
+				
+				if(i < 3) {
+					ctx.fillStyle = "rgba(255,0,0,0.5)";
+				} else {
+					ctx.fillStyle = "rgba(0,255,0,0.5)";
+				}
+				ctx.fillRect(32 + (i * 18), $viewer.height() - 64 , 16, 32);
 			}
-			ctx.fillRect(32 + (i * 18), $viewer.height() - 64 , 16, 32);
 		}
 		ctx.restore();
 	}
