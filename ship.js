@@ -52,6 +52,19 @@ var Ship = (function() {
 			aft: new this.Shield()
 		};
 		this.help = "There are six boosters in the 'booster' object.  Try: ship.boosters.fore = 0.01.  Try a value over 0.01 to see what happens!";
+		
+		/*
+			- For now, the ship's designation is randomly selected from a list.
+			In future, it will be assigned as part of the tutorial mission.
+		*/
+		var designations = [
+			"Enterprise",
+			"Heart of Gold",
+			"Miranda",
+			"Pillar of Autumn",
+			"Millenium Falcon"
+		];
+		this.designation = designations[Math.floor(Math.random() * designations.length)];
 	}
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
@@ -70,6 +83,21 @@ var Ship = (function() {
 	}
 	Ship.prototype.getHealth = function() {
 		return shipInformation.health;
+	}
+	Ship.prototype.resetWarnings = function() {
+		ship.warningStrings = {
+			booster: {
+				fore: "",
+				aft: "",
+				starboard_vertical: "",
+				starboard_horizontal: "",
+				port_vertical: "",
+				port_horizontal: ""
+			}
+		};
+		ship.warnings = {
+			booster:false
+		};
 	}
 	var frameNumber = 0;
 	Ship.prototype.tick = function() {
@@ -111,14 +139,14 @@ var Ship = (function() {
 
 		// logic updates
 		var boosterWarning = false;
+		ship.resetWarnings();
 		for(booster in ship.boosters) {
 			if(ship.boosters.hasOwnProperty(booster) && ship.boosters[booster] > 0.01) {
-				boosterWarning = true;
+				ship.warnings.booster = true;
 				ship.warningStrings.booster[booster] = "Overpowered";
 				ship.health -= (booster - 0.01);
 			}
 		}
-		ship.warnings.booster = boosterWarning;
 
 		var pitch = shipInformation.rotation.pitch + ship.boosters.aft - ship.boosters.fore;
 		if(pitch > Math.PI) {

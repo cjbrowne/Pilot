@@ -1,5 +1,6 @@
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject;
+	var ctx = $("#viewscreen")[0].getContext('2d');
 
 	var particles = [];
 
@@ -31,8 +32,31 @@
 
 	function update() {
 		requestAnimationFrame(update);
+		ctx.clearRect(0,0,$viewer.width(),$viewer.height());
 		updateParticles();
 		renderer.render(scene,camera);
+		renderHud();
+	}
+
+	function renderHud() {
+		ctx.fillStyle = "rgb(255,255,255)";
+		ctx.font = "8pt monospace";
+		ctx.fillText("STARSHIP " + ship.designation,50,50);
+		ctx.fillText("Booster systems: ",50,60);
+		var stringLoc = 0;
+		for(var booster in ship.warningStrings.booster) {
+			if(ship.warningStrings.booster.hasOwnProperty(booster)) {
+				if(ship.warningStrings.booster[booster] == "") {
+					ctx.fillText(booster + ": OK",55,70 + stringLoc);
+				} else {
+					ctx.save();
+					ctx.fillStyle = "rgb(255,0,0)";
+					ctx.fillText(booster + ": " + ship.warningStrings.booster[booster],55,70 + stringLoc);
+					ctx.restore();
+				}
+				stringLoc += 10;
+			}
+		}
 	}
 
 	function makeParticles() {
