@@ -1,4 +1,4 @@
-var audio_enabled = false;
+var audio_enabled = true;
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker;
 	var ctx = $("#viewscreen")[0].getContext('2d');
