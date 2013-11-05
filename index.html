@@ -48,7 +48,7 @@
 						e.preventDefault();
 						var result;
 						try {
-							result = eval($("#prompt").val());
+							result = eval.call(window,$("#prompt").val());
 						} catch(e) {
 							$("#output").append("Error: " + e + "<br />");
 						} finally {
@@ -80,7 +80,7 @@
 				});
 				$("#editor_save").on('click',function(e) {
 					try {
-						eval($("#editor_body").val());
+						eval.call(window,$("#editor_body").val());
 					} catch(e) {
 						$("#output").append("Editor caused error: " + e + "<br />");
 					} finally {
