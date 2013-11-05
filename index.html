@@ -33,11 +33,12 @@
 		<script src="helper_functions.js"></script>
 		<script>
 		var ship,promptHistory = [],historyIndex,stardate;
+		var help = "To start the tutorial, simply type 'tutorial'.  To get help on a particular function, call 'help()' on that function's object (e.g. editor.help() will show the help for the text editor).";
+		var tutorial = "Tutorial under development.  Sorry for the inconvenience.";
 			$(function() {
 				ship = new Ship();
 				ship.run();
 
-				var help = "Tutorial in the works.  For now, start by examining the 'ship' object ;)";
 				var clear = function() {
 					$("#output").html("");
 				}

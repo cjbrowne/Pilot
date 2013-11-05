@@ -53,8 +53,6 @@ var Ship = (function() {
 			fore: new this.Shield(),
 			aft: new this.Shield()
 		};
-		this.help = "There are six boosters in the 'booster' object.  Try: ship.boosters.fore = 0.01.  Try a value over 0.01 to see what happens!";
-		
 		/*
 			- For now, the ship's designation is randomly selected from a list.
 			In future, it will be assigned as part of the tutorial mission.
@@ -85,6 +83,9 @@ var Ship = (function() {
 	}
 	Ship.prototype.getHealth = function() {
 		return shipInformation.health;
+	}
+	Ship.prototype.help = function() {
+		return "There are six boosters in the 'boosters' object.  Try: ship.boosters.fore = 1.0.  Try a value over 1.0 to see what happens!";
 	}
 	Ship.prototype.resetWarnings = function() {
 		ship.warningStrings = {
