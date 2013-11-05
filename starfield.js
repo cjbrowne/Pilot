@@ -1,4 +1,4 @@
-var audio_enabled = true;
+var audio_enabled = false;
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker;
 	var ctx = $("#viewscreen")[0].getContext('2d');
@@ -136,13 +136,17 @@ var audio_enabled = true;
 
 		// render the health bar
 		if(frameNumber < 200 || frameNumber > 230 || frameNumber % 16 < 8) {
-			for(var i = 0; i < Math.floor(ship.getHealth() / 10) && i*20 < frameNumber; i++) {
-				if(i < 3) {
-					ctx.fillStyle = "rgba(255,0,0,0.5)";
-				} else {
-					ctx.fillStyle = "rgba(0,255,0,0.5)";
+			if(ship.getHealth() > 30 || frameNumber % 16 < 8) {
+				if(ship.getHealth() > 10 || frameNumber % 8 < 4) {
+					for(var i = 0; i < Math.floor(ship.getHealth() / 10) && i*20 < frameNumber; i++) {
+						if(i < 3) {
+							ctx.fillStyle = "rgba(255,0,0,0.5)";
+						} else {
+							ctx.fillStyle = "rgba(0,255,0,0.5)";
+						}
+						ctx.fillRect(32 + (i * 18), $viewer.height() - 64 , 16, 32);
+					}
 				}
-				ctx.fillRect(32 + (i * 18), $viewer.height() - 64 , 16, 32);
 			}
 		}
 		ctx.restore();

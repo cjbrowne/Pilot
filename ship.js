@@ -126,6 +126,7 @@ var Ship = (function() {
 			}
 		}
 
+		stardate = (new Date().getTime()) / 1000;
 
 		var pitch = shipInformation.rotation.pitch + (ship.boosters.aft - ship.boosters.fore)/100;
 		if(pitch > Math.PI) {
@@ -156,6 +157,10 @@ var Ship = (function() {
 	}
 	Ship.prototype.run = function() {
 		this.tick();
+	}
+	Ship.prototype.log = function(string,logClass) {
+		logClass = logClass || "pilot_log";
+		$("#output").append("<span class='"+logClass+"'>["+stardate+"]</span> <span class='log'>" + string + "</span><br />");
 	}
 	Ship.prototype.disable_audio = function() {
 		audio_enabled = false;

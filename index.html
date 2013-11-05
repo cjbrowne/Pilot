@@ -21,12 +21,18 @@
 			GAME OVER.<br/>
 			Refresh your browser to start again.
 		</div>
+		<div id='editor'>
+			<textarea id='editor_body'></textarea><br/>
+			<input type='button' id='editor_save' value="Save" />
+			<input type='button' id='editor_close' value='x' />
+		</div>
 		<script src="jquery.js"></script>
 		<script src="three.js"></script>
 		<script src="ship.js"></script>
 		<script src="starfield.js"></script>
+		<script src="helper_functions.js"></script>
 		<script>
-		var ship;
+		var ship,promptHistory = [],historyIndex,stardate;
 			$(function() {
 				ship = new Ship();
 				ship.run();
@@ -36,7 +42,7 @@
 					$("#output").html("");
 				}
 				$("#prompt").focus();
-				$("#prompt").on('keypress',function(e) {
+				$("#prompt").on('keydown',function(e) {
 					e = e || window.event;
 					if(e.which == 13) {
 						e.preventDefault();
@@ -46,12 +52,46 @@
 						} catch(e) {
 							$("#output").append("Error: " + e + "<br />");
 						} finally {
+							promptHistory.push($("#prompt").val());
+							historyIndex = promptHistory.length - 1;
 							$("#output").append("> " + $("#prompt").val() + "<br />");
 							$("#output").append(result + "<br />");
 							$("#prompt").val("");
 							$("#console").animate({scrollTop: $("#console")[0].scrollHeight},0);
 						}
+					} else if(e.which == 40) {
+						if(historyIndex == promptHistory.length -1 && $("#prompt").val() != "")
+							promptHistory.push($("#prompt").val());
+						if(historyIndex > 0) {
+							$("#prompt").val(promptHistory[historyIndex]);
+							historyIndex--;
+						}
+					} else if(e.which == 38) {
+						if(historyIndex < promptHistory.length) {
+							$("#prompt").val(promptHistory[historyIndex]);
+							historyIndex--;
+						}
 					}
+					if(historyIndex > promptHistory.length) historyIndex = promptHistory.length;
+					if(historyIndex < 0) historyIndex = 0;
+				});
+				$("#console").on('click',function(e) {
+					$("#prompt").focus();
+				});
+				$("#editor_save").on('click',function(e) {
+					try {
+						eval($("#editor_body").val());
+					} catch(e) {
+						$("#output").append("Editor caused error: " + e + "<br />");
+					} finally {
+						// until we get around to emulating some sort of file system...
+						$("#output").append("WARNING: Hard Disk Drive disconnected, code was run but may not have been saved.<br />");
+					}
+				});
+				$("#editor_close").on('click',function(e) {
+					// again, we need to automatically save when the editor is closed once saving becomes a thing
+					$("#output").append("WARNING: Editor closed.  Any changes you made since the last evaluation have been lost.  Sorry about that. <br/>");
+					$("#editor").hide();
 				});
 			});
 		</script>
