@@ -14,7 +14,9 @@ var Ship = (function() {
 		shields: {
 			fore: 100,
 			aft: 100,
-		}
+		},
+		forwardVelocity: 0.0,
+		upwardVelocity: 0.0
 	}
 	var Ship = function() {
 		this.Cannon = function() {
@@ -101,55 +103,31 @@ var Ship = (function() {
 	}
 	var frameNumber = 0;
 	Ship.prototype.tick = function() {
+		if(shipInformation.health <= 0.0) {
+			$("#gameover").show();
+			return;
+		}
 		var ship = this;
 		requestAnimationFrame(ship.tick.bind(ship));
 
 		frameNumber++;
 
-		// draw booster warning button
-		var boosterContext = $("#booster")[0].getContext('2d');
-		boosterContext.drawImage(
-			$("#spritesheet")[0],
-			(ship.warnings.booster && frameNumber % 12 < 6 ? 64 : 0), // sprite X
-			0, // sprite Y
-			64, // sprite W
-			24, // sprite H
-			0, // target X
-			0, // target Y
-			64, // target W
-			24 // target H
-		);
-
-		// draw roll indicator
-		var rollContext = $("#roll")[0].getContext('2d');
-		rollContext.drawImage($("#spritesheet")[0],0,24,64,64,0,0,64,64);
-		rollContext.save();
-		rollContext.translate(32,32);
-		rollContext.rotate(shipInformation.rotation.roll);
-		rollContext.translate(-32,-32);
-		rollContext.drawImage($("#spritesheet")[0],128,0,56,56,4,4,56,56);
-		rollContext.restore();
-
-		// draw pitch indicator
-		var pitchContext = $("#pitch")[0].getContext('2d');
-		pitchContext.drawImage($("#spritesheet")[0],64,24,64,64,0,0,64,64);
-		var pitchDegrees = shipInformation.rotation.pitch * (180 / Math.PI);
-		var pitchPointerLocation = 29 + ((pitchDegrees / 180) * 20);
-		pitchContext.drawImage($("#spritesheet")[0],128,56,5,5,30,pitchPointerLocation,5,5);
-
 		// logic updates
 		var boosterWarning = false;
 		ship.resetWarnings();
 		for(booster in ship.boosters) {
-			if(ship.boosters.hasOwnProperty(booster) && ship.boosters[booster] > 0.01) {
-				ship.warnings.booster = true;
-				ship.warningStrings.booster[booster] = "Overpowered";
-				// once per second, diminish health
-				if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 0.01);
+			if(ship.boosters.hasOwnProperty(booster)) {
+				if(ship.boosters[booster] > 1.0) {
+					ship.warnings.booster = true;
+					ship.warningStrings.booster[booster] = "Overpowered";
+					// once per second, diminish health
+					if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 1.0);
+				}
 			}
 		}
 
-		var pitch = shipInformation.rotation.pitch + ship.boosters.aft - ship.boosters.fore;
+
+		var pitch = shipInformation.rotation.pitch + (ship.boosters.aft - ship.boosters.fore)/100;
 		if(pitch > Math.PI) {
 			shipInformation.rotation.pitch = -(Math.PI * 2) + pitch;
 		} else if(pitch < -Math.PI) {
@@ -157,7 +135,7 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.pitch = pitch;
 		}
-		var yaw = shipInformation.rotation.yaw + ship.boosters.port_horizontal - ship.boosters.starboard_horizontal;
+		var yaw = shipInformation.rotation.yaw + (ship.boosters.port_horizontal - ship.boosters.starboard_horizontal)/100;
 		if(yaw > Math.PI) {
 			shipInformation.rotation.yaw = -(Math.PI * 2) + yaw;
 		} else if(yaw < -Math.PI) {
@@ -165,7 +143,7 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.yaw = yaw;
 		}
-		var roll = shipInformation.rotation.roll + ship.boosters.port_vertical - ship.boosters.starboard_vertical;
+		var roll = shipInformation.rotation.roll + (ship.boosters.port_vertical - ship.boosters.starboard_vertical)/100;
 		if(roll > Math.PI) {
 			shipInformation.rotation.roll = -(Math.PI * 2) + roll;
 		} else if(roll < -Math.PI) {
@@ -173,9 +151,14 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.roll = roll;
 		}
+		shipInformation.forwardVelocity = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
+		shipInformation.upwardVelocity = (ship.boosters.port_vertical + ship.boosters.starboard_vertical) / 100;
 	}
 	Ship.prototype.run = function() {
 		this.tick();
+	}
+	Ship.prototype.disable_audio = function() {
+		audio_enabled = false;
 	}
 	return Ship;
 })();

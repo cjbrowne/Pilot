@@ -19,6 +19,7 @@
 body {
 	background-color:black;
 	height:100%;
+	width:100%;
 }
 
 #viewscreen {
@@ -75,34 +76,37 @@ body {
 	outline:none;
 }
 
-#indicators {
-	width:25%;
+#screen {
+	width:27vw;
+	height:25vh;
 	margin:1em;
 	position:absolute;
 	bottom:0;
 	right:0;
-	background-color:#999;
-	padding:0.5em;
-}
-
-#booster {
-	position:absolute;
-	top:0;
-	left:0;
-}
-
-#roll {
-	position:absolute;
-	top:0;
-	left:64px;
-}
-
-#pitch {
-	position:absolute;
-	top:0;
-	left:128px;
+	padding:1em;
+	border:solid 1px #300;
 }
 
 .resource {
 	display:none;
+}
+
+#gameover {
+	display:none;
+	height:2em;
+	margin:auto;
+	position:absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 35vh;
+	background-color:#F00;
+	text-align:center;
+	width:15em;
+	padding:2em;
+	padding-top:1.5em;
+	border:solid 1em #300;
+	font-family:'FixedSys','FixedsysExcelsior301Regular',monospace;
+	font-weight:bold;
+	font-size:16pt;
 }
