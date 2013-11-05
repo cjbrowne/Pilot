@@ -10,6 +10,11 @@
 		</canvas>
 		<div id='controls'>
 			<div id='console'>
+				<div id='editor'>
+					<textarea id='editor_body'></textarea><br/>
+					<input type='button' id='editor_close' value='Close' />
+					<input type='button' id='editor_save' value="Save" />
+				</div>
 				<div id='output'></div>
 				<span id='PS1'>&gt;</span>
 				<input type='text' id='prompt'/>
@@ -20,11 +25,6 @@
 		<div id='gameover'>
 			GAME OVER.<br/>
 			Refresh your browser to start again.
-		</div>
-		<div id='editor'>
-			<textarea id='editor_body'></textarea><br/>
-			<input type='button' id='editor_save' value="Save" />
-			<input type='button' id='editor_close' value='x' />
 		</div>
 		<script src="jquery.js"></script>
 		<script src="three.js"></script>
@@ -90,8 +90,13 @@
 				});
 				$("#editor_close").on('click',function(e) {
 					// again, we need to automatically save when the editor is closed once saving becomes a thing
-					$("#output").append("WARNING: Editor closed.  Any changes you made since the last evaluation have been lost.  Sorry about that. <br/>");
+					// note that this is somewhat of a lie.  The chances are your browser cached the changes and they'll come back if you call "editor()" again.
+					$("#output").append("WARNING: Editor closed.  Any changes you made since the last evaluation may have been lost.  Sorry about that. <br/>");
 					$("#editor").hide();
+					$("#output").show();
+					$("#prompt").show();
+					$("#PS1").show();
+					$("#prompt").focus();
 				});
 			});
 		</script>

@@ -121,38 +121,21 @@ body {
 
 #editor {
 	display:none;
-	height:35vh;
-	margin:auto;
-	position:absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 35vh;
-	background-color:#336;
-	text-align:center;
-	width:55vw;
-	padding:2em;
-	padding-top:1.5em;
-	border:solid 1em #003;
-	font-family:'FixedSys','FixedsysExcelsior301Regular',monospace;
-	font-weight:bold;
-	font-size:16pt;
+	width:100%;
+	height:80%;
 }
 
 #editor input[type=button] {
-	border:solid 1px #003;
-	background-color:#33F;
+	border:solid 1px #000;
+	background-color:#030;
 	padding:0.25em;
 	border-radius:3px;
-	color:#FFF;
+	color:#9F9;
+	float:right;
+	clear:none;
 }
 
 #editor_close {
-	border:none !important;
-	background-color:transparent !important;
-	position:absolute;
-	top:0.5em;
-	right:1em;
 }
 
 #editor input[type=button]:hover {
@@ -160,8 +143,18 @@ body {
 }
 
 #editor_body {
-	height:30vh;
-	width:50vw;
+	height:100%;
+	width:100%;
+	background-color:#000;
+	color:#0F0;
+	font-family:'FixedSys','FixedsysExcelsior301Regular',monospace;
+	font-size:12pt;
+	border:none;
+	resize:none;
+}
+
+#editor_body:focus {
+	outline:none;
 }
 
 #editor_save {
