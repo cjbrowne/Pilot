@@ -63,6 +63,7 @@ var audio_enabled = false;
 		yawObject.rotation.y = shipRot.yaw;
 		pitchObject.rotation.x = shipRot.pitch;
 		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+		pitchObject.rotation.z = shipRot.roll;
 
 		yawObject.translateX( velocity.x );
         yawObject.translateY( velocity.y ); 
