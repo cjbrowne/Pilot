@@ -1,4 +1,4 @@
-var audio_enabled = false;
+var audio_enabled = true;
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,pitchObject,yawObject,starfield;
 	var ctx = $("#viewscreen")[0].getContext('2d');
@@ -129,6 +129,7 @@ var audio_enabled = false;
 		if(frameNumber > 60) {
 			ctx.fillText("STARSHIP " + ship.designation,50,50);
 			ctx.fillText("Booster systems: ",50,60);
+			ctx.fillText("Core Systems:",50,130);
 			var stringLoc = 0;
 			if(frameNumber > 180) {
 				for(var booster in ship.warningStrings.booster) {
@@ -146,6 +147,18 @@ var audio_enabled = false;
 				}
 			} else {
 				ctx.fillText("Loading" + Array(Math.floor((frameNumber / 10) % 5)).join("."),55,70);
+			}
+			if(frameNumber > 210) {
+				if(ship.warningStrings.health == "") {
+					ctx.fillText("Structural Integrity: OK",55,140);
+				} else {
+					ctx.save();
+					ctx.fillStyle = "rgb(255,0,0)";
+					ctx.fillText("Structural Integrity: " + ship.warningStrings.health,55,140);
+					ctx.restore();
+				}
+			} else {
+				ctx.fillText("Loading" + Array(Math.floor((frameNumber / 10) % 5)).join("."),55,140);
 			}
 		} else {
 			ctx.fillText("Booting up" + Array(Math.floor((frameNumber / 10) % 5)).join("."),50,50);

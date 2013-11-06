@@ -37,9 +37,6 @@ var Ship = (function() {
 			port_vertical: 0,
 			port_horizontal: 0
 		};
-		this.warnings = {
-			booster: false
-		};
 		this.warningStrings = {
 			booster: {
 				fore: "",
@@ -48,7 +45,8 @@ var Ship = (function() {
 				starboard_horizontal: "",
 				port_vertical: "",
 				port_horizontal: ""
-			}
+			},
+			health: ""
 		};
 		this.foreCannon = new this.Cannon();
 		this.aftCannon = new this.Cannon();
@@ -65,7 +63,8 @@ var Ship = (function() {
 			"Heart of Gold",
 			"Miranda",
 			"Pillar of Autumn",
-			"Millenium Falcon"
+			"Millenium Falcon",
+			"Chaos Kitten"
 		];
 		this.designation = designations[Math.floor(Math.random() * designations.length)];
 
@@ -131,12 +130,18 @@ var Ship = (function() {
 		for(booster in ship.boosters) {
 			if(ship.boosters.hasOwnProperty(booster)) {
 				if(ship.boosters[booster] > 1.0) {
-					ship.warnings.booster = true;
 					ship.warningStrings.booster[booster] = "Overpowered";
 					// once per second, diminish health
 					if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 1.0);
 				}
 			}
+		}
+		if(ship.getHealth() <= 30) {
+			ship.warningStrings.health = "low";
+		} else if(ship.getHealth() <= 10) {
+			ship.warningStrings.health = "critical!";
+		} else {
+			ship.warningStrings.health = "";
 		}
 
 		stardate = (new Date().getTime()) / 1000;
