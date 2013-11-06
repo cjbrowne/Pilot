@@ -1,6 +1,6 @@
 var audio_enabled = false;
 (function() {
-	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,pitchObject,yawObject;
+	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,pitchObject,yawObject,starfield;
 	var ctx = $("#viewscreen")[0].getContext('2d');
 
 	var PI_2 = Math.PI / 2;
@@ -21,7 +21,6 @@ var audio_enabled = false;
 		yawObject = new THREE.Object3D();
 		yawObject.position.y = 10;
 		yawObject.add(pitchObject);
-
 		scene.add(yawObject);
 		
 		renderer = new THREE.WebGLRenderer();
@@ -35,8 +34,8 @@ var audio_enabled = false;
 		var material  = new THREE.MeshBasicMaterial();
 		material.map   = THREE.ImageUtils.loadTexture('galaxy_starfield.png');
 		material.side  = THREE.BackSide;
-		var mesh  = new THREE.Mesh(geometry, material);
-		scene.add(mesh);
+		starfield  = new THREE.Mesh(geometry, material);
+		scene.add(starfield);
 
 		// add a target drone
 
@@ -67,9 +66,7 @@ var audio_enabled = false;
 		pitchObject.rotation.x = shipRot.pitch;
 		pitchObject.rotation.z = shipRot.roll;
 
-		yawObject.translateX( velocity.x );
-        yawObject.translateY( velocity.y ); 
-        yawObject.translateZ( velocity.z );
+		yawObject.position = starfield.position = ship.getPosition();
 
 		renderer.render(scene,camera);
 		renderHud();
@@ -193,10 +190,17 @@ var audio_enabled = false;
 		// debug ship information
 		ctx.save();
 		var shipRot = ship.getRotation();
+		var shipPos = ship.getPosition();
+		var shipVel = ship.getVelocity();
 		ctx.fillStyle = "rgb(255,255,255)";
-		ctx.fillText("Yaw: " + shipRot.yaw.toFixed(2),$viewer.width() - 125, $viewer.height() - 70);
-		ctx.fillText("Pitch: " + shipRot.pitch.toFixed(2),$viewer.width() - 125, $viewer.height() - 60);
-		ctx.fillText("Roll: " + shipRot.roll.toFixed(2),$viewer.width() - 125, $viewer.height() - 50);
+		ctx.fillText("Yaw: " + shipRot.yaw.toFixed(2),$viewer.width() - 200, $viewer.height() - 100);
+		ctx.fillText("Pitch: " + shipRot.pitch.toFixed(2),$viewer.width() - 200, $viewer.height() - 90);
+		ctx.fillText("Roll: " + shipRot.roll.toFixed(2),$viewer.width() - 200, $viewer.height() - 80);
+		ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
+		ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
+		ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
+		ctx.fillText("Horizontal velocity: " + (shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
+		ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
 		ctx.restore();
 
 	}

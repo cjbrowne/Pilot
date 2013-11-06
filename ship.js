@@ -141,7 +141,7 @@ var Ship = (function() {
 
 		stardate = (new Date().getTime()) / 1000;
 
-		var pitch = shipInformation.rotation.pitch + (ship.boosters.aft - ship.boosters.fore)/100;
+		var pitch = shipInformation.rotation.pitch + (ship.boosters.fore - ship.boosters.aft)/100;
 		if(pitch > Math.PI) {
 			shipInformation.rotation.pitch = -(Math.PI * 2) + pitch;
 		} else if(pitch < -Math.PI) {
@@ -149,7 +149,7 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.pitch = pitch;
 		}
-		var yaw = shipInformation.rotation.yaw + (ship.boosters.port_horizontal - ship.boosters.starboard_horizontal)/100;
+		var yaw = shipInformation.rotation.yaw + (ship.boosters.starboard_horizontal - ship.boosters.port_horizontal)/100;
 		if(yaw > Math.PI) {
 			shipInformation.rotation.yaw = -(Math.PI * 2) + yaw;
 		} else if(yaw < -Math.PI) {
@@ -157,7 +157,7 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.yaw = yaw;
 		}
-		var roll = shipInformation.rotation.roll + (ship.boosters.port_vertical - ship.boosters.starboard_vertical)/100;
+		var roll = shipInformation.rotation.roll + (ship.boosters.starboard_vertical - ship.boosters.port_vertical)/100;
 		if(roll > Math.PI) {
 			shipInformation.rotation.roll = -(Math.PI * 2) + roll;
 		} else if(roll < -Math.PI) {
@@ -165,8 +165,13 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.roll = roll;
 		}
-		shipInformation.forwardVelocity = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
-		shipInformation.upwardVelocity = (ship.boosters.port_vertical + ship.boosters.starboard_vertical) / 100;
+		// update velocities
+		shipInformation.velocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
+		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
+		
+		// apply velocities to positional information
+		shipInformation.position.y += shipInformation.velocity.y;
+		shipInformation.position.z += shipInformation.velocity.z;
 		this.runCustomFunctions();
 	}
 	Ship.prototype.runCustomFunctions = function() {

@@ -37,24 +37,24 @@ function allStop() {
 function resetOrientation() {
 	function resetPitch() {
 		var shipRot = ship.getRotation();
-		ship.boosters.aft = Math.max(0,Math.min(1.0,-shipRot.pitch*100));
-		ship.boosters.fore = Math.max(0,Math.min(1.0,shipRot.pitch*100));
+		ship.boosters.aft = Math.max(0,Math.min(1.0,shipRot.pitch*100));
+		ship.boosters.fore = Math.max(0,Math.min(1.0,-shipRot.pitch*100));
 		if(shipRot.pitch == 0) {
 			ship.customFunctions.splice(ship.customFunctions.indexOf(resetPitch),1);
 		}
 	}
 	function resetYaw() {
 		var shipRot = ship.getRotation();
-		ship.boosters.port_horizontal = Math.max(0,Math.min(1.0,-shipRot.yaw*100));
-		ship.boosters.starboard_horizontal = Math.max(0,Math.min(1.0,shipRot.yaw*100));
+		ship.boosters.port_horizontal = Math.max(0,Math.min(1.0,shipRot.yaw*100));
+		ship.boosters.starboard_horizontal = Math.max(0,Math.min(1.0,-shipRot.yaw*100));
 		if(shipRot.yaw == 0) {
 			ship.customFunctions.splice(ship.customFunctions.indexOf(resetYaw),1);
 		}
 	}
 	function resetRoll() {
 		var shipRot = ship.getRotation();
-		ship.boosters.port_vertical = Math.max(0,Math.min(1.0,-shipRot.roll*100));
-		ship.boosters.starboard_vertical = Math.max(0,Math.min(1.0,shipRot.roll*100));
+		ship.boosters.port_vertical = Math.max(0,Math.min(1.0,shipRot.roll*100));
+		ship.boosters.starboard_vertical = Math.max(0,Math.min(1.0,-shipRot.roll*100));
 		if(shipRot.roll == 0) {
 			ship.customFunctions.splice(ship.customFunctions.indexOf(resetRoll),1);
 		}
