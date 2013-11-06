@@ -11,7 +11,7 @@ var audio_enabled = false;
 
 	function init() {
 		scene = new THREE.Scene();
-		camera = new THREE.PerspectiveCamera(45, $viewer.width() / $viewer.height(), 0.01, 1000);
+		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
 		camera.position.z = 1.5;
 
 		camera.rotation.set(0,0,0);
@@ -31,12 +31,15 @@ var audio_enabled = false;
 		ctx.canvas.height = $viewer.height();
 		
 
-		var geometry  = new THREE.SphereGeometry(90, 32, 32)
-		var material  = new THREE.MeshBasicMaterial()
-		material.map   = THREE.ImageUtils.loadTexture('galaxy_starfield.png')
-		material.side  = THREE.BackSide
-		var mesh  = new THREE.Mesh(geometry, material)
-		scene.add(mesh)
+		var geometry  = new THREE.SphereGeometry(90, 32, 32);
+		var material  = new THREE.MeshBasicMaterial();
+		material.map   = THREE.ImageUtils.loadTexture('galaxy_starfield.png');
+		material.side  = THREE.BackSide;
+		var mesh  = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+
+		// add a target drone
+
 
 		setupAudio();
 		requestAnimationFrame(update);
@@ -62,7 +65,6 @@ var audio_enabled = false;
 		var shipRot = ship.getRotation();
 		yawObject.rotation.y = shipRot.yaw;
 		pitchObject.rotation.x = shipRot.pitch;
-		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
 		pitchObject.rotation.z = shipRot.roll;
 
 		yawObject.translateX( velocity.x );

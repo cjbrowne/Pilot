@@ -68,6 +68,8 @@ var Ship = (function() {
 			"Millenium Falcon"
 		];
 		this.designation = designations[Math.floor(Math.random() * designations.length)];
+
+		this.customFunctions = [];
 	}
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
@@ -165,6 +167,12 @@ var Ship = (function() {
 		}
 		shipInformation.forwardVelocity = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
 		shipInformation.upwardVelocity = (ship.boosters.port_vertical + ship.boosters.starboard_vertical) / 100;
+		this.runCustomFunctions();
+	}
+	Ship.prototype.runCustomFunctions = function() {
+		this.customFunctions.forEach(function(f) {
+			f.call(ship);
+		});
 	}
 	Ship.prototype.run = function() {
 		this.tick();
