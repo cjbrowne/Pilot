@@ -31,6 +31,13 @@ body {
 	display:block;
 }
 
+#space {
+	position:absolute;
+	top:calc(1em + 3px);
+	left:calc(2em + 3px);
+	z-index:-1;
+}
+
 #console {
 	width:50em;
 	height:100%;

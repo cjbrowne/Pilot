@@ -1,7 +1,7 @@
 var Ship = (function() {
 	var shipInformation = {
 		rotation: {
-			heading: 0,
+			yaw: 0,
 			pitch: 0,
 			roll: 0
 		},
@@ -15,8 +15,11 @@ var Ship = (function() {
 			fore: 100,
 			aft: 100,
 		},
-		forwardVelocity: 0.0,
-		upwardVelocity: 0.0
+		velocity: {
+			x: 0.0,
+			y: 0.0,
+			z: 0.0
+		}
 	}
 	var Ship = function() {
 		this.Cannon = function() {
@@ -69,7 +72,7 @@ var Ship = (function() {
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
 		return {
-			heading: shipInformation.rotation.heading,
+			yaw: shipInformation.rotation.yaw,
 			pitch: shipInformation.rotation.pitch,
 			roll: shipInformation.rotation.roll
 		};
@@ -80,6 +83,13 @@ var Ship = (function() {
 			y: shipInformation.position.y,
 			z: shipInformation.position.z
 		};
+	}
+	Ship.prototype.getVelocity = function() {
+		return {
+			x: shipInformation.velocity.x,
+			y: shipInformation.velocity.y,
+			z: shipInformation.velocity.z
+		}
 	}
 	Ship.prototype.getHealth = function() {
 		return shipInformation.health;
