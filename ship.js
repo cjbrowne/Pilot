@@ -1,11 +1,7 @@
 var Ship = (function() {
 	var shipInformation = {
-		rotation: new THREE.Vector3(),
-		position: { 
-			x: 0, 
-			y: 0,
-			z: 0 
-		},
+		rotation: new THREE.Vector3(Math.PI / 2,Math.PI / 2,Math.PI / 2),
+		position: new THREE.Vector3(),
 		health: 100.0,
 		shields: {
 			fore: 100,
@@ -179,6 +175,9 @@ var Ship = (function() {
 	}
 	Ship.prototype.disable_audio = function() {
 		audio_enabled = false;
+	}
+	Ship.prototype.setPosition = function(pos) {
+		shipInformation.position = pos;
 	}
 	return Ship;
 })();

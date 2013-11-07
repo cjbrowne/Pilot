@@ -73,8 +73,8 @@ var audio_enabled = false;
 		abs.y += velocity.y.y * Math.cos(rotation.z);
 		abs.z = velocity.z.z * Math.cos(rotation.y);
 		abs.z += velocity.z.z * Math.cos(rotation.x);
-		abs.x = (velocity.y.y * velocity.z.z) * Math.sin(rotation.z);
-		abs.x += (velocity.y.y * velocity.z.z) * Math.sin(rotation.y);
+		abs.x = (velocity.y.y * velocity.z.z) * Math.cos(rotation.z);
+		abs.x += (velocity.y.y * velocity.z.z) * Math.cos(rotation.y);
 		return abs;
 	}
 
@@ -93,6 +93,9 @@ var audio_enabled = false;
 		var absVelocity = translateVelocity(shipVelocity,shipRot);
 
 		yawObject.position.add(absVelocity);
+
+		ship.setPosition(yawObject.position);
+
 		renderer.render(scene,camera);
 		renderHud();
 		if(audio_enabled) doSounds();
