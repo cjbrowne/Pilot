@@ -69,12 +69,9 @@ var audio_enabled = false;
 
 	function translateVelocity(velocity,rotation) {
 		var abs = new THREE.Vector3(0,0,0);
-		abs.y = velocity.y.y * Math.cos(rotation.x);
-		abs.y += velocity.y.y * Math.cos(rotation.z);
-		abs.z = velocity.z.z * Math.cos(rotation.y);
-		abs.z += velocity.z.z * Math.cos(rotation.x);
-		abs.x = (velocity.y.y * velocity.z.z) * Math.cos(rotation.z);
-		abs.x += (velocity.y.y * velocity.z.z) * Math.cos(rotation.y);
+		abs.y = velocity.y.y * Math.cos(rotation.x) + velocity.z.z * Math.cos(rotation.z);
+		abs.x = velocity.z.z * Math.cos(rotation.y) + velocity.y.y * Math.cos(rotation.y);
+		abs.z = velocity.z.z + velocity.y.y * Math.cos(rotation.z) * Math.cos(rotation.x);
 		return abs;
 	}
 

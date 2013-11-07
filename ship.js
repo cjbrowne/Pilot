@@ -1,6 +1,6 @@
 var Ship = (function() {
 	var shipInformation = {
-		rotation: new THREE.Vector3(Math.PI / 2,Math.PI / 2,Math.PI / 2),
+		rotation: new THREE.Vector3(),
 		position: new THREE.Vector3(),
 		health: 100.0,
 		shields: {
@@ -61,7 +61,7 @@ var Ship = (function() {
 	}
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
-		return shipInformation.rotation;
+		return shipInformation.rotation.clone();
 	}
 	Ship.prototype.getPosition = function() {
 		return {
@@ -71,10 +71,9 @@ var Ship = (function() {
 		};
 	}
 	Ship.prototype.getVelocity = function() {
-		// WARNING: this exposes an exploit.  FIX LATER!!!
 		return {
-			z: shipInformation.zVelocity,
-			y: shipInformation.yVelocity
+			z: shipInformation.zVelocity.clone(),
+			y: shipInformation.yVelocity.clone()
 		};
 	}
 	Ship.prototype.getHealth = function() {
@@ -156,7 +155,7 @@ var Ship = (function() {
 			shipInformation.rotation.z = roll;
 		}
 		// update velocities
-		shipInformation.zVelocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal);
+		shipInformation.zVelocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
 		shipInformation.yVelocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
 
 		this.runCustomFunctions();
