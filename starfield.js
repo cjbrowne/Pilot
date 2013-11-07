@@ -1,6 +1,6 @@
-var audio_enabled = true;
+var audio_enabled = false;
 (function() {
-	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,pitchObject,yawObject,starfield;
+	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
 	var ctx = $("#viewscreen")[0].getContext('2d');
 
 	var PI_2 = Math.PI / 2;
@@ -37,8 +37,19 @@ var audio_enabled = true;
 		starfield  = new THREE.Mesh(geometry, material);
 		scene.add(starfield);
 
-		// add a target drone
+		// add a target 
+		var droneGeom = new THREE.SphereGeometry(1,32,32);
+		var droneMat = new THREE.MeshBasicMaterial({
+			color:0xFF0000
+		});
+		drone = new THREE.Mesh(droneGeom,droneMat);
+		drone.position.x = 5;
+		drone.position.y = 5;
+		drone.position.z = -20;
+		scene.add(drone);
 
+		var light = new THREE.AmbientLight(0xF0F0F0);
+		scene.add(light);
 
 		setupAudio();
 		requestAnimationFrame(update);
@@ -56,18 +67,32 @@ var audio_enabled = true;
 		}
 	}
 
+	function translateVelocity(velocity,rotation) {
+		var abs = new THREE.Vector3(0,0,0);
+		abs.y = velocity.y.y * Math.cos(rotation.x);
+		abs.y += velocity.y.y * Math.cos(rotation.z);
+		abs.z = velocity.z.z * Math.cos(rotation.y);
+		abs.z += velocity.z.z * Math.cos(rotation.x);
+		abs.x = (velocity.y.y * velocity.z.z) * Math.sin(rotation.z);
+		abs.x += (velocity.y.y * velocity.z.z) * Math.sin(rotation.y);
+		return abs;
+	}
+
 	function update() {
 		requestAnimationFrame(update);
 		ctx.clearRect(0,0,$viewer.width(),$viewer.height());
 		var velocity = ship.getVelocity();
 
 		var shipRot = ship.getRotation();
-		yawObject.rotation.y = shipRot.yaw;
-		pitchObject.rotation.x = shipRot.pitch;
-		pitchObject.rotation.z = shipRot.roll;
+		yawObject.rotation.y = shipRot.y;
+		pitchObject.rotation.x = shipRot.x;
+		pitchObject.rotation.z = shipRot.z;
 
-		yawObject.position = starfield.position = ship.getPosition();
+		var shipVelocity = ship.getVelocity();
 
+		var absVelocity = translateVelocity(shipVelocity,shipRot);
+
+		yawObject.position.add(absVelocity);
 		renderer.render(scene,camera);
 		renderHud();
 		if(audio_enabled) doSounds();
@@ -206,14 +231,14 @@ var audio_enabled = true;
 		var shipPos = ship.getPosition();
 		var shipVel = ship.getVelocity();
 		ctx.fillStyle = "rgb(255,255,255)";
-		ctx.fillText("Yaw: " + shipRot.yaw.toFixed(2),$viewer.width() - 200, $viewer.height() - 100);
-		ctx.fillText("Pitch: " + shipRot.pitch.toFixed(2),$viewer.width() - 200, $viewer.height() - 90);
-		ctx.fillText("Roll: " + shipRot.roll.toFixed(2),$viewer.width() - 200, $viewer.height() - 80);
+		ctx.fillText("Yaw: " + shipRot.y.toFixed(2),$viewer.width() - 200, $viewer.height() - 100);
+		ctx.fillText("Pitch: " + shipRot.x.toFixed(2),$viewer.width() - 200, $viewer.height() - 90);
+		ctx.fillText("Roll: " + shipRot.z.toFixed(2),$viewer.width() - 200, $viewer.height() - 80);
 		ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
 		ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
 		ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
-		ctx.fillText("Horizontal velocity: " + (shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
-		ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
+		ctx.fillText("Horizontal velocity: " + (shipVel.z.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
+		ctx.fillText("Vertical velocity: " + (shipVel.y.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
 		ctx.restore();
 
 	}

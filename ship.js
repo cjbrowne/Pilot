@@ -1,10 +1,6 @@
 var Ship = (function() {
 	var shipInformation = {
-		rotation: {
-			yaw: 0,
-			pitch: 0,
-			roll: 0
-		},
+		rotation: new THREE.Vector3(),
 		position: { 
 			x: 0, 
 			y: 0,
@@ -15,11 +11,8 @@ var Ship = (function() {
 			fore: 100,
 			aft: 100,
 		},
-		velocity: {
-			x: 0.0,
-			y: 0.0,
-			z: 0.0
-		}
+		zVelocity: new THREE.Vector3(),
+		yVelocity: new THREE.Vector3()
 	}
 	var Ship = function() {
 		this.Cannon = function() {
@@ -72,11 +65,7 @@ var Ship = (function() {
 	}
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
-		return {
-			yaw: shipInformation.rotation.yaw,
-			pitch: shipInformation.rotation.pitch,
-			roll: shipInformation.rotation.roll
-		};
+		return shipInformation.rotation;
 	}
 	Ship.prototype.getPosition = function() {
 		return {
@@ -86,11 +75,11 @@ var Ship = (function() {
 		};
 	}
 	Ship.prototype.getVelocity = function() {
+		// WARNING: this exposes an exploit.  FIX LATER!!!
 		return {
-			x: shipInformation.velocity.x,
-			y: shipInformation.velocity.y,
-			z: shipInformation.velocity.z
-		}
+			z: shipInformation.zVelocity,
+			y: shipInformation.yVelocity
+		};
 	}
 	Ship.prototype.getHealth = function() {
 		return shipInformation.health;
@@ -146,37 +135,34 @@ var Ship = (function() {
 
 		stardate = (new Date().getTime()) / 1000;
 
-		var pitch = shipInformation.rotation.pitch + (ship.boosters.fore - ship.boosters.aft)/100;
+		var pitch = shipInformation.rotation.x + (ship.boosters.fore - ship.boosters.aft)/100;
 		if(pitch > Math.PI) {
-			shipInformation.rotation.pitch = -(Math.PI * 2) + pitch;
+			shipInformation.rotation.x = -(Math.PI * 2) + pitch;
 		} else if(pitch < -Math.PI) {
-			shipInformation.rotation.pitch = (Math.PI * 2) - pitch;
+			shipInformation.rotation.x = (Math.PI * 2) - pitch;
 		} else {
-			shipInformation.rotation.pitch = pitch;
+			shipInformation.rotation.x = pitch;
 		}
-		var yaw = shipInformation.rotation.yaw + (ship.boosters.starboard_horizontal - ship.boosters.port_horizontal)/100;
+		var yaw = shipInformation.rotation.y + (ship.boosters.starboard_horizontal - ship.boosters.port_horizontal)/100;
 		if(yaw > Math.PI) {
-			shipInformation.rotation.yaw = -(Math.PI * 2) + yaw;
+			shipInformation.rotation.y = -(Math.PI * 2) + yaw;
 		} else if(yaw < -Math.PI) {
-			shipInformation.rotation.yaw = (Math.PI * 2) - yaw;
+			shipInformation.rotation.y = (Math.PI * 2) - yaw;
 		} else {
-			shipInformation.rotation.yaw = yaw;
+			shipInformation.rotation.y = yaw;
 		}
-		var roll = shipInformation.rotation.roll + (ship.boosters.starboard_vertical - ship.boosters.port_vertical)/100;
+		var roll = shipInformation.rotation.z + (ship.boosters.starboard_vertical - ship.boosters.port_vertical)/100;
 		if(roll > Math.PI) {
-			shipInformation.rotation.roll = -(Math.PI * 2) + roll;
+			shipInformation.rotation.z = -(Math.PI * 2) + roll;
 		} else if(roll < -Math.PI) {
-			shipInformation.rotation.roll = (Math.PI * 2) - roll;
+			shipInformation.rotation.z = (Math.PI * 2) - roll;
 		} else {
-			shipInformation.rotation.roll = roll;
+			shipInformation.rotation.z = roll;
 		}
 		// update velocities
-		shipInformation.velocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
-		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
-		
-		// apply velocities to positional information
-		shipInformation.position.y += shipInformation.velocity.y;
-		shipInformation.position.z += shipInformation.velocity.z;
+		shipInformation.zVelocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal);
+		shipInformation.yVelocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
+
 		this.runCustomFunctions();
 	}
 	Ship.prototype.runCustomFunctions = function() {
