@@ -5,6 +5,7 @@ var audio_enabled = true;
 
 	var PI_2 = Math.PI / 2;
 	var particles = [];
+	var bullets = [];
 	$(document).ready(function() {
 		init();
 	});
@@ -30,7 +31,7 @@ var audio_enabled = true;
 		ctx.canvas.height = $viewer.height();
 		
 
-		var geometry  = new THREE.SphereGeometry(90, 32, 32);
+		var geometry  = new THREE.SphereGeometry(360, 32, 32);
 		var material  = new THREE.MeshBasicMaterial();
 		material.map   = THREE.ImageUtils.loadTexture('galaxy_starfield.png');
 		material.side  = THREE.BackSide;
@@ -85,12 +86,63 @@ var audio_enabled = true;
 
 		starfield.position.getPositionFromMatrix(camera.matrixWorld);
 
+		if(ship.getForeCannon().power > 0) {
+			fireBullet();
+			ship.resetCannon();
+		}
+
+		if(bullets.length > 0) {
+			updateBullets();
+		}
 
 		renderer.render(scene,camera);
 		renderHud();
 		textIntro();
 		if(audio_enabled) doSounds();
 		frameNumber++;
+		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
+	}
+
+	function updateBullets() {
+		bullets.forEach(function(b) {
+			b.translateZ(-10);
+			// remove this bullet if it's out of range
+			if(b.position.distanceTo(camera.position) > 500) {
+				bullets.splice(b,1);
+			}
+		});
+	}
+
+	function fireBullet() {
+		var bullet = new THREE.Mesh(new THREE.SphereGeometry(1,8,8),
+									new THREE.MeshBasicMaterial({color:0x00FF00})
+		);
+		bullet.position = camera.position.clone();
+		bullet.position.z -= 5;
+		bullet.rotation = camera.rotation.clone();
+		bullet.rotateOnAxis(new THREE.Vector3(1,0,0),ship.getForeCannon().rotation.pitch);
+		bullet.rotateOnAxis(new THREE.Vector3(0,1,0),-ship.getForeCannon().rotation.yaw);
+		scene.add(bullet);
+		bullets.push(bullet);
+		ship.log("Bullet fired!");
+		if(audio_enabled)
+			playSound('bullet');
+	}
+
+	function playSound(which) {
+		var osc = speaker.createOscillator();
+		osc.connect(speaker.destination);
+		switch(which) {
+			case 'bullet':
+				osc.type = "square";
+				osc.frequency.value = 9000;
+				osc.frequency.setTargetAtTime(3000,speaker.currentTime,0.2);
+				osc.noteOn(0);
+				setTimeout(function() {
+					osc.noteOff(0);
+				},500);
+				break;
+		}
 	}
 
 	function textIntro() {
@@ -225,22 +277,37 @@ var audio_enabled = true;
 		}
 		ctx.restore();
 
-		// render the fore gun angle indicator
+		// render the fore gun rotation (yaw) indicator
 		ctx.save();
 		ctx.fillStyle = ctx.strokeStyle = "rgba(100,100,255,0.5)";
-		//if(frameNumber > 200) {
+		if(frameNumber > 200) {
 			ctx.beginPath();
-			ctx.arc($viewer.width() - 75,75,50,0,Math.PI*2,true);
-			ctx.moveTo($viewer.width() - 115,75)
-			ctx.lineTo($viewer.width() - 35,75);
+			ctx.translate($viewer.width()-75,75);
+			ctx.rotate(ship.getForeCannon().rotation.yaw);
+			ctx.arc(0,0,50,0,Math.PI*2,true);
+			ctx.moveTo(-40,0)
+			ctx.lineTo(40,0);
 			ctx.closePath();
 			ctx.stroke();
-		/*
+			ctx.restore();
+			// render the fore gun pitch indicator
+			ctx.save();
+			ctx.fillStyle = ctx.strokeStyle = "rgba(100,100,255,0.5)";
+			ctx.beginPath();
+			ctx.translate($viewer.width() - 150,25);
+			ctx.moveTo(0,0);
+			ctx.lineTo(0,100);
+			ctx.moveTo(0,100 - (ship.getForeCannon().rotation.pitch / Math.PI)*100);
+			ctx.lineTo(5,100 - (ship.getForeCannon().rotation.pitch / Math.PI)*100);
+			ctx.closePath();
+			ctx.stroke();
 		} else {
 			ctx.fillText("Loading" + Array(Math.floor((frameNumber / 10) % 5)).join("."),$viewer.width() - 125,75)
 		}
-		*/
+		
 		ctx.restore();
+
+		
 
 		// debug ship information
 		ctx.save();

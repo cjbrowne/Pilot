@@ -64,7 +64,6 @@
 							historyIndex = promptHistory.length - 1;
 							$("#output").append(result + "<br />");
 							$("#prompt").val("");
-							$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 						}
 					} else if(e.which == 40) {
 						if(historyIndex == promptHistory.length -1 && $("#prompt").val() != "")

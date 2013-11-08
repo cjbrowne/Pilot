@@ -8,12 +8,34 @@ var Ship = (function() {
 			fore: 100,
 			aft: 100,
 		},
-		velocity: new THREE.Vector3()
+		velocity: new THREE.Vector3(),
+		foreCannon: {
+			rotation: {
+				pitch: 0,
+				yaw: 0
+			},
+			power: 0
+		}
 	}
 	var Ship = function() {
 		this.Cannon = function() {
 			this.rotation = { pitch: 0, yaw: 0 };
 			this.power = 0;
+		}
+		this.Cannon.prototype.yaw = function(amount) {
+			this.rotation.yaw += amount;
+		}
+		this.Cannon.prototype.setYaw = function(to) {
+			this.rotation.yaw = to;
+		}
+		this.Cannon.prototype.pitch = function(amount) {
+			this.rotation.pitch += amount;
+		}
+		this.Cannon.prototype.setPitch = function(to) {
+			this.rotation.pitch = to;
+		}
+		this.Cannon.prototype.fire = function(power) {
+			this.power = power || 1;
 		}
 		this.Shield = function() {
 			this.power = 0;
@@ -185,13 +207,45 @@ var Ship = (function() {
 		}
 
 		// update velocities
-		shipInformation.velocity.z = -((ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 200);
-		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 200;
+		shipInformation.velocity.z = -((this.boosters.port_horizontal + this.boosters.starboard_horizontal) / 200);
+		shipInformation.velocity.y = (this.boosters.port_vertical + this.boosters.starboard_vertical + this.boosters.fore + this.boosters.aft) / 200;
+
+		if(Math.abs(shipInformation.foreCannon.rotation.yaw - this.foreCannon.rotation.yaw) > Math.PI / 64) {
+			if(shipInformation.foreCannon.rotation.yaw > this.foreCannon.rotation.yaw) {
+				shipInformation.foreCannon.rotation.yaw -= Math.PI / 64;
+			} else if(shipInformation.foreCannon.rotation.yaw < this.foreCannon.rotation.yaw) {
+				shipInformation.foreCannon.rotation.yaw += Math.PI / 64;
+			}
+		} else {
+			// cheat for the last 1/32 segment of the circle because fuck you, that's why.
+			shipInformation.foreCannon.rotation.yaw = this.foreCannon.rotation.yaw;
+		}
+
+		// cap foreCannon pitch at 0 - Math.PI
+		this.foreCannon.rotation.pitch = Math.max(0,Math.min(this.foreCannon.rotation.pitch,Math.PI));
+		if(Math.abs(shipInformation.foreCannon.rotation.pitch - this.foreCannon.rotation.pitch) > Math.PI / 64) {
+			if(shipInformation.foreCannon.rotation.pitch > this.foreCannon.rotation.pitch) {
+				shipInformation.foreCannon.rotation.pitch -= Math.PI / 64;
+			} else if(shipInformation.foreCannon.rotation.pitch < this.foreCannon.rotation.pitch) {
+				shipInformation.foreCannon.rotation.pitch += Math.PI / 64;
+			}
+		} else {
+			// cheat for the last 1/32 segment of the circle because fuck you, that's why.
+			shipInformation.foreCannon.rotation.pitch = this.foreCannon.rotation.pitch;
+		}
+
+		if(ship.foreCannon.power > 0) {
+			shipInformation.foreCannon.power = ship.foreCannon.power;
+			ship.foreCannon.power = 0;
+		}
 
 		this.runCustomFunctions();
 	}
 	Ship.prototype.clearRot = function() {
 		shipInformation.rotation.set(0,0,0);
+	}
+	Ship.prototype.resetCannon = function() {
+		shipInformation.foreCannon.power = 0;
 	}
 	Ship.prototype.getAbsoluteRotation = function() {
 		return shipInformation.absRot.clone();
@@ -202,6 +256,9 @@ var Ship = (function() {
 				ship.customFunctions.splice(ship.customFunctions.indexOf(f),1);
 			}
 		});
+	}
+	Ship.prototype.getForeCannon = function() {
+		return shipInformation.foreCannon;
 	}
 	Ship.prototype.run = function() {
 		this.tick();
@@ -279,7 +336,25 @@ var Ship = (function() {
 	}
 	Ship.prototype.tutorialPhase2 = function() {
 		this.log("Excellent work, pilot!  You're progressing nicely!");
-		this.warn("Sorry, the rest of the tutorial has not been written yet.",'low');
+		this.log("Now, I'm not going to insult your intelligence - I'm sure you can work out the yaw and roll controls for yourself.");
+		this.log("Let's move onto something a bit more challenging, shall we?  Try moving the ship forward.");
+		this.customFunctions.push(function() {
+			if(this.boosters.starboard_horizontal == this.boosters.port_horizontal && this.boosters.port_horizontal > 0) {
+				allStop();
+				this.log("Unbelievable, you're crawling along at an incredible pace!  Well done!");
+				this.log("Damn if those boosters aren't the slowest thing in the universe though, huh?");
+				this.log("Maybe some day I'll get an upgrade...");
+				this.log("I digress.  Back to the subject at hand: you can also power yourself vertically, but we'll skip that part of the tutorial.");
+				this.log("Oh, you wanted to do that part?  Too bad.  I can't be bothered.  I want to get to the fun stuff!  Guns!");
+				this.tutorialPhase3();
+				return true;
+			} else {
+				return false;
+			}
+		});
+	}
+	Ship.prototype.tutorialPhase3 = function() {
+		this.log("Unfortunately, I haven't been programmed for gun controls yet.  Damn and blast!");
 	}
 	return Ship;
 })();
