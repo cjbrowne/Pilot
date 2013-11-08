@@ -117,9 +117,9 @@ var audio_enabled = true;
 		var bullet = new THREE.Mesh(new THREE.SphereGeometry(1,8,8),
 									new THREE.MeshBasicMaterial({color:0x00FF00})
 		);
-		bullet.position = camera.position.clone();
-		bullet.position.z -= 5;
-		bullet.rotation = camera.rotation.clone();
+		bullet.position = ship.getPosition();
+		bullet.position.z -= 15;
+		bullet.rotation = ship.getAbsoluteRotation();
 		bullet.rotateOnAxis(new THREE.Vector3(1,0,0),ship.getForeCannon().rotation.pitch);
 		bullet.rotateOnAxis(new THREE.Vector3(0,1,0),-ship.getForeCannon().rotation.yaw);
 		scene.add(bullet);

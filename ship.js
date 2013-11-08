@@ -87,11 +87,7 @@ var Ship = (function() {
 		return shipInformation.rotation.clone();
 	}
 	Ship.prototype.getPosition = function() {
-		return {
-			x: shipInformation.position.x,
-			y: shipInformation.position.y,
-			z: shipInformation.position.z
-		};
+		return shipInformation.position.clone();
 	}
 	Ship.prototype.getVelocity = function() {
 		return shipInformation.velocity.clone();
