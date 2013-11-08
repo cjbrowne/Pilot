@@ -34,8 +34,13 @@
 		<script src="helper_functions.js"></script>
 		<script>
 		var ship,promptHistory = [],historyIndex,stardate;
-		var help = "To start the tutorial, simply type 'tutorial'.  To get help on a particular function, call 'help()' on that function's object (e.g. editor.help() will show the help for the text editor).";
-		var tutorial = "Tutorial under development.  Sorry for the inconvenience.";
+		var help = "To start the tutorial, simply type 'ship.tutorial()'.  To get help on a particular function, call 'help()' on that function's object (e.g. editor.help() will show the help for the text editor).";
+		Object.defineProperty(window,"hello",{
+			get:function() {
+				ship.log("Hi there.  Now, can we please get back to business?");
+				return "";
+			}
+		});
 			$(function() {
 				ship = new Ship();
 				ship.run();
@@ -59,7 +64,7 @@
 							historyIndex = promptHistory.length - 1;
 							$("#output").append(result + "<br />");
 							$("#prompt").val("");
-							$("#console").animate({scrollTop: $("#console")[0].scrollHeight},0);
+							$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 						}
 					} else if(e.which == 40) {
 						if(historyIndex == promptHistory.length -1 && $("#prompt").val() != "")

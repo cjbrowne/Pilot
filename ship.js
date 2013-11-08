@@ -2,6 +2,7 @@ var Ship = (function() {
 	var shipInformation = {
 		rotation: new THREE.Euler(),
 		position: new THREE.Vector3(),
+		absRot: new THREE.Euler(),
 		health: 100.0,
 		shields: {
 			fore: 100,
@@ -156,6 +157,33 @@ var Ship = (function() {
 		} else {
 			shipInformation.rotation.z = roll;
 		}
+		var absRot = new THREE.Euler();
+		absRot.x = shipInformation.absRot.x + shipInformation.rotation.x;
+		absRot.y = shipInformation.absRot.y + shipInformation.rotation.y;
+		absRot.z = shipInformation.absRot.z + shipInformation.rotation.z;
+
+		if(absRot.x > Math.PI) {
+			shipInformation.absRot.x = -(Math.PI * 2) + absRot.x;
+		} else if(absRot.x < -Math.PI) {
+			shipInformation.absRot.x = (Math.PI * 2) - absRot.x;
+		} else {
+			shipInformation.absRot.x = absRot.x;
+		}
+		if(absRot.y > Math.PI) {
+			shipInformation.absRot.y = -(Math.PI * 2) + absRot.y;
+		} else if(absRot.y < -Math.PI) {
+			shipInformation.absRot.y = (Math.PI * 2) - absRot.y;
+		} else {
+			shipInformation.absRot.y = absRot.y;
+		}
+		if(absRot.z > Math.PI) {
+			shipInformation.absRot.z = -(Math.PI * 2) + absRot.z;
+		} else if(absRot.z < -Math.PI) {
+			shipInformation.absRot.z = (Math.PI * 2) - absRot.z;
+		} else {
+			shipInformation.absRot.z = absRot.z;
+		}
+
 		// update velocities
 		shipInformation.velocity.z = -((ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 200);
 		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 200;
@@ -165,9 +193,14 @@ var Ship = (function() {
 	Ship.prototype.clearRot = function() {
 		shipInformation.rotation.set(0,0,0);
 	}
+	Ship.prototype.getAbsoluteRotation = function() {
+		return shipInformation.absRot.clone();
+	}
 	Ship.prototype.runCustomFunctions = function() {
 		this.customFunctions.forEach(function(f) {
-			f.call(ship);
+			if(f.call(ship)) {
+				ship.customFunctions.splice(ship.customFunctions.indexOf(f),1);
+			}
 		});
 	}
 	Ship.prototype.run = function() {
@@ -203,12 +236,50 @@ var Ship = (function() {
 		shipInformation.position = pos;
 	}
 	Ship.prototype.tutorial = function() {
-		if(ship.designation == "") {
-			ship.log("Welcome to the onboard tutorial system on the great star cruiser... oh dear.  It seems we don't have a name.  Would you mind setting ship.designation to something so we can get started?");
+		if(this.designation == "") {
+			this.log("Welcome to the onboard tutorial system on the great star cruiser... oh dear.  It seems we don't have a name.  Would you mind setting ship.designation to something so we can get started?");
+			this.customFunctions.push(function() {
+				if(this.designation != "") {
+					this.log("Interesting choice of name... well, ok.  Welcome aboard the " + this.designation + ", pilot!");
+					this.log("Now, let's see, what can we teach you... oh! I know!");
+					this.log("This'll be ace, you'll love this!");
+					this.log("Try pitching the ship forward (nose-down) by 1 radian.");
+					this.log("If you get stuck, use the helper function resetOrientation() to reset your direction.");
+					this.log("I'm going to fire off that function now in case you've been fiddling about while you were reading.");
+					resetOrientation(); // in case the user has been fiddling
+					this.customFunctions.push(function() {
+						var absRot = this.getAbsoluteRotation();
+						if(absRot.x >= -1.005 &&
+							absRot.x <= -0.995) {
+							allStop();
+							this.log("Well done!  Now, let's try going back the other way shall we?");
+							this.customFunctions.push(function() {
+								var absRot = this.getAbsoluteRotation();
+								if(absRot.x >= -0.005 &&
+									absRot.x <= 0.005) {
+									allStop();
+									this.tutorialPhase2();
+									return true;
+								} else {
+									return false;
+								}
+							});
+							return true;
+						} else {
+							return false;
+						}
+					});
+					return true;
+				} else {
+					return false;
+				}
+			});	
 			return "Remember to use quote-marks to surround strings!";
-		} else {
-			ship.log("Interesting choice of name... well, ok.  Welcome aboard the " + ship.designation + ", pilot!  Now, let's see, what can we teach you... oh! I know!  This'll be ace, you'll love this!  Try pitching the ship forward by 1 radian.  You'll need to fire a particular set of boosters for it to work!");
-		}
+		} 
+	}
+	Ship.prototype.tutorialPhase2 = function() {
+		this.log("Excellent work, pilot!  You're progressing nicely!");
+		this.warn("Sorry, the rest of the tutorial has not been written yet.",'low');
 	}
 	return Ship;
 })();

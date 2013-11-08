@@ -244,7 +244,7 @@ var audio_enabled = true;
 
 		// debug ship information
 		ctx.save();
-		var shipRot = ship.getRotation();
+		var shipRot = ship.getAbsoluteRotation();
 		var shipPos = ship.getPosition();
 		var shipVel = ship.getVelocity();
 		ctx.fillStyle = "rgb(255,255,255)";

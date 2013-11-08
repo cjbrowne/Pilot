@@ -36,28 +36,22 @@ function allStop() {
 
 function resetOrientation() {
 	function resetPitch() {
-		var shipRot = ship.getRotation();
+		var shipRot = ship.getAbsoluteRotation();
 		ship.boosters.aft = Math.max(0,Math.min(1.0,shipRot.x*100));
 		ship.boosters.fore = Math.max(0,Math.min(1.0,-shipRot.x*100));
-		if(shipRot.x == 0) {
-			ship.customFunctions.splice(ship.customFunctions.indexOf(resetPitch),1);
-		}
+		return (shipRot.x == 0);
 	}
 	function resetYaw() {
-		var shipRot = ship.getRotation();
+		var shipRot = ship.getAbsoluteRotation();
 		ship.boosters.port_horizontal = Math.max(0,Math.min(1.0,shipRot.y*100));
 		ship.boosters.starboard_horizontal = Math.max(0,Math.min(1.0,-shipRot.y*100));
-		if(shipRot.y == 0) {
-			ship.customFunctions.splice(ship.customFunctions.indexOf(resetYaw),1);
-		}
+		return (shipRot.y == 0);
 	}
 	function resetRoll() {
-		var shipRot = ship.getRotation();
+		var shipRot = ship.getAbsoluteRotation();
 		ship.boosters.port_vertical = Math.max(0,Math.min(1.0,shipRot.z*100));
 		ship.boosters.starboard_vertical = Math.max(0,Math.min(1.0,-shipRot.z*100));
-		if(shipRot.z == 0) {
-			ship.customFunctions.splice(ship.customFunctions.indexOf(resetRoll),1);
-		}
+		return (shipRot.z == 0);
 	}
 	ship.customFunctions.push(resetPitch);
 	ship.customFunctions.push(resetYaw);

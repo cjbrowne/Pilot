@@ -1,4 +1,13 @@
 ChangeLog
 
+Version: 0.1.1
+	- Added velocity (oh, that's what you wanted...)
+	- Added ship.warn and ship.log API
+	- Added tutorial sequence
+	- Added weaponry (foremounted gun)
+	- Added target drone
+	- Added ship.customFunctions API
+	- Added a number of helper functions in helper_functions.js
+
 Version: 0.1
 	Ship rotates, what more do you want?
