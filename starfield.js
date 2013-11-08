@@ -1,4 +1,4 @@
-var audio_enabled = false;
+var audio_enabled = true;
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
 	var ctx = $("#viewscreen")[0].getContext('2d');
@@ -77,11 +77,13 @@ var audio_enabled = false;
 		pitchObject.rotation.x = shipRot.x;
 		pitchObject.rotation.z = shipRot.z;
 
-		
 		camera.translateY(velocity.y);
 		camera.translateZ(velocity.z);
 		
 		ship.setPosition(camera.position);
+
+		starfield.position.getPositionFromMatrix(camera.matrixWorld);
+
 
 		renderer.render(scene,camera);
 		renderHud();
