@@ -63,3 +63,9 @@ function resetOrientation() {
 	ship.customFunctions.push(resetYaw);
 	ship.customFunctions.push(resetRoll);
 }
+
+function go(amount) {
+	ship.boosters.starboard_horizontal =
+	ship.boosters.port_horizontal =
+	amount;
+}

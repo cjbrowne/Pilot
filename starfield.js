@@ -14,7 +14,7 @@ var audio_enabled = true;
 		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
 		camera.position.z = 1.5;
 
-		camera.rotation.set(0,0,0);
+		camera.quaternion.setFromEuler(new THREE.Euler(0,0,0));
 
 		pitchObject = new THREE.Object3D();
 		pitchObject.add(camera);
@@ -73,9 +73,10 @@ var audio_enabled = true;
 		var velocity = ship.getVelocity();
 
 		var shipRot = ship.getRotation();
-		yawObject.rotation.y = shipRot.y;
-		pitchObject.rotation.x = shipRot.x;
-		pitchObject.rotation.z = shipRot.z;
+		camera.rotateOnAxis(new THREE.Vector3(1,0,0),shipRot.x);
+		camera.rotateOnAxis(new THREE.Vector3(0,1,0),shipRot.y);
+		camera.rotateOnAxis(new THREE.Vector3(0,0,1),shipRot.z);
+		ship.clearRot();
 
 		camera.translateY(velocity.y);
 		camera.translateZ(velocity.z);
@@ -87,8 +88,32 @@ var audio_enabled = true;
 
 		renderer.render(scene,camera);
 		renderHud();
+		textIntro();
 		if(audio_enabled) doSounds();
 		frameNumber++;
+	}
+
+	function textIntro() {
+		switch(frameNumber) {
+			case 0:
+				ship.log("Welcome aboard the good ship UNKNOWN, pilot!  Please take a moment to familiarize yourself with the controls.  I'm going to test a few systems while I wait, if you don't mind!");
+				break;
+			case 15:
+				ship.warn("Warning System Test Message",'low');
+				break;
+			case 30:
+				ship.warn("Warning System Test Message",'medium');
+				break;
+			case 45:
+				ship.warn("Warning System Test Message",'high');
+				break;
+			case 60:
+				ship.warn("Warning System Test Message",'critical');
+				break;
+			case 90:
+				ship.log("Good.  That all seems to be in order.  Now, would you like to start the tutorial?  If so, simply call the function 'ship.tutorial()'!");
+				break;
+		}
 	}
 
 	function makeBeep(duration, type, freq, finishedCallback) {
@@ -229,7 +254,7 @@ var audio_enabled = true;
 		ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
 		ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
 		ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
-		ctx.fillText("Horizontal velocity: " + (shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
+		ctx.fillText("Horizontal velocity: " + -(shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
 		ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
 		ctx.restore();
 

@@ -167,3 +167,19 @@ body {
 #editor_save {
 	margin:0 auto;
 }
+
+.warning_low {
+	color:#FF0;
+}
+
+.warning_medium {
+	color:#F90;
+}
+
+.warning_high {
+	color:#F30;
+}
+
+.warning_critical {
+	color:#F00;
+}

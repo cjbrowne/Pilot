@@ -1,6 +1,6 @@
 var Ship = (function() {
 	var shipInformation = {
-		rotation: new THREE.Vector3(),
+		rotation: new THREE.Euler(),
 		position: new THREE.Vector3(),
 		health: 100.0,
 		shields: {
@@ -45,7 +45,7 @@ var Ship = (function() {
 		/*
 			- For now, the ship's designation is randomly selected from a list.
 			In future, it will be assigned as part of the tutorial mission.
-		*/
+			I don't have the heart to delete them :'(
 		var designations = [
 			"Enterprise",
 			"Heart of Gold",
@@ -54,7 +54,8 @@ var Ship = (function() {
 			"Millenium Falcon",
 			"Chaos Kitten"
 		];
-		this.designation = designations[Math.floor(Math.random() * designations.length)];
+		*/
+		this.designation = "";
 
 		this.customFunctions = [];
 	}
@@ -114,6 +115,11 @@ var Ship = (function() {
 					// once per second, diminish health
 					if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 1.0);
 				}
+				// while we're here, let's prevent the player from giving us a negative value, shall we?
+				if(ship.boosters[booster] < 0) {
+					ship.warn("Nice try, buddy, but I fixed that!");
+					ship.boosters[booster] = 0;
+				}
 			}
 		}
 		if(ship.getHealth() <= 30) {
@@ -151,10 +157,13 @@ var Ship = (function() {
 			shipInformation.rotation.z = roll;
 		}
 		// update velocities
-		shipInformation.velocity.z = -((ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100);
-		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
+		shipInformation.velocity.z = -((ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 200);
+		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 200;
 
 		this.runCustomFunctions();
+	}
+	Ship.prototype.clearRot = function() {
+		shipInformation.rotation.set(0,0,0);
 	}
 	Ship.prototype.runCustomFunctions = function() {
 		this.customFunctions.forEach(function(f) {
@@ -168,11 +177,38 @@ var Ship = (function() {
 		logClass = logClass || "pilot_log";
 		$("#output").append("<span class='"+logClass+"'>["+stardate+"]</span> <span class='log'>" + string + "</span><br />");
 	}
-	Ship.prototype.disable_audio = function() {
-		audio_enabled = false;
+	Ship.prototype.warn = function(string,warningLevel) {
+		warningLevel = warningLevel || 'low';
+		var warningText = "WARNING";
+		switch(warningLevel) {
+			case 'low':
+				warningText = "WARNING";
+				break;
+			case 'medium':
+				warningText = "ALERT";
+				break;
+			case 'high':
+				warningText = "DANGER";
+				break;
+			case 'critical':
+				warningText = "CRITICAL";
+				break;
+		}
+		$("#output").append("<span class='warning_" + warningLevel + "'>["+warningText+"] " + string + "</span><br />");
+	}
+	Ship.prototype.toggle_audio = function() {
+		audio_enabled = !audio_enabled;
 	}
 	Ship.prototype.setPosition = function(pos) {
 		shipInformation.position = pos;
+	}
+	Ship.prototype.tutorial = function() {
+		if(ship.designation == "") {
+			ship.log("Welcome to the onboard tutorial system on the great star cruiser... oh dear.  It seems we don't have a name.  Would you mind setting ship.designation to something so we can get started?");
+			return "Remember to use quote-marks to surround strings!";
+		} else {
+			ship.log("Interesting choice of name... well, ok.  Welcome aboard the " + ship.designation + ", pilot!  Now, let's see, what can we teach you... oh! I know!  This'll be ace, you'll love this!  Try pitching the ship forward by 1 radian.  You'll need to fire a particular set of boosters for it to work!");
+		}
 	}
 	return Ship;
 })();
