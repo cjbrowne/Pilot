@@ -131,16 +131,20 @@ var audio_enabled = true;
 
 	function playSound(which) {
 		var osc = speaker.createOscillator();
-		osc.connect(speaker.destination);
+		var gain = speaker.createGain();
+		osc.connect(gain);
+		gain.connect(speaker.destination);
 		switch(which) {
 			case 'bullet':
 				osc.type = "square";
-				osc.frequency.value = 9000;
-				osc.frequency.setTargetAtTime(3000,speaker.currentTime,0.2);
+				osc.frequency.value = 2000;
+				osc.frequency.setTargetAtTime(300,speaker.currentTime,0.2);
+				gain.gain.value = 1.0;
+				gain.gain.setTargetAtTime(0.0,speaker.currentTime,0.3);
 				osc.noteOn(0);
 				setTimeout(function() {
 					osc.noteOff(0);
-				},500);
+				},300);
 				break;
 		}
 	}
