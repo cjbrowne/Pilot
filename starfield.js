@@ -67,14 +67,6 @@ var audio_enabled = false;
 		}
 	}
 
-	function translateVelocity(velocity,rotation) {
-		var abs = new THREE.Vector3(0,0,0);
-		abs.y = velocity.y.y * Math.cos(rotation.x) + velocity.z.z * Math.cos(rotation.z);
-		abs.x = velocity.z.z * Math.cos(rotation.y) + velocity.y.y * Math.cos(rotation.y);
-		abs.z = velocity.z.z + velocity.y.y * Math.cos(rotation.z) * Math.cos(rotation.x);
-		return abs;
-	}
-
 	function update() {
 		requestAnimationFrame(update);
 		ctx.clearRect(0,0,$viewer.width(),$viewer.height());
@@ -85,13 +77,11 @@ var audio_enabled = false;
 		pitchObject.rotation.x = shipRot.x;
 		pitchObject.rotation.z = shipRot.z;
 
-		var shipVelocity = ship.getVelocity();
-
-		var absVelocity = translateVelocity(shipVelocity,shipRot);
-
-		yawObject.position.add(absVelocity);
-
-		ship.setPosition(yawObject.position);
+		
+		camera.translateY(velocity.y);
+		camera.translateZ(velocity.z);
+		
+		ship.setPosition(camera.position);
 
 		renderer.render(scene,camera);
 		renderHud();
@@ -237,8 +227,8 @@ var audio_enabled = false;
 		ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
 		ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
 		ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
-		ctx.fillText("Horizontal velocity: " + (shipVel.z.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
-		ctx.fillText("Vertical velocity: " + (shipVel.y.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
+		ctx.fillText("Horizontal velocity: " + (shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
+		ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
 		ctx.restore();
 
 	}

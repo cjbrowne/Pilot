@@ -7,8 +7,7 @@ var Ship = (function() {
 			fore: 100,
 			aft: 100,
 		},
-		zVelocity: new THREE.Vector3(),
-		yVelocity: new THREE.Vector3()
+		velocity: new THREE.Vector3()
 	}
 	var Ship = function() {
 		this.Cannon = function() {
@@ -71,10 +70,7 @@ var Ship = (function() {
 		};
 	}
 	Ship.prototype.getVelocity = function() {
-		return {
-			z: shipInformation.zVelocity.clone(),
-			y: shipInformation.yVelocity.clone()
-		};
+		return shipInformation.velocity.clone();
 	}
 	Ship.prototype.getHealth = function() {
 		return shipInformation.health;
@@ -155,8 +151,8 @@ var Ship = (function() {
 			shipInformation.rotation.z = roll;
 		}
 		// update velocities
-		shipInformation.zVelocity.z = (ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100;
-		shipInformation.yVelocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
+		shipInformation.velocity.z = -((ship.boosters.port_horizontal + ship.boosters.starboard_horizontal) / 100);
+		shipInformation.velocity.y = (ship.boosters.port_vertical + ship.boosters.starboard_vertical + ship.boosters.fore + ship.boosters.aft) / 100;
 
 		this.runCustomFunctions();
 	}
