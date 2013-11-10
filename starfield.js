@@ -149,7 +149,6 @@ var version = "0.1.2";
 					scene.remove(scene.getObjectByName(nearbyObject.name));
 					bullets.splice(b,1);
 					scene.remove(b);
-				} else {
 				}
 			});
 		});
