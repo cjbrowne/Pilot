@@ -1,5 +1,12 @@
 ChangeLog
 
+Version: 0.1.2
+	- Added gun
+	- Target drone can now be killed with the gun
+	- Added audio
+	- Added some interface (HUD) elements
+	- Various bug fixes
+
 Version: 0.1.1
 	- Added velocity (oh, that's what you wanted...)
 	- Added ship.warn and ship.log API

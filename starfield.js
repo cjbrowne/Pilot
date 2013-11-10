@@ -1,5 +1,5 @@
 var audio_enabled = true;
-var version = "0.1.1";
+var version = "0.1.2";
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
 	var ctx = $("#viewscreen")[0].getContext('2d');
