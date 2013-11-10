@@ -144,7 +144,7 @@ var version = "0.1.2";
 
 				if(nearbyObject.position.distanceTo(b.position) < (DRONE_SIZE + BULLET_SIZE)*2) {
 					ship.log("Drone destroyed!");
-					triggerExplosion(nearbyObject);
+					triggerExplosion(scene,nearbyObject);
 					targetDrones.splice(nearbyObject,0);
 					scene.remove(scene.getObjectByName(nearbyObject.name));
 					bullets.splice(b,1);
@@ -152,13 +152,6 @@ var version = "0.1.2";
 				}
 			});
 		});
-	}
-
-	function triggerExplosion(object) {
-		if(object == camera) {
-			throw Error("Player death not yet implemented");
-		}
-		// TODO: play an explosion animation!
 	}
 
 	function fireBullet() {
