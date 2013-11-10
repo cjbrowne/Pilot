@@ -118,12 +118,11 @@ var version = "0.1.1";
 		var bullet = new THREE.Mesh(new THREE.SphereGeometry(1,8,8),
 									new THREE.MeshBasicMaterial({color:0x00FF00})
 		);
-		bullet.position = ship.getPosition();
-		bullet.position.z -= 15;
-		bullet.rotation = ship.getAbsoluteRotation();
+		camera.add(bullet);
 		bullet.rotateOnAxis(new THREE.Vector3(1,0,0),ship.getForeCannon().rotation.pitch);
 		bullet.rotateOnAxis(new THREE.Vector3(0,1,0),-ship.getForeCannon().rotation.yaw);
-		scene.add(bullet);
+		bullet.position.z -= 50;
+		bullet.position.y -= 25;
 		bullets.push(bullet);
 		ship.log("Bullet fired!");
 		if(audio_enabled)
