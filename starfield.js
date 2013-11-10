@@ -8,7 +8,7 @@ var version = "0.1.1";
 	var particles = [];
 	var bullets = [];
 	var targetDrones = [];
-	var DRONE_SIZE = 5;
+	var DRONE_SIZE = 50;
 	var BULLET_SIZE = 1;
 	var tree = new OctTree({
 		bounds: {
@@ -60,7 +60,7 @@ var version = "0.1.1";
 		drone = new THREE.Mesh(droneGeom,droneMat);
 		drone.position.x = 0;
 		drone.position.y = 10;
-		drone.position.z = -200;
+		drone.position.z = -600;
 		drone.isDrone = true; // I know it looks weird, but this is a quick way to differentiate between drones and bullets in the OctTree
 		drone.name = "TargetDrone A";
 		scene.add(drone);
@@ -130,7 +130,7 @@ var version = "0.1.1";
 
 	function updateBullets() {
 		bullets.forEach(function(b) {
-			b.translateZ(-5);
+			b.translateZ(-10);
 			// remove this bullet if it's out of range
 			if(b.position.distanceTo(camera.position) > 800) {
 				scene.remove(b);
@@ -142,17 +142,14 @@ var version = "0.1.1";
 					return;
 				}
 
-				ship.log("Drone detected, checking distance...");
-
 				if(nearbyObject.position.distanceTo(b.position) < (DRONE_SIZE + BULLET_SIZE)*2) {
-					ship.log("Collision detected");
+					ship.log("Drone destroyed!");
 					triggerExplosion(nearbyObject);
 					targetDrones.splice(nearbyObject,0);
 					scene.remove(scene.getObjectByName(nearbyObject.name));
 					bullets.splice(b,1);
 					scene.remove(b);
 				} else {
-					console.log("Too far away, distance: " + nearbyObject.position.distanceTo(b.position));
 				}
 			});
 		});
@@ -179,7 +176,6 @@ var version = "0.1.1";
 		bullet.translateY(-25);
 		bullets.push(bullet);
 		tree.insert(bullet);
-		ship.log("Bullet fired!");
 		if(audio_enabled)
 			playSound('bullet');
 	}
