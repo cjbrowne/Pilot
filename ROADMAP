@@ -1,0 +1,20 @@
+Version 0.5:
+	- Player should have something to fight, and something that fights back
+	- Player should be able to spawn target drones at will, but the enemies will be spawned automatically
+	- Shields, both cannons (fore and aft) and indicators for all of that should be implemented and working correctly.
+	  - Optional: since screen real estate is a premium, we can turn off shield and cannon indicators when out of combat, and
+	              allow the player to toggle the 'debug' display(s)
+	- Code should be cleaned up significantly ready for some 1.0 features that I'm putting off
+
+Version 1.0:
+	- Native JS interpreter to be switched out for DSL
+	- All 'stolen' assets should be replaced with first-party assets
+	- Console style should be configurable by the player
+	- A minimap should be available for hooking up to the 'screen' readout (bottom right, red border), including enemy location information
+	- A short-range scanner should also be available, that presents a single enemy's information.  Some way of determining which enemy is 'targeted' should exist, so that the short-range scanner knows what to display.  It should display a grey X with a missing middle section if no enemies are in range or if there is any ambiguity about which enemy to display on the screen.
+	- Server should track player position, client should update server and request updates from server only.  All the rest of the work can stay client-side at developer's discretion.
+
+Future updates (with rough timing):
+	1.0-2.0: Multiplayer
+	0.5-1.5: Enemy bases
+	2.0+: MMO-style "classes" of ship (support/medical, fighter, tank/mothership)

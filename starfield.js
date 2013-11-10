@@ -1,4 +1,5 @@
 var audio_enabled = true;
+var version = "0.1.1";
 (function() {
 	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
 	var ctx = $("#viewscreen")[0].getContext('2d');
@@ -152,6 +153,7 @@ var audio_enabled = true;
 	function textIntro() {
 		switch(frameNumber) {
 			case 0:
+				ship.log("Pilot Ecma N234 Interpreter System Version: " + version);
 				ship.log("Welcome aboard the good ship UNKNOWN, pilot!  Please take a moment to familiarize yourself with the controls.  I'm going to test a few systems while I wait, if you don't mind!");
 				break;
 			case 15:
