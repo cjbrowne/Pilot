@@ -1,5 +1,8 @@
 ChangeLog
 
+Version: 0.1.3
+	- Added explosion effect to drone death
+
 Version: 0.1.2
 	- Added gun
 	- Target drone can now be killed with the gun
