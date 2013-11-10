@@ -7,6 +7,19 @@ var version = "0.1.1";
 	var PI_2 = Math.PI / 2;
 	var particles = [];
 	var bullets = [];
+	var targetDrones = [];
+	var DRONE_SIZE = 5;
+	var BULLET_SIZE = 1;
+	var tree = new OctTree({
+		bounds: {
+			x: 0,
+			y: 0,
+			z: 0,
+			width: 1500,
+			height: 1500,
+			depth: 1500
+		}
+	});
 	$(document).ready(function() {
 		init();
 	});
@@ -32,23 +45,27 @@ var version = "0.1.1";
 		ctx.canvas.height = $viewer.height();
 		
 
-		var geometry  = new THREE.SphereGeometry(360, 32, 32);
+		var geometry  = new THREE.SphereGeometry(1000, 32, 32);
 		var material  = new THREE.MeshBasicMaterial();
 		material.map   = THREE.ImageUtils.loadTexture('galaxy_starfield.png');
 		material.side  = THREE.BackSide;
 		starfield  = new THREE.Mesh(geometry, material);
 		scene.add(starfield);
 
-		// add a target 
-		var droneGeom = new THREE.SphereGeometry(1,32,32);
+		// add a target drone
+		var droneGeom = new THREE.SphereGeometry(DRONE_SIZE,32,32);
 		var droneMat = new THREE.MeshBasicMaterial({
 			color:0xFF0000
 		});
 		drone = new THREE.Mesh(droneGeom,droneMat);
-		drone.position.x = 5;
-		drone.position.y = 5;
-		drone.position.z = -20;
+		drone.position.x = 0;
+		drone.position.y = 10;
+		drone.position.z = -200;
+		drone.isDrone = true; // I know it looks weird, but this is a quick way to differentiate between drones and bullets in the OctTree
+		drone.name = "TargetDrone A";
 		scene.add(drone);
+		targetDrones.push(drone);
+		tree.insert(drone);
 
 		var light = new THREE.AmbientLight(0xF0F0F0);
 		scene.add(light);
@@ -69,8 +86,15 @@ var version = "0.1.1";
 		}
 	}
 
+	function updateTree() {
+		tree.clear();
+		tree.insert(bullets);
+		tree.insert(targetDrones);
+	}
+
 	function update() {
 		requestAnimationFrame(update);
+		updateTree();
 		ctx.clearRect(0,0,$viewer.width(),$viewer.height());
 		var velocity = ship.getVelocity();
 
@@ -106,24 +130,55 @@ var version = "0.1.1";
 
 	function updateBullets() {
 		bullets.forEach(function(b) {
-			b.translateZ(-10);
+			b.translateZ(-5);
 			// remove this bullet if it's out of range
-			if(b.position.distanceTo(camera.position) > 500) {
+			if(b.position.distanceTo(camera.position) > 800) {
+				scene.remove(b);
 				bullets.splice(b,1);
 			}
+			nearbyObjects = tree.retrieve(b);
+			nearbyObjects.forEach(function(nearbyObject) {
+				if(!nearbyObject.isDrone) {
+					return;
+				}
+
+				ship.log("Drone detected, checking distance...");
+
+				if(nearbyObject.position.distanceTo(b.position) < (DRONE_SIZE + BULLET_SIZE)*2) {
+					ship.log("Collision detected");
+					triggerExplosion(nearbyObject);
+					targetDrones.splice(nearbyObject,0);
+					scene.remove(scene.getObjectByName(nearbyObject.name));
+					bullets.splice(b,1);
+					scene.remove(b);
+				} else {
+					console.log("Too far away, distance: " + nearbyObject.position.distanceTo(b.position));
+				}
+			});
 		});
 	}
 
+	function triggerExplosion(object) {
+		if(object == camera) {
+			throw Error("Player death not yet implemented");
+		}
+		// TODO: play an explosion animation!
+	}
+
 	function fireBullet() {
-		var bullet = new THREE.Mesh(new THREE.SphereGeometry(1,8,8),
+		var bullet = new THREE.Mesh(new THREE.SphereGeometry(BULLET_SIZE,8,8),
 									new THREE.MeshBasicMaterial({color:0x00FF00})
 		);
-		camera.add(bullet);
+		bullet.name = "Bullet " + String.fromCharCode(bullets.length+65);
+		scene.add(bullet);
+		bullet.position.getPositionFromMatrix(camera.matrix);
+		bullet.rotation.setFromRotationMatrix(camera.matrix);
 		bullet.rotateOnAxis(new THREE.Vector3(1,0,0),ship.getForeCannon().rotation.pitch);
 		bullet.rotateOnAxis(new THREE.Vector3(0,1,0),-ship.getForeCannon().rotation.yaw);
-		bullet.position.z -= 50;
-		bullet.position.y -= 25;
+		//bullet.translateZ(-15);
+		bullet.translateY(-25);
 		bullets.push(bullet);
+		tree.insert(bullet);
 		ship.log("Bullet fired!");
 		if(audio_enabled)
 			playSound('bullet');
