@@ -74,9 +74,9 @@
 var pil = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"+":6,"-":7,"*":8,"/":9,"^":10,"(":11,")":12,"NUMBER":13,"E":14,"PI":15,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",6:"+",7:"-",8:"*",9:"/",10:"^",11:"(",12:")",13:"NUMBER",14:"E",15:"PI"},
-productions_: [0,[3,2],[4,3],[4,3],[4,3],[4,3],[4,3],[4,2],[4,3],[4,1],[4,1],[4,1]],
+symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,"booster-statement":7,"booster-thrust-statement":8,"booster-stop-statement":9,"thrust":10,"booster-identifier":11,"booster-power":12,"for-statement":13,"until-statement":14,"for":15,"time-period":16,"until":17,"condition":18,"stop":19,"booster-position":20,".":21,"booster-orientation":22,"fore":23,"aft":24,"port":25,"starboard":26,"horizontal":27,"vertical":28,"BOOSTER_POWER":29,"variable":30,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",10:"thrust",15:"for",16:"time-period",17:"until",18:"condition",19:"stop",21:".",23:"fore",24:"aft",25:"port",26:"starboard",27:"horizontal",28:"vertical",29:"BOOSTER_POWER",30:"variable"},
+productions_: [0,[3,2],[4,1],[4,2],[6,1],[7,1],[7,1],[8,4],[8,4],[8,3],[13,2],[14,2],[9,2],[11,3],[20,1],[20,1],[20,1],[20,1],[22,1],[22,1],[12,1],[12,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -84,30 +84,64 @@ var $0 = $$.length - 1;
 switch (yystate) {
 case 1:return $$[$0-1];
 break;
-case 2:this.$ = $$[$0-2]+$$[$0];
+case 2:this.$ = $$[$0];
 break;
-case 3:this.$ = $$[$0-2]-$$[$0];
+case 3:this.$ = $$[$0];
 break;
-case 4:this.$ = $$[$0-2]*$$[$0];
+case 4:this.$ = $$[$0];
 break;
-case 5:this.$ = $$[$0-2]/$$[$0];
+case 5:this.$ = $$[$0];
 break;
-case 6:this.$ = Math.pow($$[$0-2], $$[$0]);
+case 6:this.$ = $$[$0];
 break;
-case 7:this.$ = -$$[$0];
+case 7:
+            game.ship.boostersByName[$$[$0-2]].power = $$[$0-1];
+            setTimeout(function() {
+                ship.boostersByName[$$[$0-2]].power = 0;
+            },$$[$0]);
+            this.$ = $$[$0-1];
+        
 break;
-case 8:this.$ = $$[$0-1];
+case 8:
+            game.ship.boosters[$$[$0-2]].power = $$[$0-1];
+            game.addFunction(function() {
+                if($$[$0]) {
+                    ship.boostersByName[$$[$0-2]].power = 0;
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            this.$ = $$[$0-1];
+        
 break;
-case 9:this.$ = Number(yytext);
+case 9:
+            console.log("setting booster " + $$[$0-1] + " to " + $$[$0]);
+            game.ship.boostersByName[$$[$0-1]].power = $$[$0];
+            this.$ = $$[$0];
+        
 break;
-case 10:this.$ = Math.E;
+case 12:this.$ = undefined;
 break;
-case 11:this.$ = Math.PI;
+case 13:this.$ = $$[$0-2] + " " + $$[$0]
+break;
+case 14:this.$ = "fore";
+break;
+case 15:this.$ = "aft";
+break;
+case 16:this.$ = "port";
+break;
+case 17:this.$ = "starboard";
+break;
+case 18:this.$ = "horizontal";
+break;
+case 19:this.$ = "vertical";
 break;
 }
 },
-table: [{3:1,4:2,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{1:[3]},{5:[1,8],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13]},{4:14,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{4:15,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{5:[2,9],6:[2,9],7:[2,9],8:[2,9],9:[2,9],10:[2,9],12:[2,9]},{5:[2,10],6:[2,10],7:[2,10],8:[2,10],9:[2,10],10:[2,10],12:[2,10]},{5:[2,11],6:[2,11],7:[2,11],8:[2,11],9:[2,11],10:[2,11],12:[2,11]},{1:[2,1]},{4:16,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{4:17,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{4:18,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{4:19,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{4:20,7:[1,3],11:[1,4],13:[1,5],14:[1,6],15:[1,7]},{5:[2,7],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,7]},{6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[1,21]},{5:[2,2],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,2]},{5:[2,3],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,3]},{5:[2,4],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,4]},{5:[2,5],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,5]},{5:[2,6],6:[1,9],7:[1,10],8:[1,11],9:[1,12],10:[1,13],12:[2,6]},{5:[2,8],6:[2,8],7:[2,8],8:[2,8],9:[2,8],10:[2,8],12:[2,8]}],
-defaultActions: {8:[2,1]},
+table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:[1,7],19:[1,8]},{1:[3]},{5:[1,9],6:10,7:4,8:5,9:6,10:[1,7],19:[1,8]},{5:[2,2],10:[2,2],19:[2,2]},{5:[2,4],10:[2,4],19:[2,4]},{5:[2,5],10:[2,5],19:[2,5]},{5:[2,6],10:[2,6],19:[2,6]},{11:11,20:12,23:[1,13],24:[1,14],25:[1,15],26:[1,16]},{11:17,20:12,23:[1,13],24:[1,14],25:[1,15],26:[1,16]},{1:[2,1]},{5:[2,3],10:[2,3],19:[2,3]},{12:18,29:[1,19],30:[1,20]},{21:[1,21]},{21:[2,14]},{21:[2,15]},{21:[2,16]},{21:[2,17]},{5:[2,12],10:[2,12],19:[2,12]},{5:[2,9],10:[2,9],13:22,14:23,15:[1,24],17:[1,25],19:[2,9]},{5:[2,20],10:[2,20],15:[2,20],17:[2,20],19:[2,20]},{5:[2,21],10:[2,21],15:[2,21],17:[2,21],19:[2,21]},{22:26,27:[1,27],28:[1,28]},{5:[2,7],10:[2,7],19:[2,7]},{5:[2,8],10:[2,8],19:[2,8]},{16:[1,29]},{18:[1,30]},{5:[2,13],10:[2,13],19:[2,13],29:[2,13],30:[2,13]},{5:[2,18],10:[2,18],19:[2,18],29:[2,18],30:[2,18]},{5:[2,19],10:[2,19],19:[2,19],29:[2,19],30:[2,19]},{5:[2,10],10:[2,10],19:[2,10]},{5:[2,11],10:[2,11],19:[2,11]}],
+defaultActions: {9:[2,1],13:[2,14],14:[2,15],15:[2,16],16:[2,17]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -575,32 +609,66 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* Skip whitespace */
 break;
-case 1:return 13;
+case 1:return '*';
 break;
-case 2:return 8;
+case 2:return '/';
 break;
-case 3:return 9;
+case 3:return '-';
 break;
-case 4:return 7;
+case 4:return '+';
 break;
-case 5:return 6;
+case 5:return '^';
 break;
-case 6:return 10;
+case 6:return '(';
 break;
-case 7:return 11;
+case 7:return ')';
 break;
-case 8:return 12;
+case 8:return 'PI';
 break;
-case 9:return 15;
+case 9:return 'E';
 break;
-case 10:return 14;
+case 10:return ';';
 break;
-case 11:return 5;
+case 11:return 10;
+break;
+case 12:return 19;
+break;
+case 13:return 15;
+break;
+case 14:return 17;
+break;
+case 15:return 23;
+break;
+case 16:return 24;
+break;
+case 17:return 25;
+break;
+case 18:return 26;
+break;
+case 19:return 25;
+break;
+case 20:return 26;
+break;
+case 21:return 23;
+break;
+case 22:return 'back';
+break;
+case 23:return 27;
+break;
+case 24:return 28;
+break;
+case 25:return 29;
+break;
+case 26:return 5;
+break;
+case 27:return 21;
+break;
+case 28:console.log("invalid token: " + yy_.yytext); return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal\b)/,/^(?:vertical\b)/,/^(?:[0-1]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:\.)/,/^(?:.)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"inclusive":true}}
 };
 return lexer;
 })();

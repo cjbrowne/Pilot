@@ -8,6 +8,7 @@
 		this.renderer = renderer;
 		this.hud = hud;
 		this.console = console;
+		this.functions = [];
 	}
 	Game.prototype.run = function() {
 		this.tick();
@@ -40,8 +41,16 @@
 		this.hud.render(this.frameNumber,this.timeDelta,this.ship);
 	}
 
+	Game.prototype.addFunction = function(f) {
+		this.functions.push(f);
+	}
+
 	Game.prototype.runCustomFunctions = function() {
-		// do nothing (DSL not yet implemented)
+		this.functions.forEach(function(f) {
+			if(f()) {
+				this.functions.splice(f,1);
+			}
+		});
 	}
 
 	Game.prototype.updateVariables = function() {
