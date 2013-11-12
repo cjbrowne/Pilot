@@ -46,9 +46,10 @@
 	}
 
 	Game.prototype.runCustomFunctions = function() {
+		var self = this;
 		this.functions.forEach(function(f) {
 			if(f()) {
-				this.functions.splice(f,1);
+				self.functions.splice(f,1);
 			}
 		});
 	}
@@ -147,13 +148,13 @@
 
 	function updateVelocities(ship) {
 		var zBoosters = ship.boosters.reduce(function(powerSum,booster) {
-			return powerSum + (booster.orientation == "horizontal") ? booster.power : 0;
-		}),
-			yBoosters = ship.boosters.filter(function(powerSum,booster) {
-			return powerSum + (booster.orientation == "vertical") ? booster.power : 0;
-		});
-		ship.location.velocity.z = zBoosters / 200;
-		ship.location.velocity.y = yBoosters / 200;
+			return powerSum + ((booster.orientation == "horizontal") ? +booster.power : 0);
+		},0);
+		var yBoosters = ship.boosters.reduce(function(powerSum,booster) {
+			return powerSum + ((booster.orientation == "vertical") ? +booster.power : 0);
+		},0);
+		ship.location.velocity.z = -(zBoosters/100);
+		ship.location.velocity.y = yBoosters/100;
 	}
 
 	function updateCannons() {

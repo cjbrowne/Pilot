@@ -26,12 +26,35 @@
 "back"                      return 'back';
 "horizontal"                return 'horizontal';
 "vertical"                  return 'vertical';
-[0-1]+("."[0-9]+)?\b        return 'BOOSTER_POWER';
+"seconds"                   return 'seconds';
+"second"                    return 'seconds';
+"s"                         return 'seconds';
+"minutes"                   return 'minutes';
+"minute"                    return 'minutes';
+"milliseconds"              return 'milliseconds';
+"ms"                        return 'milliseconds';
+"frames"                    return 'frames';
+[0-9]+("."[0-9]+)?\b        return 'NUMBER';
 <<EOF>>               		return 'EOF';
+\".*\"                      return 'STRING';
+"is"                        return 'is';
+"="                         return 'is';
+"=="                        return 'is';
+"is not"                    return 'is not';
+"!="                        return 'is not';
+"greater than"              return 'greater than';
+"is greater than"           return 'greater than';
+">"                         return 'greater than';
+"less than"                 return 'less than';
+"is less than"              return 'less than';
+"<"                         return 'less than';
+"pitch"                     return 'pitch';
 '.'                         return '.';
 .                           console.log("invalid token: " + yytext); return 'INVALID';
 
 /lex
+
+%output "..\pil.js"
 
 %left '+' '-'
 %left '*' '/'
@@ -73,43 +96,28 @@ booster-thrust-statement
         {{
             game.ship.boostersByName[$2].power = $3;
             setTimeout(function() {
-                ship.boostersByName[$2].power = 0;
+                game.ship.boostersByName[$2].power = 0;
             },$4);
             $$ = $3;
         }}
     | 'thrust' booster-identifier booster-power until-statement
         {{
-            game.ship.boosters[$2].power = $3;
+            game.ship.boostersByName[$2].power = $3;
             game.addFunction(function() {
                 if($4) {
-                    ship.boostersByName[$2].power = 0;
+                    game.ship.boostersByName[$2].power = 0;
                     return true;
                 } else {
                     return false;
                 }
             });
-
             $$ = $3;
         }}
     | 'thrust' booster-identifier booster-power
         {
-            console.log("setting booster " + $2 + " to " + $3);
             game.ship.boostersByName[$2].power = $3;
             $$ = $3;
         }
-    ;
-
-for-statement
-    : 'for' time-period
-    ;
-
-until-statement
-    : 'until' condition
-    ;
-
-booster-stop-statement
-    : 'stop' booster-identifier
-        {$$ = undefined;}
     ;
 
 booster-identifier
@@ -136,6 +144,71 @@ booster-orientation
     ;
 
 booster-power
-    : 'BOOSTER_POWER'
+    : 'NUMBER'
+        {{
+            if($1 < 0 || $1 > 100) {
+                throw new Error('Booster power out of range.  Should be 0 to 100.');
+            }
+            $$ = $1;
+        }}
     | variable
+    ;
+
+booster-stop-statement
+    : 'stop' booster-identifier
+        {
+            game.ship.boostersByName[$2].power = 0;
+            $$ = $2;
+        }
+    ;
+
+for-statement
+    : 'for' time-period
+        {$$ = $2;}
+    ;
+
+until-statement
+    : 'until' condition
+        {$2}
+    ;
+
+condition
+    : variable
+        {$$ = $1;}
+    | variable 'is' rvalue
+        {$$ = ($1 == $3);}
+    | variable 'is not' rvalue
+        {$$ = ($1 != $3);}
+    | variable 'greater than' rvalue
+        {$$ = ($1 > $3);}
+    | variable 'less than' rvalue
+        {$$ = ($1 < $3);}
+    ;
+
+rvalue
+    : variable
+    | literal
+    ;
+
+literal
+    : NUMBER
+    | 'true'
+    | 'false'
+    | STRING
+    ;
+
+time-period
+    : NUMBER 'seconds'
+        {$$ = $1 * 1000;}
+    | NUMBER 'milliseconds'
+        {$$ = $1;}
+    | NUMBER 'minutes'
+        {$$ = $1 * 60000;}
+    | NUMBER 'frames'
+        {$$ = $1 / 30;} // cheat!
+    ;
+
+variable
+    : 'pitch'
+        {$$ = game.ship.location.rotation.x;}
     ;

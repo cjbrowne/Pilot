@@ -44,13 +44,13 @@
 	Renderer.prototype.render = function(frameNumber,timeDelta,ship) {
 		this.updateTree();
 		
-		this.camera.rotateOnAxis(new THREE.Vector3(1,0,0),ship.location.rotation.x);
-		this.camera.rotateOnAxis(new THREE.Vector3(0,1,0),ship.location.rotation.y);
-		this.camera.rotateOnAxis(new THREE.Vector3(0,0,1),ship.location.rotation.z);
-		ship.location.rotation = new THREE.Euler();
+		this.camera.rotateOnAxis(new THREE.Vector3(1,0,0),ship.location.rotationDelta.x);
+		this.camera.rotateOnAxis(new THREE.Vector3(0,1,0),ship.location.rotationDelta.y);
+		this.camera.rotateOnAxis(new THREE.Vector3(0,0,1),ship.location.rotationDelta.z);
+		ship.location.rotationDelta = new THREE.Euler();
 
 		this.camera.translateY(ship.location.velocity.y);
-		this.camera.translateZ(ship.location.velocity.z);
+		this.camera.translateZ(-ship.location.velocity.z);
 
 		ship.location.position.getPositionFromMatrix(this.camera.matrixWorld);
 		starfield.position.getPositionFromMatrix(this.camera.matrixWorld);

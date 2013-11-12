@@ -74,9 +74,9 @@
 var pil = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,"booster-statement":7,"booster-thrust-statement":8,"booster-stop-statement":9,"thrust":10,"booster-identifier":11,"booster-power":12,"for-statement":13,"until-statement":14,"for":15,"time-period":16,"until":17,"condition":18,"stop":19,"booster-position":20,".":21,"booster-orientation":22,"fore":23,"aft":24,"port":25,"starboard":26,"horizontal":27,"vertical":28,"BOOSTER_POWER":29,"variable":30,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",10:"thrust",15:"for",16:"time-period",17:"until",18:"condition",19:"stop",21:".",23:"fore",24:"aft",25:"port",26:"starboard",27:"horizontal",28:"vertical",29:"BOOSTER_POWER",30:"variable"},
-productions_: [0,[3,2],[4,1],[4,2],[6,1],[7,1],[7,1],[8,4],[8,4],[8,3],[13,2],[14,2],[9,2],[11,3],[20,1],[20,1],[20,1],[20,1],[22,1],[22,1],[12,1],[12,1]],
+symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,"booster-statement":7,"booster-thrust-statement":8,"booster-stop-statement":9,"thrust":10,"booster-identifier":11,"booster-power":12,"for-statement":13,"until-statement":14,"booster-position":15,".":16,"booster-orientation":17,"fore":18,"aft":19,"port":20,"starboard":21,"horizontal":22,"vertical":23,"NUMBER":24,"variable":25,"stop":26,"for":27,"time-period":28,"until":29,"condition":30,"is":31,"rvalue":32,"not":33,"greater":34,"than":35,"less":36,"literal":37,"true":38,"false":39,"STRING":40,"seconds":41,"milliseconds":42,"minutes":43,"frames":44,"pitch":45,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",10:"thrust",16:".",18:"fore",19:"aft",20:"port",21:"starboard",22:"horizontal",23:"vertical",24:"NUMBER",26:"stop",27:"for",29:"until",31:"is",33:"not",34:"greater",35:"than",36:"less",38:"true",39:"false",40:"STRING",41:"seconds",42:"milliseconds",43:"minutes",44:"frames",45:"pitch"},
+productions_: [0,[3,2],[4,1],[4,2],[6,1],[7,1],[7,1],[8,4],[8,4],[8,3],[11,3],[15,1],[15,1],[15,1],[15,1],[17,1],[17,1],[12,1],[12,1],[9,2],[13,2],[14,2],[30,1],[30,3],[30,4],[30,4],[30,4],[32,1],[32,1],[37,1],[37,1],[37,1],[37,1],[28,2],[28,2],[28,2],[28,2],[25,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -97,16 +97,16 @@ break;
 case 7:
             game.ship.boostersByName[$$[$0-2]].power = $$[$0-1];
             setTimeout(function() {
-                ship.boostersByName[$$[$0-2]].power = 0;
+                game.ship.boostersByName[$$[$0-2]].power = 0;
             },$$[$0]);
             this.$ = $$[$0-1];
         
 break;
 case 8:
-            game.ship.boosters[$$[$0-2]].power = $$[$0-1];
+            game.ship.boostersByName[$$[$0-2]].power = $$[$0-1];
             game.addFunction(function() {
                 if($$[$0]) {
-                    ship.boostersByName[$$[$0-2]].power = 0;
+                    game.ship.boostersByName[$$[$0-2]].power = 0;
                     return true;
                 } else {
                     return false;
@@ -117,31 +117,64 @@ case 8:
         
 break;
 case 9:
-            console.log("setting booster " + $$[$0-1] + " to " + $$[$0]);
             game.ship.boostersByName[$$[$0-1]].power = $$[$0];
             this.$ = $$[$0];
         
 break;
-case 12:this.$ = undefined;
+case 10:this.$ = $$[$0-2] + " " + $$[$0]
 break;
-case 13:this.$ = $$[$0-2] + " " + $$[$0]
+case 11:this.$ = "fore";
 break;
-case 14:this.$ = "fore";
+case 12:this.$ = "aft";
 break;
-case 15:this.$ = "aft";
+case 13:this.$ = "port";
 break;
-case 16:this.$ = "port";
+case 14:this.$ = "starboard";
 break;
-case 17:this.$ = "starboard";
+case 15:this.$ = "horizontal";
 break;
-case 18:this.$ = "horizontal";
+case 16:this.$ = "vertical";
 break;
-case 19:this.$ = "vertical";
+case 17:
+            if($$[$0] < 0 || $$[$0] > 100) {
+                throw new Error('Booster power out of range.  Should be 0 to 100.');
+            }
+            this.$ = $$[$0];
+        
+break;
+case 19:
+            game.ship.boostersByName[$$[$0]].power = 0;
+            this.$ = $$[$0];
+        
+break;
+case 20:this.$ = $$[$0];
+break;
+case 21:$$[$0]
+break;
+case 22:this.$ = $$[$0];
+break;
+case 23:this.$ = ($$[$0-2] == $$[$0]);
+break;
+case 24:this.$ = ($$[$0-3] != $$[$0-1]);
+break;
+case 25:this.$ = ($$[$0-3] > $$[$0-1]);
+break;
+case 26:this.$ = ($$[$0-3] < $$[$0-1]);
+break;
+case 33:this.$ = $$[$0-1] * 1000;
+break;
+case 34:this.$ = $$[$0-1];
+break;
+case 35:this.$ = $$[$0-1] * 60000;
+break;
+case 36:this.$ = $$[$0-1] / 30;
+break;
+case 37:this.$ = game.ship.location.rotation.x;
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:[1,7],19:[1,8]},{1:[3]},{5:[1,9],6:10,7:4,8:5,9:6,10:[1,7],19:[1,8]},{5:[2,2],10:[2,2],19:[2,2]},{5:[2,4],10:[2,4],19:[2,4]},{5:[2,5],10:[2,5],19:[2,5]},{5:[2,6],10:[2,6],19:[2,6]},{11:11,20:12,23:[1,13],24:[1,14],25:[1,15],26:[1,16]},{11:17,20:12,23:[1,13],24:[1,14],25:[1,15],26:[1,16]},{1:[2,1]},{5:[2,3],10:[2,3],19:[2,3]},{12:18,29:[1,19],30:[1,20]},{21:[1,21]},{21:[2,14]},{21:[2,15]},{21:[2,16]},{21:[2,17]},{5:[2,12],10:[2,12],19:[2,12]},{5:[2,9],10:[2,9],13:22,14:23,15:[1,24],17:[1,25],19:[2,9]},{5:[2,20],10:[2,20],15:[2,20],17:[2,20],19:[2,20]},{5:[2,21],10:[2,21],15:[2,21],17:[2,21],19:[2,21]},{22:26,27:[1,27],28:[1,28]},{5:[2,7],10:[2,7],19:[2,7]},{5:[2,8],10:[2,8],19:[2,8]},{16:[1,29]},{18:[1,30]},{5:[2,13],10:[2,13],19:[2,13],29:[2,13],30:[2,13]},{5:[2,18],10:[2,18],19:[2,18],29:[2,18],30:[2,18]},{5:[2,19],10:[2,19],19:[2,19],29:[2,19],30:[2,19]},{5:[2,10],10:[2,10],19:[2,10]},{5:[2,11],10:[2,11],19:[2,11]}],
-defaultActions: {9:[2,1],13:[2,14],14:[2,15],15:[2,16],16:[2,17]},
+table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:[1,7],26:[1,8]},{1:[3]},{5:[1,9],6:10,7:4,8:5,9:6,10:[1,7],26:[1,8]},{5:[2,2],10:[2,2],26:[2,2]},{5:[2,4],10:[2,4],26:[2,4]},{5:[2,5],10:[2,5],26:[2,5]},{5:[2,6],10:[2,6],26:[2,6]},{11:11,15:12,18:[1,13],19:[1,14],20:[1,15],21:[1,16]},{11:17,15:12,18:[1,13],19:[1,14],20:[1,15],21:[1,16]},{1:[2,1]},{5:[2,3],10:[2,3],26:[2,3]},{12:18,24:[1,19],25:20,45:[1,21]},{16:[1,22]},{16:[2,11]},{16:[2,12]},{16:[2,13]},{16:[2,14]},{5:[2,19],10:[2,19],26:[2,19]},{5:[2,9],10:[2,9],13:23,14:24,26:[2,9],27:[1,25],29:[1,26]},{5:[2,17],10:[2,17],26:[2,17],27:[2,17],29:[2,17]},{5:[2,18],10:[2,18],26:[2,18],27:[2,18],29:[2,18]},{5:[2,37],10:[2,37],26:[2,37],27:[2,37],29:[2,37],31:[2,37],34:[2,37],36:[2,37]},{17:27,22:[1,28],23:[1,29]},{5:[2,7],10:[2,7],26:[2,7]},{5:[2,8],10:[2,8],26:[2,8]},{24:[1,31],28:30},{25:33,30:32,45:[1,21]},{5:[2,10],10:[2,10],24:[2,10],26:[2,10],45:[2,10]},{5:[2,15],10:[2,15],24:[2,15],26:[2,15],45:[2,15]},{5:[2,16],10:[2,16],24:[2,16],26:[2,16],45:[2,16]},{5:[2,20],10:[2,20],26:[2,20]},{41:[1,34],42:[1,35],43:[1,36],44:[1,37]},{5:[2,21],10:[2,21],26:[2,21]},{5:[2,22],10:[2,22],26:[2,22],31:[1,38],34:[1,39],36:[1,40]},{5:[2,33],10:[2,33],26:[2,33]},{5:[2,34],10:[2,34],26:[2,34]},{5:[2,35],10:[2,35],26:[2,35]},{5:[2,36],10:[2,36],26:[2,36]},{24:[1,45],25:43,32:41,33:[1,42],37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{35:[1,49]},{35:[1,50]},{5:[2,23],10:[2,23],26:[2,23]},{24:[1,45],25:43,32:51,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{5:[2,27],10:[2,27],26:[2,27]},{5:[2,28],10:[2,28],26:[2,28]},{5:[2,29],10:[2,29],26:[2,29]},{5:[2,30],10:[2,30],26:[2,30]},{5:[2,31],10:[2,31],26:[2,31]},{5:[2,32],10:[2,32],26:[2,32]},{24:[1,45],25:43,32:52,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{24:[1,45],25:43,32:53,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{5:[2,24],10:[2,24],26:[2,24]},{5:[2,25],10:[2,25],26:[2,25]},{5:[2,26],10:[2,26],26:[2,26]}],
+defaultActions: {9:[2,1],13:[2,11],14:[2,12],15:[2,13],16:[2,14]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -631,44 +664,86 @@ case 10:return ';';
 break;
 case 11:return 10;
 break;
-case 12:return 19;
+case 12:return 26;
 break;
-case 13:return 15;
+case 13:return 27;
 break;
-case 14:return 17;
+case 14:return 29;
 break;
-case 15:return 23;
+case 15:return 18;
 break;
-case 16:return 24;
+case 16:return 19;
 break;
-case 17:return 25;
+case 17:return 20;
 break;
-case 18:return 26;
+case 18:return 21;
 break;
-case 19:return 25;
+case 19:return 20;
 break;
-case 20:return 26;
+case 20:return 21;
 break;
-case 21:return 23;
+case 21:return 18;
 break;
 case 22:return 'back';
 break;
-case 23:return 27;
+case 23:return 22;
 break;
-case 24:return 28;
+case 24:return 23;
 break;
-case 25:return 29;
+case 25:return 41;
 break;
-case 26:return 5;
+case 26:return 41;
 break;
-case 27:return 21;
+case 27:return 41;
 break;
-case 28:console.log("invalid token: " + yy_.yytext); return 'INVALID';
+case 28:return 43;
+break;
+case 29:return 43;
+break;
+case 30:return 42;
+break;
+case 31:return 42;
+break;
+case 32:return 44;
+break;
+case 33:return 24;
+break;
+case 34:return 5;
+break;
+case 35:return 40;
+break;
+case 36:return 31;
+break;
+case 37:return 31;
+break;
+case 38:return 31;
+break;
+case 39:return 'is not';
+break;
+case 40:return 'is not';
+break;
+case 41:return 'greater than';
+break;
+case 42:return 'greater than';
+break;
+case 43:return 'greater than';
+break;
+case 44:return 'less than';
+break;
+case 45:return 'less than';
+break;
+case 46:return 'less than';
+break;
+case 47:return 45;
+break;
+case 48:return 16;
+break;
+case 49:console.log("invalid token: " + yy_.yytext); return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal\b)/,/^(?:vertical\b)/,/^(?:[0-1]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:\.)/,/^(?:.)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal\b)/,/^(?:vertical\b)/,/^(?:seconds\b)/,/^(?:second\b)/,/^(?:s\b)/,/^(?:minutes\b)/,/^(?:minute\b)/,/^(?:milliseconds\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:is\b)/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:\.)/,/^(?:.)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],"inclusive":true}}
 };
 return lexer;
 })();
