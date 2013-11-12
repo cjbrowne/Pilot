@@ -1,5 +1,9 @@
 ChangeLog
 
+Version: 0.2.0
+	- Updated ship's anatomy slightly, API overhaul to go with it.  Now 8 boosters, up from 6.
+	- Moved javascript files into js/ folder, cleaned up most code on the way
+
 Version: 0.1.3
 	- Added explosion effect to drone death
 	- Added ability to spawn drone
