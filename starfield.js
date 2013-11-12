@@ -1,16 +1,15 @@
 var audio_enabled = true;
 var version = "0.1.3";
+var scene,camera,targetDrones = [],tree,DRONE_SIZE = 50;
 (function() {
-	var camera, scene, renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
+	var renderer, $viewer = $("#viewscreen"), pitchObject, yawObject,frameNumber = 0,speaker,starfield,pitchObject,yawObject;
 	var ctx = $("#viewscreen")[0].getContext('2d');
 
 	var PI_2 = Math.PI / 2;
 	var particles = [];
 	var bullets = [];
-	var targetDrones = [];
-	var DRONE_SIZE = 50;
 	var BULLET_SIZE = 1;
-	var tree = new OctTree({
+	tree = new OctTree({
 		bounds: {
 			x: 0,
 			y: 0,
@@ -51,21 +50,6 @@ var version = "0.1.3";
 		material.side  = THREE.BackSide;
 		starfield  = new THREE.Mesh(geometry, material);
 		scene.add(starfield);
-
-		// add a target drone
-		var droneGeom = new THREE.SphereGeometry(DRONE_SIZE,32,32);
-		var droneMat = new THREE.MeshBasicMaterial({
-			color:0xFF0000
-		});
-		drone = new THREE.Mesh(droneGeom,droneMat);
-		drone.position.x = 0;
-		drone.position.y = 10;
-		drone.position.z = -600;
-		drone.isDrone = true; // I know it looks weird, but this is a quick way to differentiate between drones and bullets in the OctTree
-		drone.name = "TargetDrone A";
-		scene.add(drone);
-		targetDrones.push(drone);
-		tree.insert(drone);
 
 		var light = new THREE.AmbientLight(0xF0F0F0);
 		scene.add(light);
@@ -145,8 +129,9 @@ var version = "0.1.3";
 				if(nearbyObject.position.distanceTo(b.position) < (DRONE_SIZE + BULLET_SIZE)*2) {
 					ship.log("Drone destroyed!");
 					triggerExplosion(scene,nearbyObject);
-					targetDrones.splice(nearbyObject,0);
-					scene.remove(scene.getObjectByName(nearbyObject.name));
+					nearbyObject.isAlive = false;
+					targetDrones.splice(nearbyObject,1);
+					scene.remove(nearbyObject);
 					bullets.splice(b,1);
 					scene.remove(b);
 				}
@@ -164,7 +149,7 @@ var version = "0.1.3";
 		bullet.rotation.setFromRotationMatrix(camera.matrix);
 		bullet.rotateOnAxis(new THREE.Vector3(1,0,0),ship.getForeCannon().rotation.pitch);
 		bullet.rotateOnAxis(new THREE.Vector3(0,1,0),-ship.getForeCannon().rotation.yaw);
-		//bullet.translateZ(-15);
+		bullet.translateZ(-15);
 		bullet.translateY(-25);
 		bullets.push(bullet);
 		tree.insert(bullet);

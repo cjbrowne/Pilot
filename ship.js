@@ -81,6 +81,8 @@ var Ship = (function() {
 		this.designation = "";
 
 		this.customFunctions = [];
+		this.frameNumber = 0;
+		this.timeDelta = 0;
 	}
 	// a few helpful functions for extracting information about the ship
 	Ship.prototype.getRotation = function() {
@@ -113,7 +115,7 @@ var Ship = (function() {
 			booster:false
 		};
 	}
-	var frameNumber = 0;
+	var lastFrame = Date.now();
 	Ship.prototype.tick = function() {
 		if(shipInformation.health <= 0.0) {
 			$("#gameover").show();
@@ -122,7 +124,9 @@ var Ship = (function() {
 		var ship = this;
 		requestAnimationFrame(ship.tick.bind(ship));
 
-		frameNumber++;
+		this.frameNumber++;
+		this.timeDelta = Date.now() - lastFrame;
+		lastFrame = Date.now();
 
 		// logic updates
 		var boosterWarning = false;
@@ -132,7 +136,7 @@ var Ship = (function() {
 				if(ship.boosters[booster] > 1.0) {
 					ship.warningStrings.booster[booster] = "Overpowered";
 					// once per second, diminish health
-					if(frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 1.0);
+					if(this.frameNumber % 30 == 0) shipInformation.health -= (ship.boosters[booster] - 1.0);
 				}
 				// while we're here, let's prevent the player from giving us a negative value, shall we?
 				if(ship.boosters[booster] < 0) {
@@ -351,6 +355,38 @@ var Ship = (function() {
 	}
 	Ship.prototype.tutorialPhase3 = function() {
 		this.log("Unfortunately, I haven't been programmed for gun controls yet.  Damn and blast!");
+	}
+
+	Ship.prototype.releaseTargetDrone = function() {
+		// add a target drone
+		var droneGeom = new THREE.SphereGeometry(DRONE_SIZE,32,32);
+		var droneMat = new THREE.MeshBasicMaterial({
+			color:0xFF0000
+		});
+		drone = new THREE.Mesh(droneGeom,droneMat);
+		drone.position.getPositionFromMatrix(camera.matrix);
+		drone.rotation.setFromRotationMatrix(camera.matrix);
+		drone.translateZ(-50);
+		drone.isDrone = true; // I know it looks weird, but this is a quick way to differentiate between drones and bullets in the OctTree
+		drone.isAlive = true;
+		drone.xDir = 1;
+		scene.add(drone);
+		targetDrones.push(drone);
+		tree.insert(drone);
+		this.customFunctions.push(function() {
+			if(camera.position.distanceTo(drone.position) < 500) {
+				drone.translateZ(-5);
+			} else {
+				drone.yTranslate = Math.sin(this.frameNumber/20) * this.timeDelta * 0.1;
+				drone.xTranslate = Math.cos(drone.yTranslate) * drone.xDir * 3;
+				if(Math.random() < 0.1) {
+					drone.xDir = -drone.xDir;
+				}
+				drone.translateY(drone.yTranslate);
+				drone.translateX(drone.xTranslate);
+			}
+			return !drone.isAlive;
+		});
 	}
 	return Ship;
 })();

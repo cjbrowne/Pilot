@@ -2,6 +2,8 @@ ChangeLog
 
 Version: 0.1.3
 	- Added explosion effect to drone death
+	- Added ability to spawn drone
+	- Made drone bob about a bit for increase challenge
 
 Version: 0.1.2
 	- Added gun
