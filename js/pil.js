@@ -74,19 +74,46 @@
 var pil = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,"booster-statement":7,"booster-thrust-statement":8,"booster-stop-statement":9,"thrust":10,"booster-identifier":11,"booster-power":12,"for-statement":13,"until-statement":14,"booster-position":15,".":16,"booster-orientation":17,"fore":18,"aft":19,"port":20,"starboard":21,"horizontal":22,"vertical":23,"NUMBER":24,"variable":25,"stop":26,"for":27,"time-period":28,"until":29,"condition":30,"is":31,"rvalue":32,"not":33,"greater":34,"than":35,"less":36,"literal":37,"true":38,"false":39,"STRING":40,"seconds":41,"milliseconds":42,"minutes":43,"frames":44,"pitch":45,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",10:"thrust",16:".",18:"fore",19:"aft",20:"port",21:"starboard",22:"horizontal",23:"vertical",24:"NUMBER",26:"stop",27:"for",29:"until",31:"is",33:"not",34:"greater",35:"than",36:"less",38:"true",39:"false",40:"STRING",41:"seconds",42:"milliseconds",43:"minutes",44:"frames",45:"pitch"},
-productions_: [0,[3,2],[4,1],[4,2],[6,1],[7,1],[7,1],[8,4],[8,4],[8,3],[11,3],[15,1],[15,1],[15,1],[15,1],[17,1],[17,1],[12,1],[12,1],[9,2],[13,2],[14,2],[30,1],[30,3],[30,4],[30,4],[30,4],[32,1],[32,1],[37,1],[37,1],[37,1],[37,1],[28,2],[28,2],[28,2],[28,2],[25,1]],
+symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,";":7,"booster-statement":8,"command-statement":9,"booster-thrust-statement":10,"booster-stop-statement":11,"thrust":12,"booster-identifier":13,"booster-power":14,"for-statement":15,"until-statement":16,"booster-position":17,".":18,"booster-orientation":19,"fore":20,"aft":21,"port":22,"starboard":23,"horizontal":24,"vertical":25,"NUMBER":26,"variable":27,"stop":28,"for":29,"time-period":30,"until":31,"condition":32,"is":33,"rvalue":34,"not":35,"greater":36,"less":37,"literal":38,"true":39,"false":40,"STRING":41,"seconds":42,"milliseconds":43,"minutes":44,"frames":45,"pitch":46,"yaw":47,"roll":48,"hello":49,"command":50,"identifier":51,"{":52,"}":53,"run":54,"spawn":55,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:";",12:"thrust",18:".",20:"fore",21:"aft",22:"port",23:"starboard",24:"horizontal",25:"vertical",26:"NUMBER",28:"stop",29:"for",31:"until",33:"is",35:"not",36:"greater",37:"less",39:"true",40:"false",41:"STRING",42:"seconds",43:"milliseconds",44:"minutes",45:"frames",46:"pitch",47:"yaw",48:"roll",49:"hello",50:"command",51:"identifier",52:"{",53:"}",54:"run",55:"spawn"},
+productions_: [0,[3,2],[4,1],[4,3],[6,1],[6,1],[8,1],[8,1],[10,4],[10,4],[10,3],[13,3],[17,1],[17,1],[17,1],[17,1],[19,1],[19,1],[14,1],[14,1],[11,2],[15,2],[16,2],[32,1],[32,3],[32,4],[32,3],[32,3],[34,1],[34,1],[38,1],[38,1],[38,1],[38,1],[30,2],[30,2],[30,2],[30,2],[27,1],[27,1],[27,1],[9,1],[9,5],[9,2],[9,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
-case 1:return $$[$0-1];
+case 1:
+            if($$[$0-1] instanceof Array) {
+                var last;
+                $$[$0-1].forEach(function(sn) {
+                    last = sn.value();
+                });
+                return last;
+            } else if('value' in $$[$0-1] && $$[$0-1].value instanceof Function) {
+                return $$[$0-1].value();
+            } else {
+                return $$[$0-1];
+            }
+        
 break;
-case 2:this.$ = $$[$0];
+case 2:
+            this.$ = $$[$0];
+            console.log(JSON.stringify($$[$0]));
+        
 break;
-case 3:this.$ = $$[$0];
+case 3:
+            if($$[$0] instanceof StatementNode) { 
+                if($$[$0-2] instanceof Array) {
+                    $$[$0-2].push($$[$0]);
+                    this.$ = $$[$0-2];
+                } else {
+                    this.$ = [$$[$0-2],$$[$0]];
+                }
+            } else {
+                this.$ = $$[$0];
+            }
+            console.log(JSON.stringify($$[$0-2]));
+        
 break;
 case 4:this.$ = $$[$0];
 break;
@@ -94,87 +121,217 @@ case 5:this.$ = $$[$0];
 break;
 case 6:this.$ = $$[$0];
 break;
-case 7:
-            game.ship.boostersByName[$$[$0-2]].power = $$[$0-1];
-            setTimeout(function() {
-                game.ship.boostersByName[$$[$0-2]].power = 0;
-            },$$[$0]);
-            this.$ = $$[$0-1];
-        
+case 7:this.$ = $$[$0];
 break;
 case 8:
-            game.ship.boostersByName[$$[$0-2]].power = $$[$0-1];
-            game.addFunction(function() {
-                if($$[$0]) {
-                    game.ship.boostersByName[$$[$0-2]].power = 0;
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-
-            this.$ = $$[$0-1];
+            this.$ = (function(boosterName,boosterPower,time) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        setTimeout(function() {
+                            game.ship.boostersByName[boosterName].power = 0;
+                        },time.value());
+                    }
+                });
+            })($$[$0-2],$$[$0-1],$$[$0]);
         
 break;
 case 9:
-            game.ship.boostersByName[$$[$0-1]].power = $$[$0];
-            this.$ = $$[$0];
+            this.$ = (function(boosterName,boosterPower,cond) {
+                return new StatementNode({
+                    f: function() {
+                        if(!cond.value())
+                            game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        game.addFunction(function() {
+                            if(cond.value()) {
+                                game.ship.boostersByName[boosterName].power = 0;
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                        return boosterPower.value();
+                    }
+                });
+            })($$[$0-2],$$[$0-1],$$[$0]);
+            
         
 break;
-case 10:this.$ = $$[$0-2] + " " + $$[$0]
+case 10:
+            this.$ = (function(boosterName,boosterPower) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[boosterName].power = boosterPower.value();
+                    }
+                });
+            })($$[$0-1],$$[$0]);
+        
 break;
-case 11:this.$ = "fore";
+case 11:this.$ = $$[$0-2] + " " + $$[$0]
 break;
-case 12:this.$ = "aft";
+case 12:this.$ = "fore";
 break;
-case 13:this.$ = "port";
+case 13:this.$ = "aft";
 break;
-case 14:this.$ = "starboard";
+case 14:this.$ = "port";
 break;
-case 15:this.$ = "horizontal";
+case 15:this.$ = "starboard";
 break;
-case 16:this.$ = "vertical";
+case 16:this.$ = "horizontal";
 break;
-case 17:
+case 17:this.$ = "vertical";
+break;
+case 18:
             if($$[$0] < 0 || $$[$0] > 100) {
                 throw new Error('Booster power out of range.  Should be 0 to 100.');
             }
-            this.$ = $$[$0];
+            this.$ = new ConstantNode($$[$0]);
         
 break;
-case 19:
+case 20:
             game.ship.boostersByName[$$[$0]].power = 0;
             this.$ = $$[$0];
         
 break;
-case 20:this.$ = $$[$0];
-break;
-case 21:$$[$0]
+case 21:this.$ = $$[$0];
 break;
 case 22:this.$ = $$[$0];
 break;
-case 23:this.$ = ($$[$0-2] == $$[$0]);
+case 23:
+            this.$ = new ConditionNode({
+                leftNode: $$[$0]
+            });
+        
 break;
-case 24:this.$ = ($$[$0-3] != $$[$0-1]);
+case 24:
+            this.$ = new ConditionNode({
+                leftNode: $$[$0-2],
+                rightNode: $$[$0],
+                operator: '=='
+            });
+        
 break;
-case 25:this.$ = ($$[$0-3] > $$[$0-1]);
+case 25:
+            this.$ = new ConditionNode({
+                leftNode: $$[$0-3],
+                rightNode: $$[$0-1],
+                operator: '!='
+            });
+        
 break;
-case 26:this.$ = ($$[$0-3] < $$[$0-1]);
+case 26:
+            this.$ = new ConditionNode({
+                leftNode: $$[$0-2],
+                rightNode: $$[$0],
+                operator: '>'
+            });
+        
 break;
-case 33:this.$ = $$[$0-1] * 1000;
+case 27:
+            this.$ = new ConditionNode({
+                leftNode: $$[$0-2],
+                rightNode: $$[$0],
+                operator: '<'
+            });
+        
 break;
-case 34:this.$ = $$[$0-1];
+case 28:
+            this.$ = $$[$0];
+        
 break;
-case 35:this.$ = $$[$0-1] * 60000;
+case 29:
+            this.$ = $$[$0];
+        
 break;
-case 36:this.$ = $$[$0-1] / 30;
+case 30:this.$ = new ConstantNode(parseInt($$[$0]));
 break;
-case 37:this.$ = game.ship.location.rotation.x;
+case 31:this.$ = new ConstantNode(true);
+break;
+case 32:this.$ = new ConstantNode(false);
+break;
+case 33:this.$ = new ConstantNode($$[$0].substring(1,$$[$0].length-1));
+break;
+case 34:this.$ = new ConstantNode($$[$0-1] * 1000);
+break;
+case 35:this.$ = new ConstantNode($$[$0-1]);
+break;
+case 36:this.$ = new ConstantNode($$[$0-1] * 60000);
+break;
+case 37:this.$ = new ConstantNode($$[$0-1] / 30);
+break;
+case 38:
+            this.$ = new PropertyAccessNode({
+                parentObject:game.ship.location.rotation,
+                propertyName:'x',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        
+break;
+case 39:
+            this.$ = new PropertyAccessNode({
+                parentObject: game.ship.location.rotation,
+                propertyName:'y',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        
+break;
+case 40:
+            this.$ = new PropertyAccessNode({
+                parentObject: game.ship.location.rotation,
+                propertyName:'z',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        
+break;
+case 41:
+            this.$ = new StatementNode({
+                f: function() { game.console.log("Hi, friend!"); return false; }
+            });
+        
+break;
+case 42:
+            this.$ = (function(identifier,statements) {
+                if(!statements) {
+                    throw new Error('Cannot construct command without statements!');
+                }
+                statements = ((statements instanceof Array) ? statements : [statements]);
+                pil_commands[identifier] = new FunctionNode({
+                    statementNodes: statements
+                });
+                return pil_commands[identifier];
+            })($$[$0-3],$$[$0-1]);
+        
+break;
+case 43:
+            if(!pil_commands[$$[$0]]) {
+                throw new Error("Command not found: " + $$[$0]);
+            }
+            this.$ = (function(command) {
+                return new StatementNode({
+                    f: function() { return pil_commands[command].run(); }
+                });
+            })($$[$0]);
+        
+break;
+case 44:
+            this.$ = new StatementNode({
+                f: function() {
+                    game.spawnTargetDrone();
+                    return true;
+                }
+            });
+        
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:[1,7],26:[1,8]},{1:[3]},{5:[1,9],6:10,7:4,8:5,9:6,10:[1,7],26:[1,8]},{5:[2,2],10:[2,2],26:[2,2]},{5:[2,4],10:[2,4],26:[2,4]},{5:[2,5],10:[2,5],26:[2,5]},{5:[2,6],10:[2,6],26:[2,6]},{11:11,15:12,18:[1,13],19:[1,14],20:[1,15],21:[1,16]},{11:17,15:12,18:[1,13],19:[1,14],20:[1,15],21:[1,16]},{1:[2,1]},{5:[2,3],10:[2,3],26:[2,3]},{12:18,24:[1,19],25:20,45:[1,21]},{16:[1,22]},{16:[2,11]},{16:[2,12]},{16:[2,13]},{16:[2,14]},{5:[2,19],10:[2,19],26:[2,19]},{5:[2,9],10:[2,9],13:23,14:24,26:[2,9],27:[1,25],29:[1,26]},{5:[2,17],10:[2,17],26:[2,17],27:[2,17],29:[2,17]},{5:[2,18],10:[2,18],26:[2,18],27:[2,18],29:[2,18]},{5:[2,37],10:[2,37],26:[2,37],27:[2,37],29:[2,37],31:[2,37],34:[2,37],36:[2,37]},{17:27,22:[1,28],23:[1,29]},{5:[2,7],10:[2,7],26:[2,7]},{5:[2,8],10:[2,8],26:[2,8]},{24:[1,31],28:30},{25:33,30:32,45:[1,21]},{5:[2,10],10:[2,10],24:[2,10],26:[2,10],45:[2,10]},{5:[2,15],10:[2,15],24:[2,15],26:[2,15],45:[2,15]},{5:[2,16],10:[2,16],24:[2,16],26:[2,16],45:[2,16]},{5:[2,20],10:[2,20],26:[2,20]},{41:[1,34],42:[1,35],43:[1,36],44:[1,37]},{5:[2,21],10:[2,21],26:[2,21]},{5:[2,22],10:[2,22],26:[2,22],31:[1,38],34:[1,39],36:[1,40]},{5:[2,33],10:[2,33],26:[2,33]},{5:[2,34],10:[2,34],26:[2,34]},{5:[2,35],10:[2,35],26:[2,35]},{5:[2,36],10:[2,36],26:[2,36]},{24:[1,45],25:43,32:41,33:[1,42],37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{35:[1,49]},{35:[1,50]},{5:[2,23],10:[2,23],26:[2,23]},{24:[1,45],25:43,32:51,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{5:[2,27],10:[2,27],26:[2,27]},{5:[2,28],10:[2,28],26:[2,28]},{5:[2,29],10:[2,29],26:[2,29]},{5:[2,30],10:[2,30],26:[2,30]},{5:[2,31],10:[2,31],26:[2,31]},{5:[2,32],10:[2,32],26:[2,32]},{24:[1,45],25:43,32:52,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{24:[1,45],25:43,32:53,37:44,38:[1,46],39:[1,47],40:[1,48],45:[1,21]},{5:[2,24],10:[2,24],26:[2,24]},{5:[2,25],10:[2,25],26:[2,25]},{5:[2,26],10:[2,26],26:[2,26]}],
-defaultActions: {9:[2,1],13:[2,11],14:[2,12],15:[2,13],16:[2,14]},
+table: [{3:1,4:2,6:3,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{1:[3]},{5:[1,14],7:[1,15]},{5:[2,2],7:[2,2],53:[2,2]},{5:[2,4],7:[2,4],53:[2,4]},{5:[2,5],7:[2,5],53:[2,5]},{5:[2,6],7:[2,6],53:[2,6]},{5:[2,7],7:[2,7],53:[2,7]},{5:[2,41],7:[2,41],53:[2,41]},{51:[1,16]},{51:[1,17]},{5:[2,44],7:[2,44],53:[2,44]},{13:18,17:19,20:[1,20],21:[1,21],22:[1,22],23:[1,23]},{13:24,17:19,20:[1,20],21:[1,21],22:[1,22],23:[1,23]},{1:[2,1]},{6:25,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{52:[1,26]},{5:[2,43],7:[2,43],53:[2,43]},{14:27,26:[1,28],27:29,46:[1,30],47:[1,31],48:[1,32]},{18:[1,33]},{18:[2,12]},{18:[2,13]},{18:[2,14]},{18:[2,15]},{5:[2,20],7:[2,20],53:[2,20]},{5:[2,3],7:[2,3],53:[2,3]},{4:34,6:3,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{5:[2,10],7:[2,10],15:35,16:36,29:[1,37],31:[1,38],53:[2,10]},{5:[2,18],7:[2,18],29:[2,18],31:[2,18],53:[2,18]},{5:[2,19],7:[2,19],29:[2,19],31:[2,19],53:[2,19]},{5:[2,38],7:[2,38],29:[2,38],31:[2,38],33:[2,38],36:[2,38],37:[2,38],53:[2,38]},{5:[2,39],7:[2,39],29:[2,39],31:[2,39],33:[2,39],36:[2,39],37:[2,39],53:[2,39]},{5:[2,40],7:[2,40],29:[2,40],31:[2,40],33:[2,40],36:[2,40],37:[2,40],53:[2,40]},{19:39,24:[1,40],25:[1,41]},{7:[1,15],53:[1,42]},{5:[2,8],7:[2,8],53:[2,8]},{5:[2,9],7:[2,9],53:[2,9]},{26:[1,44],30:43},{27:46,32:45,46:[1,30],47:[1,31],48:[1,32]},{5:[2,11],7:[2,11],26:[2,11],46:[2,11],47:[2,11],48:[2,11],53:[2,11]},{5:[2,16],7:[2,16],26:[2,16],46:[2,16],47:[2,16],48:[2,16],53:[2,16]},{5:[2,17],7:[2,17],26:[2,17],46:[2,17],47:[2,17],48:[2,17],53:[2,17]},{5:[2,42],7:[2,42],53:[2,42]},{5:[2,21],7:[2,21],53:[2,21]},{42:[1,47],43:[1,48],44:[1,49],45:[1,50]},{5:[2,22],7:[2,22],53:[2,22]},{5:[2,23],7:[2,23],33:[1,51],36:[1,52],37:[1,53],53:[2,23]},{5:[2,34],7:[2,34],53:[2,34]},{5:[2,35],7:[2,35],53:[2,35]},{5:[2,36],7:[2,36],53:[2,36]},{5:[2,37],7:[2,37],53:[2,37]},{26:[1,58],27:56,34:54,35:[1,55],38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{26:[1,58],27:56,34:62,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{26:[1,58],27:56,34:63,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{5:[2,24],7:[2,24],53:[2,24]},{26:[1,58],27:56,34:64,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{5:[2,28],7:[2,28],53:[2,28]},{5:[2,29],7:[2,29],53:[2,29]},{5:[2,30],7:[2,30],53:[2,30]},{5:[2,31],7:[2,31],53:[2,31]},{5:[2,32],7:[2,32],53:[2,32]},{5:[2,33],7:[2,33],53:[2,33]},{5:[2,26],7:[2,26],53:[2,26]},{5:[2,27],7:[2,27],53:[2,27]},{5:[2,25],7:[2,25],53:[2,25]}],
+defaultActions: {14:[2,1],20:[2,12],21:[2,13],22:[2,14],23:[2,15]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -312,6 +469,8 @@ parse: function parse(input) {
     }
     return true;
 }};
+
+    window.pil_commands = [];
 /* generated by jison-lex 0.2.1 */
 var lexer = (function(){
 var lexer = {
@@ -660,90 +819,102 @@ case 8:return 'PI';
 break;
 case 9:return 'E';
 break;
-case 10:return ';';
+case 10:return 7;
 break;
-case 11:return 10;
+case 11:return 12;
 break;
-case 12:return 26;
+case 12:return 28;
 break;
-case 13:return 27;
+case 13:return 29;
 break;
-case 14:return 29;
+case 14:return 31;
 break;
-case 15:return 18;
+case 15:return 20;
 break;
-case 16:return 19;
+case 16:return 21;
 break;
-case 17:return 20;
+case 17:return 22;
 break;
-case 18:return 21;
+case 18:return 23;
 break;
-case 19:return 20;
+case 19:return 22;
 break;
-case 20:return 21;
+case 20:return 23;
 break;
-case 21:return 18;
+case 21:return 20;
 break;
 case 22:return 'back';
 break;
-case 23:return 22;
+case 23:return 24;
 break;
-case 24:return 23;
+case 24:return 25;
 break;
-case 25:return 41;
+case 25:return 42;
 break;
-case 26:return 41;
+case 26:return 44;
 break;
-case 27:return 41;
+case 27:return 43;
 break;
 case 28:return 43;
 break;
-case 29:return 43;
+case 29:return 45;
 break;
-case 30:return 42;
+case 30:return 26;
 break;
-case 31:return 42;
+case 31:return 5;
 break;
-case 32:return 44;
+case 32:return 41;
 break;
-case 33:return 24;
+case 33:return 33;
 break;
-case 34:return 5;
+case 34:return 33;
 break;
-case 35:return 40;
+case 35:return 'is not';
 break;
-case 36:return 31;
+case 36:return 'is not';
 break;
-case 37:return 31;
+case 37:return 36;
 break;
-case 38:return 31;
+case 38:return 36;
 break;
-case 39:return 'is not';
+case 39:return 36;
 break;
-case 40:return 'is not';
+case 40:return 37;
 break;
-case 41:return 'greater than';
+case 41:return 37;
 break;
-case 42:return 'greater than';
+case 42:return 33;
 break;
-case 43:return 'greater than';
+case 43:return 37;
 break;
-case 44:return 'less than';
+case 44:return 46;
 break;
-case 45:return 'less than';
+case 45:return 48;
 break;
-case 46:return 'less than';
+case 46:return 47;
 break;
-case 47:return 45;
+case 47:return 18;
 break;
-case 48:return 16;
+case 48:return 52;
 break;
-case 49:console.log("invalid token: " + yy_.yytext); return 'INVALID';
+case 49:return 53;
+break;
+case 50:return 49;
+break;
+case 51:return 50;
+break;
+case 52:return 54;
+break;
+case 53:return 55;
+break;
+case 54:return 51;
+break;
+case 55:return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal\b)/,/^(?:vertical\b)/,/^(?:seconds\b)/,/^(?:second\b)/,/^(?:s\b)/,/^(?:minutes\b)/,/^(?:minute\b)/,/^(?:milliseconds\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:is\b)/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:\.)/,/^(?:.)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal|h\b)/,/^(?:vertical|v\b)/,/^(?:seconds|second|s\b)/,/^(?:minutes|minute|m\b)/,/^(?:milliseconds|ms\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:is\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:roll\b)/,/^(?:yaw\b)/,/^(?:\.)/,/^(?:\{)/,/^(?:\})/,/^(?:hello|hi|hey|hej\b)/,/^(?:command\b)/,/^(?:run\b)/,/^(?:spawn\b)/,/^(?:[a-zA-Z0-9_]*)/,/^(?:.)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],"inclusive":true}}
 };
 return lexer;
 })();

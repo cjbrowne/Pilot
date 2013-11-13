@@ -1,3 +1,7 @@
+%{
+    window.pil_commands = [];
+%}
+
 %lex
 
 %%
@@ -24,37 +28,43 @@
 "right"                     return 'starboard';
 "front"                     return 'fore';
 "back"                      return 'back';
-"horizontal"                return 'horizontal';
-"vertical"                  return 'vertical';
-"seconds"                   return 'seconds';
-"second"                    return 'seconds';
-"s"                         return 'seconds';
-"minutes"                   return 'minutes';
-"minute"                    return 'minutes';
-"milliseconds"              return 'milliseconds';
+"horizontal"|h              return 'horizontal';
+"vertical"|v                return 'vertical';
+"seconds"|"second"|"s"      return 'seconds';
+"minutes"|"minute"|"m"      return 'minutes';
+"milliseconds"|"ms"         return 'milliseconds';
 "ms"                        return 'milliseconds';
 "frames"                    return 'frames';
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
 <<EOF>>               		return 'EOF';
 \".*\"                      return 'STRING';
-"is"                        return 'is';
 "="                         return 'is';
 "=="                        return 'is';
 "is not"                    return 'is not';
 "!="                        return 'is not';
-"greater than"              return 'greater than';
-"is greater than"           return 'greater than';
-">"                         return 'greater than';
-"less than"                 return 'less than';
-"is less than"              return 'less than';
-"<"                         return 'less than';
+"greater than"              return 'greater';
+"is greater than"           return 'greater';
+">"                         return 'greater';
+"less than"                 return 'less';
+"is less than"              return 'less';
+"is"                        return 'is';
+"<"                         return 'less';
 "pitch"                     return 'pitch';
+"roll"                      return 'roll';
+"yaw"                       return 'yaw';
 '.'                         return '.';
-.                           console.log("invalid token: " + yytext); return 'INVALID';
+"{"                         return '{';
+"}"                         return '}';
+
+// commands
+"hello"|"hi"|"hey"|"hej"    return 'hello';
+"command"                   return 'command';
+"run"                       return 'run';
+"spawn"                     return 'spawn';
+[a-zA-Z0-9_]*               return 'identifier';
+.                           return 'INVALID';
 
 /lex
-
-%output "..\pil.js"
 
 %left '+' '-'
 %left '*' '/'
@@ -69,18 +79,47 @@
 
 program
     : statements EOF
-        {return $1;}
+        {
+            if($1 instanceof Array) {
+                var last;
+                $1.forEach(function(sn) {
+                    last = sn.value();
+                });
+                return last;
+            } else if('value' in $1 && $1.value instanceof Function) {
+                return $1.value();
+            } else {
+                return $1;
+            }
+        }
     ;
 
 statements
     : statement
-        {$$ = $1;}
-    | statements statement
-        {$$ = $2;}
+        {{
+            $$ = $1;
+            console.log(JSON.stringify($1));
+        }}
+    | statements ';' statement
+        {{
+            if($3 instanceof StatementNode) { 
+                if($1 instanceof Array) {
+                    $1.push($3);
+                    $$ = $1;
+                } else {
+                    $$ = [$1,$3];
+                }
+            } else {
+                $$ = $3;
+            }
+            console.log(JSON.stringify($1));
+        }}
     ;
 
 statement
     : booster-statement
+        {$$ = $1;}
+    | command-statement
         {$$ = $1;}
     ;
 
@@ -94,29 +133,47 @@ booster-statement
 booster-thrust-statement
     : 'thrust' booster-identifier booster-power for-statement
         {{
-            game.ship.boostersByName[$2].power = $3;
-            setTimeout(function() {
-                game.ship.boostersByName[$2].power = 0;
-            },$4);
-            $$ = $3;
+            $$ = (function(boosterName,boosterPower,time) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        setTimeout(function() {
+                            game.ship.boostersByName[boosterName].power = 0;
+                        },time.value());
+                    }
+                });
+            })($2,$3,$4);
         }}
     | 'thrust' booster-identifier booster-power until-statement
         {{
-            game.ship.boostersByName[$2].power = $3;
-            game.addFunction(function() {
-                if($4) {
-                    game.ship.boostersByName[$2].power = 0;
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-            $$ = $3;
+            $$ = (function(boosterName,boosterPower,cond) {
+                return new StatementNode({
+                    f: function() {
+                        if(!cond.value())
+                            game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        game.addFunction(function() {
+                            if(cond.value()) {
+                                game.ship.boostersByName[boosterName].power = 0;
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                        return boosterPower.value();
+                    }
+                });
+            })($2,$3,$4);
+            
         }}
     | 'thrust' booster-identifier booster-power
         {
-            game.ship.boostersByName[$2].power = $3;
-            $$ = $3;
+            $$ = (function(boosterName,boosterPower) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[boosterName].power = boosterPower.value();
+                    }
+                });
+            })($2,$3);
         }
     ;
 
@@ -149,7 +206,7 @@ booster-power
             if($1 < 0 || $1 > 100) {
                 throw new Error('Booster power out of range.  Should be 0 to 100.');
             }
-            $$ = $1;
+            $$ = new ConstantNode($1);
         }}
     | variable
     ;
@@ -169,46 +226,155 @@ for-statement
 
 until-statement
     : 'until' condition
-        {$2}
+        {$$ = $2;}
     ;
 
 condition
     : variable
-        {$$ = $1;}
+        {{
+            $$ = new ConditionNode({
+                leftNode: $1
+            });
+        }}
     | variable 'is' rvalue
-        {$$ = ($1 == $3);}
+        {{
+            $$ = new ConditionNode({
+                leftNode: $1,
+                rightNode: $3,
+                operator: '=='
+            });
+        }}
     | variable 'is not' rvalue
-        {$$ = ($1 != $3);}
-    | variable 'greater than' rvalue
-        {$$ = ($1 > $3);}
-    | variable 'less than' rvalue
-        {$$ = ($1 < $3);}
+        {{
+            $$ = new ConditionNode({
+                leftNode: $1,
+                rightNode: $3,
+                operator: '!='
+            });
+        }}
+    | variable 'greater' rvalue
+        {{
+            $$ = new ConditionNode({
+                leftNode: $1,
+                rightNode: $3,
+                operator: '>'
+            });
+        }}
+    | variable 'less' rvalue
+        {{
+            $$ = new ConditionNode({
+                leftNode: $1,
+                rightNode: $3,
+                operator: '<'
+            });
+        }}
     ;
 
 rvalue
     : variable
+        {{
+            $$ = $1;
+        }}
     | literal
+        {{
+            $$ = $1;
+        }}
     ;
 
 literal
     : NUMBER
+        {$$ = new ConstantNode(parseInt($1));}
     | 'true'
+        {$$ = new ConstantNode(true);}
     | 'false'
+        {$$ = new ConstantNode(false);}
     | STRING
+        {$$ = new ConstantNode($1.substring(1,$1.length-1));}
     ;
 
 time-period
     : NUMBER 'seconds'
-        {$$ = $1 * 1000;}
+        {$$ = new ConstantNode($1 * 1000);}
     | NUMBER 'milliseconds'
-        {$$ = $1;}
+        {$$ = new ConstantNode($1);}
     | NUMBER 'minutes'
-        {$$ = $1 * 60000;}
+        {$$ = new ConstantNode($1 * 60000);}
     | NUMBER 'frames'
-        {$$ = $1 / 30;} // cheat!
+        // TODO: later, we can add a FrameCountdownNode that will reduce in value by 1 every frame.  Maybe.
+        {$$ = new ConstantNode($1 / 30);}
     ;
 
 variable
     : 'pitch'
-        {$$ = game.ship.location.rotation.x;}
+        {{
+            $$ = new PropertyAccessNode({
+                parentObject:game.ship.location.rotation,
+                propertyName:'x',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        }}
+    | 'yaw'
+        {{
+            $$ = new PropertyAccessNode({
+                parentObject: game.ship.location.rotation,
+                propertyName:'y',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        }}
+    | 'roll'
+        {{
+            $$ = new PropertyAccessNode({
+                parentObject: game.ship.location.rotation,
+                propertyName:'z',
+                accessFunction: function(o,v) {
+                    return o[v].toFixed(2);
+                }
+            });
+        }}
+    ;
+
+command-statement
+    : 'hello'
+        {
+            $$ = new StatementNode({
+                f: function() { game.console.log("Hi, friend!"); return false; }
+            });
+        }
+    | 'command' 'identifier' '{' statements '}'
+        {{
+            $$ = (function(identifier,statements) {
+                if(!statements) {
+                    throw new Error('Cannot construct command without statements!');
+                }
+                statements = ((statements instanceof Array) ? statements : [statements]);
+                pil_commands[identifier] = new FunctionNode({
+                    statementNodes: statements
+                });
+                return pil_commands[identifier];
+            })($2,$4);
+        }}
+    | 'run' 'identifier'
+        {{
+            if(!pil_commands[$2]) {
+                throw new Error("Command not found: " + $2);
+            }
+            $$ = (function(command) {
+                return new StatementNode({
+                    f: function() { return pil_commands[command].run(); }
+                });
+            })($2);
+        }}
+    | 'spawn'
+        {{
+            $$ = new StatementNode({
+                f: function() {
+                    game.spawnTargetDrone();
+                    return true;
+                }
+            });
+        }}
     ;

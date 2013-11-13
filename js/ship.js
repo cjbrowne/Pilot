@@ -71,28 +71,5 @@
 		this.meta = new MetaInformation();
 		this.location = new Coordinates();
 	}
-	Ship.prototype.log = function(string,logClass) {
-		logClass = logClass || "pilot_log";
-		$("#output").append("<span class='"+logClass+"'>["+stardate+"]</span> <span class='log'>" + string + "</span><br />");
-	}
-	Ship.prototype.warn = function(string,warningLevel) {
-		warningLevel = warningLevel || 'low';
-		var warningText = "WARNING";
-		switch(warningLevel) {
-			case 'low':
-				warningText = "WARNING";
-				break;
-			case 'medium':
-				warningText = "ALERT";
-				break;
-			case 'high':
-				warningText = "DANGER";
-				break;
-			case 'critical':
-				warningText = "CRITICAL";
-				break;
-		}
-		$("#output").append("<span class='warning_" + warningLevel + "'>["+warningText+"] " + string + "</span><br />");
-	}
 	window.Ship = Ship;
 })();

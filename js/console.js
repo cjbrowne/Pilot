@@ -1,6 +1,7 @@
 (function() {
-	function Console() {
+	function Console(pil) {
 		this.history = [];
+		this.pil = pil;
 	}
 	Console.prototype.repl = function() {
 		var console = this;
@@ -12,9 +13,9 @@
 				var result;
 				$("#output").append("> " + $("#prompt").val() + "<br />");
 				try {
-					result = pil.parse($("#prompt").val());
+					result = console.pil.parse($("#prompt").val());
 				} catch(e) {
-					$("#output").append("Error: " + e + "<br />");
+					$("#output").append("[ERROR] " + e + "<br />");
 				} finally {
 					console.history.push($("#prompt").val());
 					$("#output").append(result + "<br />");
@@ -25,6 +26,7 @@
 			} else if(e.which == 38) {
 				// TODO: implement history
 			}
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		});
 		$("#console").on('click',function(e) {
 			$("#prompt").focus();
@@ -49,6 +51,30 @@
 			$("#PS1").show();
 			$("#prompt").focus();
 		});
+	}
+	Console.prototype.log = function(string,logClass) {
+		var stardate = ((Date.now() % 10000000) / 1000).toFixed(3);
+		logClass = logClass || "pilot_log";
+		$("#output").append("<span class='"+logClass+"'>["+stardate+"]</span> <span class='log'>" + string + "</span><br />");
+	}
+	Console.prototype.warn = function(string,warningLevel) {
+		warningLevel = warningLevel || 'low';
+		var warningText = "WARNING";
+		switch(warningLevel) {
+			case 'low':
+				warningText = "WARNING";
+				break;
+			case 'medium':
+				warningText = "ALERT";
+				break;
+			case 'high':
+				warningText = "DANGER";
+				break;
+			case 'critical':
+				warningText = "CRITICAL";
+				break;
+		}
+		$("#output").append("<span class='warning_" + warningLevel + "'>["+warningText+"] " + string + "</span><br />");
 	}
 	window.Console = Console;
 })();

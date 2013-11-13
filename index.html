@@ -27,8 +27,6 @@
 			GAME OVER.<br/>
 			Refresh your browser to start again.
 		</div>
-		<script src="explosion.frag" type="x-shader/x-fragment" id="explosionFrag"></script>
-		<script src="explosion.vert" type="x-shader/x-vertex" id="explosionVert"></script>
 		<script src="js/lib/jquery.js"></script>
 		<script src="js/lib/three.js"></script>
 		<script src="js/Octree.js"></script>
@@ -36,11 +34,15 @@
 		<script src="js/renderer.js"></script>
 		<script src="js/game.js"></script>
 		<script src="js/hud.js"></script>
+		<script src="js/lib/require.js"></script>
+		<script src="js/pil_ast/ast-built.js"></script>
 		<script src="js/pil.js"></script>
 		<script src="js/console.js"></script>
 		<script>
 		$(function() {
-			game = new Game(new Renderer(), new HUD(), new Console());
+			var PILParser = pil;
+			pil.yy = window;
+			game = new Game(new Renderer(), new HUD(), new Console(PILParser));
 			game.run();
 		});
 		</script>

@@ -48,7 +48,7 @@
 	Game.prototype.runCustomFunctions = function() {
 		var self = this;
 		this.functions.forEach(function(f) {
-			if(f()) {
+			if(f.apply(self)) {
 				self.functions.splice(f,1);
 			}
 		});
@@ -188,6 +188,42 @@
 			ship.foreCannon.power = 0;
 		}
 		*/
+	}
+
+	Game.prototype.spawnTargetDrone = function() {
+	    // add a target drone
+	    var DRONE_SIZE = 50;
+	    var droneGeom = new THREE.SphereGeometry(DRONE_SIZE,32,32);
+	    var droneMat = new THREE.MeshBasicMaterial({
+	            color:0xFF0000
+	    });
+	    var camera = this.renderer.camera;
+	    drone = new THREE.Mesh(droneGeom,droneMat);
+	    drone.position.getPositionFromMatrix(camera.matrix);
+	    drone.rotation.setFromRotationMatrix(camera.matrix);
+	    drone.translateZ(-50);
+	    drone.isDrone = true; // I know it looks weird, but this is a quick way to differentiate between drones and bullets in the OctTree
+	    drone.isAlive = true;
+	    drone.xDir = 1;
+	    this.renderer.scene.add(drone);
+	    this.renderer.drones.push(drone);
+	    this.renderer.tree.insert(drone);
+	    this.functions.push((function(d) {
+	    	return function() {
+	            if(camera.position.distanceTo(d.position) < 500) {
+	                    d.translateZ(-5);
+	            } else {
+	                    d.yTranslate = Math.sin(this.frameNumber/20) * this.timeDelta * 0.1;
+	                    d.xTranslate = Math.cos(d.yTranslate) * d.xDir * 3;
+	                    if(Math.random() < 0.1) {
+	                            d.xDir = -d.xDir;
+	                    }
+	                    d.translateY(d.yTranslate);
+	                    d.translateX(d.xTranslate);
+	            }
+	            return !d.isAlive;
+	        }
+	    })(drone));
 	}
 
 	window.Game = Game;
