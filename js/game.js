@@ -10,7 +10,7 @@
 		this.console = console;
 		this.audio = audio;
 		this.functions = [];
-		this.version = "0.2.0";
+		this.version = "0.2.1";
 	}
 	Game.prototype.run = function() {
 		this.tick();
