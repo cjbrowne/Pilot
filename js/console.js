@@ -56,6 +56,7 @@
 		var stardate = ((Date.now() % 10000000) / 1000).toFixed(3);
 		logClass = logClass || "pilot_log";
 		$("#output").append("<span class='"+logClass+"'>["+stardate+"]</span> <span class='log'>" + string + "</span><br />");
+		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 	}
 	Console.prototype.warn = function(string,warningLevel) {
 		warningLevel = warningLevel || 'low';
@@ -75,28 +76,36 @@
 				break;
 		}
 		$("#output").append("<span class='warning_" + warningLevel + "'>["+warningText+"] " + string + "</span><br />");
+		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 	}
 	Console.prototype.bootup = function() {
 		var self = this;
 		this.log("Pilot Interface Language interpreter version: " + game.version);
+		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		setTimeout(function() {
 			self.warn("Warning system test message.","low");
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},500);
 		setTimeout(function() {
 			self.warn("Warning system test message.","medium");
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},1000);
 		setTimeout(function() {
 			self.warn("Warning system test message.","high");
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},1500);
 		setTimeout(function() {
 			self.warn("Warning system test message.","critical");
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},2000);
 		setTimeout(function() {
 			self.log("Well, the warning system works.  Let me know if you need any help (hint: type 'guide').");
+			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},2500);
 	}
 	Console.prototype.showHelp = function(command,description) {
 		$("#output").append("<span class='help_command'>"+command+"</span><span class='help_description'>" + description + "</span><br />");
+		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 	}
 	window.Console = Console;
 })();

@@ -237,11 +237,11 @@
 						this.console.showHelp(command,helpText[command]);
 					}
 				}
+			break;
 			case 'modal':
 				$("#guide").dialog({
 					width: "70vw"
 				});
-			break;
 			break;
 		}
 	}
