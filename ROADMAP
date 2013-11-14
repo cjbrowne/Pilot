@@ -1,10 +1,10 @@
 Version 0.5:
-	- Player should have something to fight, and something that fights back
-	- Player should be able to spawn target drones at will, but the enemies will be spawned automatically
-	- Shields, both cannons (fore and aft) and indicators for all of that should be implemented and working correctly.
+	[ ] Player should have something to fight, and something that fights back
+	[x] Player should be able to spawn target drones at will, but the enemies will be spawned automatically
+	[ ] Shields, both cannons (fore and aft) and indicators for all of that should be implemented and working correctly.
 	  - Optional: since screen real estate is a premium, we can turn off shield and cannon indicators when out of combat, and
 	              allow the player to toggle the 'debug' display(s)
-	- Code should be cleaned up significantly ready for some 1.0 features that I'm putting off
+	[ ] Code should be cleaned up significantly ready for some 1.0 features that I'm putting off
 
 Version 1.0:
 	- Native JS interpreter to be switched out for DSL

@@ -3,6 +3,7 @@
 	<head>
 		<title>Pilot</title>
 		<link rel='stylesheet' href='main.css' type='text/css' />
+		<link rel='stylesheet' href='jquery-ui.css' type='text/css' />
 	</head>
 	<body>
 		<canvas id='viewscreen'>
@@ -27,88 +28,86 @@
 			GAME OVER.<br/>
 			Refresh your browser to start again.
 		</div>
-		<script src="explosion.frag" type="x-shader/x-fragment" id="explosionFrag"></script>
-		<script src="explosion.vert" type="x-shader/x-vertex" id="explosionVert"></script>
-		<script src="jquery.js"></script>
-		<script src="three.js"></script>
-		<script src="Octree.js"></script>
-		<script src="explosion.js"></script>
-		<script src="ship.js"></script>
-		<script src="starfield.js"></script>
-		<script src="helper_functions.js"></script>
+		<div id='guide'>
+			<ul id='commands'>
+				<li>
+					<span class='command'>
+						help
+					</span>
+					<span class='description'>
+						Shows this help
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						thrust booster power [until condition OR for time]
+					</span>
+					<span class='description'>
+						Powers 'booster' to 'power'.  If 'until condition' is used, switches 'booster' off when the given condition evaluates as true (for example, "thrust fore.vertical 1 until pitch is 1" turns fore.vertical on until the ship's pitch reaches 1.00).  If 'fore time' is used, switches 'booster' off when the given time period has elapsed.  Time can be given in seconds, milliseconds, minutes or frames but a unit must be given.  Short units (e.g. "m", "s") are supported but be aware that you need to place a space in between the number and the unit.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						stop booster
+					</span>
+					<span class='description'>
+						Turns off 'booster'
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						spawn
+					</span>
+					<span class='description'>
+						Spawns a target drone for you to practice against.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						fire cannon [power]
+					</span>
+					<span class='description'>
+						Fires a projectile from 'cannon'.  If 'power' is given, the projectile will be fired at that strength.  Between 0.0 and 1.0.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						command name { stuff }
+					</span>
+					<span class='description'>
+						Creates a new command named 'name' which will essentially group all of the commands within the brackets to that name.  You can also use it to alias longer, more complex commands if you wish.  Note that semi-colons are used to separate commands throughout the language, and that includes the 'stuff' here.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						run command
+					</span>
+					<span class='description'>
+						Runs the custom command 'command'.  Note that this will not work with the built-in commands.
+					</span>
+				</li>
+			</ul>
+		</div>
+		<script src="js/lib/jquery.js"></script>
+		<script src="js/lib/jquery-ui.js"></script>
+		<script src="js/lib/three.js"></script>
+		<script src="js/audio.js"></script>
+		<script src="js/octree.js"></script>
+		<script src="js/ship.js"></script>
+		<script src="js/renderer.js"></script>
+		<script src="js/game.js"></script>
+		<script src="js/hud.js"></script>
+		<script src="js/lib/require.js"></script>
+		<script src="js/pil_ast/ast-built.js"></script>
+		<script src="js/pil.js"></script>
+		<script src="js/console.js"></script>
 		<script>
-		var ship,promptHistory = [],historyIndex,stardate;
-		var help = "To start the tutorial, simply type 'ship.tutorial()'.  To get help on a particular function, call 'help()' on that function's object (e.g. editor.help() will show the help for the text editor).";
-		Object.defineProperty(window,"hello",{
-			get:function() {
-				ship.log("Hi there.  Now, can we please get back to business?");
-				return "";
-			}
+		$(function() {
+			var PILParser = pil;
+			pil.yy = window;
+			game = new Game(new Renderer(), new HUD(), new Console(PILParser),new PilotAudio());
+			game.run();
 		});
-			$(function() {
-				ship = new Ship();
-				ship.run();
-
-				var clear = function() {
-					$("#output").html("");
-				}
-				$("#prompt").focus();
-				$("#prompt").on('keydown',function(e) {
-					e = e || window.event;
-					if(e.which == 13) {
-						e.preventDefault();
-						var result;
-						$("#output").append("> " + $("#prompt").val() + "<br />");
-						try {
-							result = eval.call(window,$("#prompt").val());
-						} catch(e) {
-							$("#output").append("Error: " + e + "<br />");
-						} finally {
-							promptHistory.push($("#prompt").val());
-							historyIndex = promptHistory.length - 1;
-							$("#output").append(result + "<br />");
-							$("#prompt").val("");
-						}
-					} else if(e.which == 40) {
-						if(historyIndex == promptHistory.length -1 && $("#prompt").val() != "")
-							promptHistory.push($("#prompt").val());
-						if(historyIndex > 0) {
-							$("#prompt").val(promptHistory[historyIndex]);
-							historyIndex--;
-						}
-					} else if(e.which == 38) {
-						if(historyIndex < promptHistory.length) {
-							$("#prompt").val(promptHistory[historyIndex]);
-							historyIndex--;
-						}
-					}
-					if(historyIndex > promptHistory.length) historyIndex = promptHistory.length;
-					if(historyIndex < 0) historyIndex = 0;
-				});
-				$("#console").on('click',function(e) {
-					$("#prompt").focus();
-				});
-				$("#editor_save").on('click',function(e) {
-					try {
-						eval.call(window,$("#editor_body").val());
-					} catch(e) {
-						$("#output").append("Editor caused error: " + e + "<br />");
-					} finally {
-						// until we get around to emulating some sort of file system...
-						$("#output").append("WARNING: Hard Disk Drive disconnected, code was run but may not have been saved.<br />");
-					}
-				});
-				$("#editor_close").on('click',function(e) {
-					// again, we need to automatically save when the editor is closed once saving becomes a thing
-					// note that this is somewhat of a lie.  The chances are your browser cached the changes and they'll come back if you call "editor()" again.
-					$("#output").append("WARNING: Editor closed.  Any changes you made since the last evaluation may have been lost.  Sorry about that. <br/>");
-					$("#editor").hide();
-					$("#output").show();
-					$("#prompt").show();
-					$("#PS1").show();
-					$("#prompt").focus();
-				});
-			});
 		</script>
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

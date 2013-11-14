@@ -2,10 +2,15 @@
   "name": "cjbrowne-pilot",
   "version": "0.1.1",
   "dependencies": {
-    "connect": "*"
+    "connect": "*",
+    "grunt-jison": "*",
+    "grunt-contrib-requirejs": "*"
   },
   "engines": {
     "node": "0.10.x",
     "npm": "1.2.x"
+  },
+  "devDependencies": {
+    "grunt-contrib-watch": "~0.5.3"
   }
 }

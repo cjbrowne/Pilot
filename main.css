@@ -50,6 +50,10 @@ body {
 	padding:1em;
 }
 
+#guide {
+	display:none;
+}
+
 #controls {
 	width:95vw;
 	height:25vh;
@@ -182,4 +186,24 @@ body {
 
 .warning_critical {
 	color:#F00;
+}
+
+.help_command {
+	color:#FFF;
+}
+
+.help_description {
+	color:#66F;
+}
+
+#guide ul li {
+	list-style-type:none;
+}
+
+.command {
+	color:#FFF;
+}
+
+.description {
+	color:#66F;
 }
