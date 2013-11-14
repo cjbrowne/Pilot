@@ -29,7 +29,8 @@
 		</div>
 		<script src="js/lib/jquery.js"></script>
 		<script src="js/lib/three.js"></script>
-		<script src="js/Octree.js"></script>
+		<script src="js/audio.js"></script>
+		<script src="js/octree.js"></script>
 		<script src="js/ship.js"></script>
 		<script src="js/renderer.js"></script>
 		<script src="js/game.js"></script>
@@ -42,7 +43,7 @@
 		$(function() {
 			var PILParser = pil;
 			pil.yy = window;
-			game = new Game(new Renderer(), new HUD(), new Console(PILParser));
+			game = new Game(new Renderer(), new HUD(), new Console(PILParser),new PilotAudio());
 			game.run();
 		});
 		</script>

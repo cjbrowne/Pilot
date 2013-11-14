@@ -1,5 +1,5 @@
 (function() {
-	function Game(renderer,hud,console) {
+	function Game(renderer,hud,console,audio) {
 		this.victory = false;
 		this.frameNumber = 0;
 		this.lastFrame = Date.now();
@@ -8,6 +8,7 @@
 		this.renderer = renderer;
 		this.hud = hud;
 		this.console = console;
+		this.audio = audio;
 		this.functions = [];
 	}
 	Game.prototype.run = function() {
@@ -39,6 +40,8 @@
 		// do animation updates after logic updates
 		this.renderer.render(this.frameNumber,this.timeDelta,this.ship);
 		this.hud.render(this.frameNumber,this.timeDelta,this.ship);
+		// finally do audio updates last of all, because sound travels slower than light ;)
+		this.audio.update(this.frameNumber,this.timeDelta,this.ship);
 	}
 
 	Game.prototype.addFunction = function(f) {

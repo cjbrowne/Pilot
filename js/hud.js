@@ -25,7 +25,7 @@
 					} else {
 						ctx.save();
 						ctx.fillStyle = "rgb(255,0,0)";
-						ctx.fillText(booster + ": " + ship.warningStrings.booster[booster],55,70 + stringLoc);
+						ctx.fillText(booster.position + " " + booster.orientation + ": " + booster.warning,55,70 + stringLoc);
 						ctx.restore();
 					}
 					stringLoc += 10;
