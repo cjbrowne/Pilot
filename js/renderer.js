@@ -44,7 +44,6 @@
 		this.drones = [];
 	}
 	Renderer.prototype.render = function(frameNumber,timeDelta,ship) {
-		this.updateTree();
 		
 		this.camera.rotateOnAxis(new THREE.Vector3(1,0,0),ship.location.rotationDelta.x);
 		this.camera.rotateOnAxis(new THREE.Vector3(0,1,0),ship.location.rotationDelta.y);
@@ -57,6 +56,7 @@
 		ship.location.position.getPositionFromMatrix(this.camera.matrixWorld);
 		starfield.position.getPositionFromMatrix(this.camera.matrixWorld);
 
+		this.updateTree();
 		this.updateBullets();
 
 		this._renderer.render(this.scene,this.camera);
@@ -81,11 +81,10 @@
                     if(!nearbyObject.isDrone) {
                             return;
                     }
-
                     if(nearbyObject.position.distanceTo(b.position) < (DRONE_SIZE + BULLET_SIZE)*2) {
                     	game.console.log("Drone destroyed!");
                         self.triggerExplosion(nearbyObject);
-                        self.drones.splice(nearbyObject,0);
+                        self.drones.splice(nearbyObject,1);
                         self.scene.remove(nearbyObject);
                         self.bullets.splice(b,1);
                         self.scene.remove(b);

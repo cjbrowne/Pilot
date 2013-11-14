@@ -1,5 +1,8 @@
 ChangeLog
 
+Version: 0.2.1
+	- Fixed bug where drone wasn't removed from collision detection, meaning it could be destroyed more than once.
+
 Version: 0.2.0
 	- Updated ship's anatomy slightly, API overhaul to go with it.  Now 8 boosters, up from 6.
 	- Moved javascript files into js/ folder, cleaned up most code on the way
