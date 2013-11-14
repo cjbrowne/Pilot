@@ -1,11 +1,13 @@
 (function() {
 	var Cannon = function() {
-		this.rotation = {
-			pitch:0,
-			yaw:0
-		};
+		this.rotation = new THREE.Euler();
+		this.rotationDelta = new THREE.Euler();
 		this.power = 0;
 		this.warning = "";
+	}
+	Cannon.prototype.fire = function(power) {
+		this.power = power || 1;
+		return power;
 	}
 	var Shield = function() {
 		this.power = 0;

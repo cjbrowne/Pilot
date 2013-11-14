@@ -58,5 +58,24 @@
 	        finishedCallback();
 	    }, duration);
 	};
+	Audio.prototype.playSound = function(sound) {
+		var osc = this.speaker.createOscillator();
+        var gain = this.speaker.createGain();
+        osc.connect(gain);
+        gain.connect(this.speaker.destination);
+        switch(sound) {
+            case 'bullet':
+                osc.type = "square";
+                osc.frequency.value = 2000;
+                osc.frequency.setTargetAtTime(300,this.speaker.currentTime,0.2);
+                gain.gain.value = 1.0;
+                gain.gain.setTargetAtTime(0.0,this.speaker.currentTime,0.3);
+                osc.noteOn(0);
+                setTimeout(function() {
+                        osc.noteOff(0);
+                },300);
+            break;
+        }
+	}
 	window.PilotAudio = Audio;
 })();

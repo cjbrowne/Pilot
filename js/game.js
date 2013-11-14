@@ -33,7 +33,7 @@
 		updateStructuralIntegrityFields(this.ship);
 		updateRotation(this.ship);
 		updateVelocities(this.ship);
-		updateCannons(this.ship);
+		this.updateCannons();
 
 		this.runCustomFunctions();
 		this.updateVariables();
@@ -160,37 +160,31 @@
 		ship.location.velocity.y = yBoosters/100;
 	}
 
-	function updateCannons() {
-		/*
-		if(Math.abs(shipInformation.foreCannon.rotation.yaw - this.foreCannon.rotation.yaw) > Math.PI / 64) {
-			if(shipInformation.foreCannon.rotation.yaw > this.foreCannon.rotation.yaw) {
-				shipInformation.foreCannon.rotation.yaw -= Math.PI / 64;
-			} else if(shipInformation.foreCannon.rotation.yaw < this.foreCannon.rotation.yaw) {
-				shipInformation.foreCannon.rotation.yaw += Math.PI / 64;
+	Game.prototype.updateCannons = function() {
+		var self = this;
+		function updateCannon(cannon) {
+			if(Math.abs(cannon.rotationDelta.y) > Math.PI / 64) {
+				cannon.rotation.y += (cannon.rotationDelta.y / Math.abs(cannon.rotationDelta.y)) * (Math.PI / 64);
+				cannon.rotationDelta.y -= (cannon.rotationDelta.y / Math.abs(cannon.rotationDelta.y)) * (Math.PI / 64);
+			} else {
+				cannon.rotation.y += cannon.rotationDelta.y;
+				cannon.rotationDelta.y = 0;
 			}
-		} else {
-			// cheat for the last 1/32 segment of the circle because fuck you, that's why.
-			shipInformation.foreCannon.rotation.yaw = this.foreCannon.rotation.yaw;
-		}
-
-		// cap foreCannon pitch at 0 - Math.PI
-		this.foreCannon.rotation.pitch = Math.max(0,Math.min(this.foreCannon.rotation.pitch,Math.PI));
-		if(Math.abs(shipInformation.foreCannon.rotation.pitch - this.foreCannon.rotation.pitch) > Math.PI / 64) {
-			if(shipInformation.foreCannon.rotation.pitch > this.foreCannon.rotation.pitch) {
-				shipInformation.foreCannon.rotation.pitch -= Math.PI / 64;
-			} else if(shipInformation.foreCannon.rotation.pitch < this.foreCannon.rotation.pitch) {
-				shipInformation.foreCannon.rotation.pitch += Math.PI / 64;
+			if(Math.abs(cannon.rotationDelta.x) > Math.PI / 64) {
+				cannon.rotation.x += (cannon.rotationDelta.x / Math.abs(cannon.rotationDelta.x)) * (Math.PI / 64);
+				cannon.rotationDelta.x -= (cannon.rotationDelta.x / Math.abs(cannon.rotationDelta.x)) * (Math.PI / 64);
+			} else {
+				cannon.rotation.x += cannon.rotationDelta.x;
+				cannon.rotationDelta.x = 0;
 			}
-		} else {
-			// cheat for the last 1/32 segment of the circle because fuck you, that's why.
-			shipInformation.foreCannon.rotation.pitch = this.foreCannon.rotation.pitch;
+			if(cannon.power > 0) {
+				self.renderer.fireBullet(cannon);
+				self.audio.playSound('bullet');
+				cannon.power = 0;
+			}
 		}
-
-		if(ship.foreCannon.power > 0) {
-			shipInformation.foreCannon.power = ship.foreCannon.power;
-			ship.foreCannon.power = 0;
-		}
-		*/
+		updateCannon(this.ship.cannons.fore);
+		updateCannon(this.ship.cannons.aft);
 	}
 
 	Game.prototype.spawnTargetDrone = function() {

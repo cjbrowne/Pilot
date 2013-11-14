@@ -74,9 +74,9 @@
 var pil = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,";":7,"booster-statement":8,"command-statement":9,"booster-thrust-statement":10,"booster-stop-statement":11,"thrust":12,"booster-identifier":13,"booster-power":14,"for-statement":15,"until-statement":16,"booster-position":17,".":18,"booster-orientation":19,"fore":20,"aft":21,"port":22,"starboard":23,"horizontal":24,"vertical":25,"NUMBER":26,"variable":27,"stop":28,"for":29,"time-period":30,"until":31,"condition":32,"is":33,"rvalue":34,"not":35,"greater":36,"less":37,"literal":38,"true":39,"false":40,"STRING":41,"seconds":42,"milliseconds":43,"minutes":44,"frames":45,"pitch":46,"yaw":47,"roll":48,"hello":49,"command":50,"identifier":51,"{":52,"}":53,"run":54,"spawn":55,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",7:";",12:"thrust",18:".",20:"fore",21:"aft",22:"port",23:"starboard",24:"horizontal",25:"vertical",26:"NUMBER",28:"stop",29:"for",31:"until",33:"is",35:"not",36:"greater",37:"less",39:"true",40:"false",41:"STRING",42:"seconds",43:"milliseconds",44:"minutes",45:"frames",46:"pitch",47:"yaw",48:"roll",49:"hello",50:"command",51:"identifier",52:"{",53:"}",54:"run",55:"spawn"},
-productions_: [0,[3,2],[4,1],[4,3],[6,1],[6,1],[8,1],[8,1],[10,4],[10,4],[10,3],[13,3],[17,1],[17,1],[17,1],[17,1],[19,1],[19,1],[14,1],[14,1],[11,2],[15,2],[16,2],[32,1],[32,3],[32,4],[32,3],[32,3],[34,1],[34,1],[38,1],[38,1],[38,1],[38,1],[30,2],[30,2],[30,2],[30,2],[27,1],[27,1],[27,1],[9,1],[9,5],[9,2],[9,1]],
+symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,";":7,"booster-statement":8,"command-statement":9,"cannon-statement":10,"booster-thrust-statement":11,"booster-stop-statement":12,"thrust":13,"booster-identifier":14,"booster-power":15,"for-statement":16,"until-statement":17,"booster-position":18,".":19,"booster-orientation":20,"fore":21,"aft":22,"port":23,"starboard":24,"horizontal":25,"vertical":26,"NUMBER":27,"variable":28,"stop":29,"fire":30,"cannon-identifier":31,"cannon-power":32,"for":33,"time-period":34,"until":35,"condition":36,"is":37,"rvalue":38,"not":39,"greater":40,"less":41,"literal":42,"true":43,"false":44,"STRING":45,"seconds":46,"milliseconds":47,"minutes":48,"frames":49,"pitch":50,"yaw":51,"roll":52,"hello":53,"command":54,"identifier":55,"{":56,"}":57,"run":58,"spawn":59,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:";",13:"thrust",19:".",21:"fore",22:"aft",23:"port",24:"starboard",25:"horizontal",26:"vertical",27:"NUMBER",29:"stop",30:"fire",33:"for",35:"until",37:"is",39:"not",40:"greater",41:"less",43:"true",44:"false",45:"STRING",46:"seconds",47:"milliseconds",48:"minutes",49:"frames",50:"pitch",51:"yaw",52:"roll",53:"hello",54:"command",55:"identifier",56:"{",57:"}",58:"run",59:"spawn"},
+productions_: [0,[3,2],[4,1],[4,3],[6,1],[6,1],[6,1],[8,1],[8,1],[11,4],[11,4],[11,3],[14,3],[18,1],[18,1],[18,1],[18,1],[20,1],[20,1],[15,1],[15,1],[12,2],[10,2],[10,3],[31,1],[31,1],[32,1],[16,2],[17,2],[36,1],[36,3],[36,4],[36,3],[36,3],[38,1],[38,1],[42,1],[42,1],[42,1],[42,1],[34,2],[34,2],[34,2],[34,2],[28,1],[28,1],[28,1],[9,1],[9,5],[9,2],[9,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -123,7 +123,9 @@ case 6:this.$ = $$[$0];
 break;
 case 7:this.$ = $$[$0];
 break;
-case 8:
+case 8:this.$ = $$[$0];
+break;
+case 9:
             this.$ = (function(boosterName,boosterPower,time) {
                 return new StatementNode({
                     f: function() {
@@ -136,7 +138,7 @@ case 8:
             })($$[$0-2],$$[$0-1],$$[$0]);
         
 break;
-case 9:
+case 10:
             this.$ = (function(boosterName,boosterPower,cond) {
                 return new StatementNode({
                     f: function() {
@@ -157,7 +159,7 @@ case 9:
             
         
 break;
-case 10:
+case 11:
             this.$ = (function(boosterName,boosterPower) {
                 return new StatementNode({
                     f: function() {
@@ -167,21 +169,21 @@ case 10:
             })($$[$0-1],$$[$0]);
         
 break;
-case 11:this.$ = $$[$0-2] + " " + $$[$0]
+case 12:this.$ = $$[$0-2] + " " + $$[$0]
 break;
-case 12:this.$ = "fore";
+case 13:this.$ = "fore";
 break;
-case 13:this.$ = "aft";
+case 14:this.$ = "aft";
 break;
-case 14:this.$ = "port";
+case 15:this.$ = "port";
 break;
-case 15:this.$ = "starboard";
+case 16:this.$ = "starboard";
 break;
-case 16:this.$ = "horizontal";
+case 17:this.$ = "horizontal";
 break;
-case 17:this.$ = "vertical";
+case 18:this.$ = "vertical";
 break;
-case 18:
+case 19:
             if($$[$0] < 0 || $$[$0] > 100) {
                 throw new Error('Booster power out of range.  Should be 0 to 100.');
             }
@@ -189,21 +191,57 @@ case 18:
         
 break;
 case 20:
+            // TODO: cap variables between 0 and 100 (otherwise this represents a way of cheating)
+            this.$ = $$[$0];
+        
+break;
+case 21:
             game.ship.boostersByName[$$[$0]].power = 0;
             this.$ = $$[$0];
         
 break;
-case 21:this.$ = $$[$0];
-break;
-case 22:this.$ = $$[$0];
+case 22:
+            this.$ = (function(cannon) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.cannons[cannon].fire();
+                    }
+                });
+            })($$[$0]);
+        
 break;
 case 23:
+            this.$ = (function(cannon,power) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.cannons[cannon].fire(power);
+                    }
+                });
+            })($$[$0-1],$$[$0]);
+        
+break;
+case 24:this.$ = "fore";
+break;
+case 25:this.$ = "aft";
+break;
+case 26:
+            if($$[$0] < 0 || $$[$0] > 1) {
+                throw new Error('Cannon power out of range.  Should be between 0.0 and 1.0.');
+            }
+            this.$ = new ConstantNode($$[$0]);
+        
+break;
+case 27:this.$ = $$[$0];
+break;
+case 28:this.$ = $$[$0];
+break;
+case 29:
             this.$ = new ConditionNode({
                 leftNode: $$[$0]
             });
         
 break;
-case 24:
+case 30:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -211,7 +249,7 @@ case 24:
             });
         
 break;
-case 25:
+case 31:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-3],
                 rightNode: $$[$0-1],
@@ -219,7 +257,7 @@ case 25:
             });
         
 break;
-case 26:
+case 32:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -227,7 +265,7 @@ case 26:
             });
         
 break;
-case 27:
+case 33:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -235,31 +273,31 @@ case 27:
             });
         
 break;
-case 28:
+case 34:
             this.$ = $$[$0];
         
 break;
-case 29:
+case 35:
             this.$ = $$[$0];
         
 break;
-case 30:this.$ = new ConstantNode(parseInt($$[$0]));
+case 36:this.$ = new ConstantNode(parseInt($$[$0]));
 break;
-case 31:this.$ = new ConstantNode(true);
+case 37:this.$ = new ConstantNode(true);
 break;
-case 32:this.$ = new ConstantNode(false);
+case 38:this.$ = new ConstantNode(false);
 break;
-case 33:this.$ = new ConstantNode($$[$0].substring(1,$$[$0].length-1));
+case 39:this.$ = new ConstantNode($$[$0].substring(1,$$[$0].length-1));
 break;
-case 34:this.$ = new ConstantNode($$[$0-1] * 1000);
+case 40:this.$ = new ConstantNode($$[$0-1] * 1000);
 break;
-case 35:this.$ = new ConstantNode($$[$0-1]);
+case 41:this.$ = new ConstantNode($$[$0-1]);
 break;
-case 36:this.$ = new ConstantNode($$[$0-1] * 60000);
+case 42:this.$ = new ConstantNode($$[$0-1] * 60000);
 break;
-case 37:this.$ = new ConstantNode($$[$0-1] / 30);
+case 43:this.$ = new ConstantNode($$[$0-1] / 30);
 break;
-case 38:
+case 44:
             this.$ = new PropertyAccessNode({
                 parentObject:game.ship.location.rotation,
                 propertyName:'x',
@@ -269,7 +307,7 @@ case 38:
             });
         
 break;
-case 39:
+case 45:
             this.$ = new PropertyAccessNode({
                 parentObject: game.ship.location.rotation,
                 propertyName:'y',
@@ -279,7 +317,7 @@ case 39:
             });
         
 break;
-case 40:
+case 46:
             this.$ = new PropertyAccessNode({
                 parentObject: game.ship.location.rotation,
                 propertyName:'z',
@@ -289,13 +327,13 @@ case 40:
             });
         
 break;
-case 41:
+case 47:
             this.$ = new StatementNode({
                 f: function() { game.console.log("Hi, friend!"); return false; }
             });
         
 break;
-case 42:
+case 48:
             this.$ = (function(identifier,statements) {
                 if(!statements) {
                     throw new Error('Cannot construct command without statements!');
@@ -308,7 +346,7 @@ case 42:
             })($$[$0-3],$$[$0-1]);
         
 break;
-case 43:
+case 49:
             if(!pil_commands[$$[$0]]) {
                 throw new Error("Command not found: " + $$[$0]);
             }
@@ -319,7 +357,7 @@ case 43:
             })($$[$0]);
         
 break;
-case 44:
+case 50:
             this.$ = new StatementNode({
                 f: function() {
                     game.spawnTargetDrone();
@@ -330,8 +368,8 @@ case 44:
 break;
 }
 },
-table: [{3:1,4:2,6:3,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{1:[3]},{5:[1,14],7:[1,15]},{5:[2,2],7:[2,2],53:[2,2]},{5:[2,4],7:[2,4],53:[2,4]},{5:[2,5],7:[2,5],53:[2,5]},{5:[2,6],7:[2,6],53:[2,6]},{5:[2,7],7:[2,7],53:[2,7]},{5:[2,41],7:[2,41],53:[2,41]},{51:[1,16]},{51:[1,17]},{5:[2,44],7:[2,44],53:[2,44]},{13:18,17:19,20:[1,20],21:[1,21],22:[1,22],23:[1,23]},{13:24,17:19,20:[1,20],21:[1,21],22:[1,22],23:[1,23]},{1:[2,1]},{6:25,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{52:[1,26]},{5:[2,43],7:[2,43],53:[2,43]},{14:27,26:[1,28],27:29,46:[1,30],47:[1,31],48:[1,32]},{18:[1,33]},{18:[2,12]},{18:[2,13]},{18:[2,14]},{18:[2,15]},{5:[2,20],7:[2,20],53:[2,20]},{5:[2,3],7:[2,3],53:[2,3]},{4:34,6:3,8:4,9:5,10:6,11:7,12:[1,12],28:[1,13],49:[1,8],50:[1,9],54:[1,10],55:[1,11]},{5:[2,10],7:[2,10],15:35,16:36,29:[1,37],31:[1,38],53:[2,10]},{5:[2,18],7:[2,18],29:[2,18],31:[2,18],53:[2,18]},{5:[2,19],7:[2,19],29:[2,19],31:[2,19],53:[2,19]},{5:[2,38],7:[2,38],29:[2,38],31:[2,38],33:[2,38],36:[2,38],37:[2,38],53:[2,38]},{5:[2,39],7:[2,39],29:[2,39],31:[2,39],33:[2,39],36:[2,39],37:[2,39],53:[2,39]},{5:[2,40],7:[2,40],29:[2,40],31:[2,40],33:[2,40],36:[2,40],37:[2,40],53:[2,40]},{19:39,24:[1,40],25:[1,41]},{7:[1,15],53:[1,42]},{5:[2,8],7:[2,8],53:[2,8]},{5:[2,9],7:[2,9],53:[2,9]},{26:[1,44],30:43},{27:46,32:45,46:[1,30],47:[1,31],48:[1,32]},{5:[2,11],7:[2,11],26:[2,11],46:[2,11],47:[2,11],48:[2,11],53:[2,11]},{5:[2,16],7:[2,16],26:[2,16],46:[2,16],47:[2,16],48:[2,16],53:[2,16]},{5:[2,17],7:[2,17],26:[2,17],46:[2,17],47:[2,17],48:[2,17],53:[2,17]},{5:[2,42],7:[2,42],53:[2,42]},{5:[2,21],7:[2,21],53:[2,21]},{42:[1,47],43:[1,48],44:[1,49],45:[1,50]},{5:[2,22],7:[2,22],53:[2,22]},{5:[2,23],7:[2,23],33:[1,51],36:[1,52],37:[1,53],53:[2,23]},{5:[2,34],7:[2,34],53:[2,34]},{5:[2,35],7:[2,35],53:[2,35]},{5:[2,36],7:[2,36],53:[2,36]},{5:[2,37],7:[2,37],53:[2,37]},{26:[1,58],27:56,34:54,35:[1,55],38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{26:[1,58],27:56,34:62,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{26:[1,58],27:56,34:63,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{5:[2,24],7:[2,24],53:[2,24]},{26:[1,58],27:56,34:64,38:57,39:[1,59],40:[1,60],41:[1,61],46:[1,30],47:[1,31],48:[1,32]},{5:[2,28],7:[2,28],53:[2,28]},{5:[2,29],7:[2,29],53:[2,29]},{5:[2,30],7:[2,30],53:[2,30]},{5:[2,31],7:[2,31],53:[2,31]},{5:[2,32],7:[2,32],53:[2,32]},{5:[2,33],7:[2,33],53:[2,33]},{5:[2,26],7:[2,26],53:[2,26]},{5:[2,27],7:[2,27],53:[2,27]},{5:[2,25],7:[2,25],53:[2,25]}],
-defaultActions: {14:[2,1],20:[2,12],21:[2,13],22:[2,14],23:[2,15]},
+table: [{3:1,4:2,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{1:[3]},{5:[1,16],7:[1,17]},{5:[2,2],7:[2,2],57:[2,2]},{5:[2,4],7:[2,4],57:[2,4]},{5:[2,5],7:[2,5],57:[2,5]},{5:[2,6],7:[2,6],57:[2,6]},{5:[2,7],7:[2,7],57:[2,7]},{5:[2,8],7:[2,8],57:[2,8]},{5:[2,47],7:[2,47],57:[2,47]},{55:[1,18]},{55:[1,19]},{5:[2,50],7:[2,50],57:[2,50]},{21:[1,21],22:[1,22],31:20},{14:23,18:24,21:[1,25],22:[1,26],23:[1,27],24:[1,28]},{14:29,18:24,21:[1,25],22:[1,26],23:[1,27],24:[1,28]},{1:[2,1]},{6:30,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{56:[1,31]},{5:[2,49],7:[2,49],57:[2,49]},{5:[2,22],7:[2,22],27:[1,33],32:32,57:[2,22]},{5:[2,24],7:[2,24],27:[2,24],57:[2,24]},{5:[2,25],7:[2,25],27:[2,25],57:[2,25]},{15:34,27:[1,35],28:36,50:[1,37],51:[1,38],52:[1,39]},{19:[1,40]},{19:[2,13]},{19:[2,14]},{19:[2,15]},{19:[2,16]},{5:[2,21],7:[2,21],57:[2,21]},{5:[2,3],7:[2,3],57:[2,3]},{4:41,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{5:[2,23],7:[2,23],57:[2,23]},{5:[2,26],7:[2,26],57:[2,26]},{5:[2,11],7:[2,11],16:42,17:43,33:[1,44],35:[1,45],57:[2,11]},{5:[2,19],7:[2,19],33:[2,19],35:[2,19],57:[2,19]},{5:[2,20],7:[2,20],33:[2,20],35:[2,20],57:[2,20]},{5:[2,44],7:[2,44],33:[2,44],35:[2,44],37:[2,44],40:[2,44],41:[2,44],57:[2,44]},{5:[2,45],7:[2,45],33:[2,45],35:[2,45],37:[2,45],40:[2,45],41:[2,45],57:[2,45]},{5:[2,46],7:[2,46],33:[2,46],35:[2,46],37:[2,46],40:[2,46],41:[2,46],57:[2,46]},{20:46,25:[1,47],26:[1,48]},{7:[1,17],57:[1,49]},{5:[2,9],7:[2,9],57:[2,9]},{5:[2,10],7:[2,10],57:[2,10]},{27:[1,51],34:50},{28:53,36:52,50:[1,37],51:[1,38],52:[1,39]},{5:[2,12],7:[2,12],27:[2,12],50:[2,12],51:[2,12],52:[2,12],57:[2,12]},{5:[2,17],7:[2,17],27:[2,17],50:[2,17],51:[2,17],52:[2,17],57:[2,17]},{5:[2,18],7:[2,18],27:[2,18],50:[2,18],51:[2,18],52:[2,18],57:[2,18]},{5:[2,48],7:[2,48],57:[2,48]},{5:[2,27],7:[2,27],57:[2,27]},{46:[1,54],47:[1,55],48:[1,56],49:[1,57]},{5:[2,28],7:[2,28],57:[2,28]},{5:[2,29],7:[2,29],37:[1,58],40:[1,59],41:[1,60],57:[2,29]},{5:[2,40],7:[2,40],57:[2,40]},{5:[2,41],7:[2,41],57:[2,41]},{5:[2,42],7:[2,42],57:[2,42]},{5:[2,43],7:[2,43],57:[2,43]},{27:[1,65],28:63,38:61,39:[1,62],42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{27:[1,65],28:63,38:69,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{27:[1,65],28:63,38:70,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{5:[2,30],7:[2,30],57:[2,30]},{27:[1,65],28:63,38:71,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{5:[2,34],7:[2,34],57:[2,34]},{5:[2,35],7:[2,35],57:[2,35]},{5:[2,36],7:[2,36],57:[2,36]},{5:[2,37],7:[2,37],57:[2,37]},{5:[2,38],7:[2,38],57:[2,38]},{5:[2,39],7:[2,39],57:[2,39]},{5:[2,32],7:[2,32],57:[2,32]},{5:[2,33],7:[2,33],57:[2,33]},{5:[2,31],7:[2,31],57:[2,31]}],
+defaultActions: {16:[2,1],25:[2,13],26:[2,14],27:[2,15],28:[2,16]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -821,100 +859,94 @@ case 9:return 'E';
 break;
 case 10:return 7;
 break;
-case 11:return 12;
+case 11:return 13;
 break;
-case 12:return 28;
+case 12:return 29;
 break;
-case 13:return 29;
+case 13:return 33;
 break;
-case 14:return 31;
+case 14:return 35;
 break;
-case 15:return 20;
+case 15:return 21;
 break;
-case 16:return 21;
+case 16:return 22;
 break;
-case 17:return 22;
+case 17:return 23;
 break;
-case 18:return 23;
+case 18:return 24;
 break;
-case 19:return 22;
+case 19:return 25;
 break;
-case 20:return 23;
+case 20:return 26;
 break;
-case 21:return 20;
+case 21:return 30;
 break;
-case 22:return 'back';
+case 22:return 46;
 break;
-case 23:return 24;
+case 23:return 48;
 break;
-case 24:return 25;
+case 24:return 47;
 break;
-case 25:return 42;
+case 25:return 47;
 break;
-case 26:return 44;
+case 26:return 49;
 break;
-case 27:return 43;
+case 27:return 27;
 break;
-case 28:return 43;
+case 28:return 5;
 break;
 case 29:return 45;
 break;
-case 30:return 26;
+case 30:return 37;
 break;
-case 31:return 5;
+case 31:return 37;
 break;
-case 32:return 41;
+case 32:return 'is not';
 break;
-case 33:return 33;
+case 33:return 'is not';
 break;
-case 34:return 33;
+case 34:return 40;
 break;
-case 35:return 'is not';
+case 35:return 40;
 break;
-case 36:return 'is not';
+case 36:return 40;
 break;
-case 37:return 36;
+case 37:return 41;
 break;
-case 38:return 36;
+case 38:return 41;
 break;
-case 39:return 36;
+case 39:return 37;
 break;
-case 40:return 37;
+case 40:return 41;
 break;
-case 41:return 37;
+case 41:return 50;
 break;
-case 42:return 33;
+case 42:return 52;
 break;
-case 43:return 37;
+case 43:return 51;
 break;
-case 44:return 46;
+case 44:return 19;
 break;
-case 45:return 48;
+case 45:return 56;
 break;
-case 46:return 47;
+case 46:return 57;
 break;
-case 47:return 18;
+case 47:return 53;
 break;
-case 48:return 52;
+case 48:return 54;
 break;
-case 49:return 53;
+case 49:return 58;
 break;
-case 50:return 49;
+case 50:return 59;
 break;
-case 51:return 50;
+case 51:return 55;
 break;
-case 52:return 54;
-break;
-case 53:return 55;
-break;
-case 54:return 51;
-break;
-case 55:return 'INVALID';
+case 52:return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore\b)/,/^(?:aft\b)/,/^(?:port\b)/,/^(?:starboard\b)/,/^(?:left\b)/,/^(?:right\b)/,/^(?:front\b)/,/^(?:back\b)/,/^(?:horizontal|h\b)/,/^(?:vertical|v\b)/,/^(?:seconds|second|s\b)/,/^(?:minutes|minute|m\b)/,/^(?:milliseconds|ms\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:is\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:roll\b)/,/^(?:yaw\b)/,/^(?:\.)/,/^(?:\{)/,/^(?:\})/,/^(?:hello|hi|hey|hej\b)/,/^(?:command\b)/,/^(?:run\b)/,/^(?:spawn\b)/,/^(?:[a-zA-Z0-9_]*)/,/^(?:.)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore|front\b)/,/^(?:aft|back\b)/,/^(?:port|left\b)/,/^(?:starboard|right\b)/,/^(?:horizontal|h\b)/,/^(?:vertical|v\b)/,/^(?:fire\b)/,/^(?:seconds|second|s\b)/,/^(?:minutes|minute|m\b)/,/^(?:milliseconds|ms\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:is\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:roll\b)/,/^(?:yaw\b)/,/^(?:\.)/,/^(?:\{)/,/^(?:\})/,/^(?:hello|hi|hey|hej\b)/,/^(?:command\b)/,/^(?:run\b)/,/^(?:spawn\b)/,/^(?:[a-zA-Z0-9_]*)/,/^(?:.)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],"inclusive":true}}
 };
 return lexer;
 })();

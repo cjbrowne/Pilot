@@ -49,22 +49,21 @@
 	Node.prototype._maxChildren = 8;
 	Node.prototype._maxDepth = 8;
 
-	Node.TOP_LEFT_FRONT = 0;
-	Node.TOP_RIGHT_FRONT = 1;
-	Node.TOP_LEFT_BACK = 2;
-	Node.TOP_RIGHT_BACK = 3;
-	Node.BOTTOM_LEFT_FRONT = 4;
-	Node.BOTTOM_RIGHT_FRONT = 5;
-	Node.BOTTOM_LEFT_BACK = 6;
-	Node.BOTTOM_RIGHT_BACK = 7;
+	var TOP_LEFT_FRONT = 0;
+	var TOP_RIGHT_FRONT = 1;
+	var TOP_LEFT_BACK = 2;
+	var TOP_RIGHT_BACK = 3;
+	var BOTTOM_LEFT_FRONT = 4;
+	var BOTTOM_RIGHT_FRONT = 5;
+	var BOTTOM_LEFT_BACK = 6;
+	var BOTTOM_RIGHT_BACK = 7;
 
 	Node.prototype.insert = function(item) {
-		if(this.nodes.length) {
+		if(this.nodes.length > 0) {
 			var index = this._findIndex(item);
 			this.nodes[index].insert(item);
 			return;
 		}
-
 		this.children.push(item);
 
 		var len = this.children.length;
@@ -82,11 +81,10 @@
 	Node.prototype.retrieve = function(item) {
 		if(this.nodes.length)
         {
-                var index = this._findIndex(item);
-                
-                return this.nodes[index].retrieve(item);
+            var index = this._findIndex(item);
+            
+            return this.nodes[index].retrieve(item);
         }
-        
         return this.children;
 	}
 
@@ -94,32 +92,33 @@
 		var b = this._bounds;
 		var left = (item.position.x > b.x + b.width / 2);
 		var top = (item.position.y > b.y + b.height / 2);
-		var front = (item.position.z > b.z + b.depth / 2);
+		var front = (item.position.z > b.z + b.depth / 2),
+			back = !front; // quick and dirty patch over backwards nomenclature
 		var index = TOP_LEFT_BACK;
 		if(left) {
 			if(top) {
 				if(!back) {
-					index = Node.TOP_LEFT_FRONT;
+					index = TOP_LEFT_FRONT;
 				}
 			} else {
 				if(back) {
-					index = Node.BOTTOM_LEFT_BACK;
+					index = BOTTOM_LEFT_BACK;
 				} else {
-					index = Node.BOTTOM_LEFT_FRONT;
+					index = BOTTOM_LEFT_FRONT;
 				}
 			}
 		} else {
 			if(top) {
 				if(back) {
-					index = Node.TOP_RIGHT_BACK;
+					index = TOP_RIGHT_BACK;
 				} else {
-					index = Node.TOP_RIGHT_FRONT;
+					index = TOP_RIGHT_FRONT;
 				}
 			} else {
 				if(back) {
-					index = Node.BOTTOM_RIGHT_BACK;
+					index = BOTTOM_RIGHT_BACK;
 				} else {
-					index = Node.BOTTOM_RIGHT_FRONT;
+					index = BOTTOM_RIGHT_FRONT;
 				}
 			}
 		}
@@ -139,7 +138,7 @@
         var by_b_h_h = by + b_h_h;
         var bz_b_d_h = bz + b_d_h;
 
-        this.nodes[Node.TOP_LEFT_FRONT] = new this._classConstructor({
+        this.nodes[TOP_LEFT_FRONT] = new this._classConstructor({
         	x:bx,
         	y:by,
         	z:bz,
@@ -149,7 +148,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.TOP_RIGHT_FRONT] = new this._classConstructor({
+        this.nodes[TOP_RIGHT_FRONT] = new this._classConstructor({
         	x:bx_b_w_h,
         	y:by,
         	z:bz,
@@ -159,7 +158,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.BOTTOM_LEFT_FRONT] = new this._classConstructor({
+        this.nodes[BOTTOM_LEFT_FRONT] = new this._classConstructor({
         	x:bx,
         	y:by_b_h_h,
         	z:bz,
@@ -169,7 +168,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.BOTTOM_RIGHT_FRONT] = new this._classConstructor({
+        this.nodes[BOTTOM_RIGHT_FRONT] = new this._classConstructor({
         	x:bx_b_w_h,
         	y:by_b_h_h,
         	z:bz,
@@ -181,7 +180,7 @@
 
         // back nodes
 
-        this.nodes[Node.TOP_LEFT_BACK] = new this._classConstructor({
+        this.nodes[TOP_LEFT_BACK] = new this._classConstructor({
         	x:bx,
         	y:by,
         	z:bz_b_d_h,
@@ -191,7 +190,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.TOP_RIGHT_BACK] = new this._classConstructor({
+        this.nodes[TOP_RIGHT_BACK] = new this._classConstructor({
         	x:bx_b_w_h,
         	y:by,
         	z:bz_b_d_h,
@@ -201,7 +200,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.BOTTOM_LEFT_BACK] = new this._classConstructor({
+        this.nodes[BOTTOM_LEFT_BACK] = new this._classConstructor({
         	x:bx,
         	y:by_b_h_h,
         	z:bz_b_d_h,
@@ -211,7 +210,7 @@
         	tier: tier
         });
 
-        this.nodes[Node.BOTTOM_RIGHT_BACK] = new this._classConstructor({
+        this.nodes[BOTTOM_RIGHT_BACK] = new this._classConstructor({
         	x:bx_b_w_h,
         	y:by_b_h_h,
         	z:bz_b_d_h,

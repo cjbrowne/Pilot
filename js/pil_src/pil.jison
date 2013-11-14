@@ -16,28 +16,36 @@
 "PI"                 		return 'PI';
 "E"                   		return 'E';
 ";"                         return ';';
+// booster commands
 "thrust"                    return 'thrust';
 "stop"                      return 'stop';
 "for"                       return 'for';
 "until"                     return 'until';
-"fore"                      return 'fore';
-"aft"                       return 'aft';
-"port"                      return 'port';
-"starboard"                 return 'starboard';
-"left"                      return 'port';
-"right"                     return 'starboard';
-"front"                     return 'fore';
-"back"                      return 'back';
-"horizontal"|h              return 'horizontal';
-"vertical"|v                return 'vertical';
+
+// anatomical positions
+"fore"|"front"              return 'fore';
+"aft"|"back"                return 'aft';
+"port"|"left"               return 'port';
+"starboard"|"right"         return 'starboard';
+"horizontal"|"h"            return 'horizontal';
+"vertical"|"v"              return 'vertical';
+
+// cannon commands
+"fire"                      return 'fire';
+
+// time periods
 "seconds"|"second"|"s"      return 'seconds';
 "minutes"|"minute"|"m"      return 'minutes';
 "milliseconds"|"ms"         return 'milliseconds';
 "ms"                        return 'milliseconds';
 "frames"                    return 'frames';
+
+// literals
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
 <<EOF>>               		return 'EOF';
 \".*\"                      return 'STRING';
+
+// conditional operators
 "="                         return 'is';
 "=="                        return 'is';
 "is not"                    return 'is not';
@@ -49,9 +57,13 @@
 "is less than"              return 'less';
 "is"                        return 'is';
 "<"                         return 'less';
+
+// variables
 "pitch"                     return 'pitch';
 "roll"                      return 'roll';
 "yaw"                       return 'yaw';
+
+// misc
 '.'                         return '.';
 "{"                         return '{';
 "}"                         return '}';
@@ -120,6 +132,8 @@ statement
     : booster-statement
         {$$ = $1;}
     | command-statement
+        {$$ = $1;}
+    | cannon-statement
         {$$ = $1;}
     ;
 
@@ -209,6 +223,10 @@ booster-power
             $$ = new ConstantNode($1);
         }}
     | variable
+        {{
+            // TODO: cap variables between 0 and 100 (otherwise this represents a way of cheating)
+            $$ = $1;
+        }}
     ;
 
 booster-stop-statement
@@ -217,6 +235,46 @@ booster-stop-statement
             game.ship.boostersByName[$2].power = 0;
             $$ = $2;
         }
+    ;
+
+cannon-statement
+    : 'fire' cannon-identifier
+        {{
+            $$ = (function(cannon) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.cannons[cannon].fire();
+                    }
+                });
+            })($2);
+        }}
+    | 'fire' cannon-identifier cannon-power
+        {{
+            $$ = (function(cannon,power) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.cannons[cannon].fire(power);
+                    }
+                });
+            })($2,$3);
+        }}
+    ;
+
+cannon-identifier
+    : 'fore'
+        {$$ = "fore";}
+    | 'aft'
+        {$$ = "aft";}
+    ;
+
+cannon-power
+    : 'NUMBER'
+        {{
+            if($1 < 0 || $1 > 1) {
+                throw new Error('Cannon power out of range.  Should be between 0.0 and 1.0.');
+            }
+            $$ = new ConstantNode($1);
+        }}
     ;
 
 for-statement
