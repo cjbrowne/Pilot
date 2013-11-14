@@ -103,8 +103,8 @@
 			$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 		},2500);
 	}
-	Console.prototype.showHelp = function(command,description) {
-		$("#output").append("<span class='help_command'>"+command+"</span><span class='help_description'>" + description + "</span><br />");
+	Console.prototype.showHelp = function(command,args,description) {
+		$("#output").append("<span class='help_command'>"+command+"</span><span class='help_arguments'>"+args+"</span><span class='help_description'>" + description + "</span><br />");
 		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 	}
 	window.Console = Console;

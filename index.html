@@ -32,15 +32,30 @@
 			<ul id='commands'>
 				<li>
 					<span class='command'>
-						help
+						guide
+					</span>
+					<span class='arguments'>
 					</span>
 					<span class='description'>
-						Shows this help
+						Shows a popup dialogue box listing all the available commands and their descriptions.
+					</span>
+				<li>
+					<span class='command'>
+						help
+					</span>
+					<span class='arguments'>
+						command
+					</span>
+					<span class='description'>
+						Shows help on the console for the command 'command'.
 					</span>
 				</li>
 				<li>
 					<span class='command'>
-						thrust booster power [until condition OR for time]
+						thrust
+					</span>
+					<span class='arguments'>
+						booster power [until condition OR for time]
 					</span>
 					<span class='description'>
 						Powers 'booster' to 'power'.  If 'until condition' is used, switches 'booster' off when the given condition evaluates as true (for example, "thrust fore.vertical 1 until pitch is 1" turns fore.vertical on until the ship's pitch reaches 1.00).  If 'fore time' is used, switches 'booster' off when the given time period has elapsed.  Time can be given in seconds, milliseconds, minutes or frames but a unit must be given.  Short units (e.g. "m", "s") are supported but be aware that you need to place a space in between the number and the unit.
@@ -48,7 +63,10 @@
 				</li>
 				<li>
 					<span class='command'>
-						stop booster
+						stop
+					</span>
+					<span class='arguments'>
+						booster
 					</span>
 					<span class='description'>
 						Turns off 'booster'
@@ -64,7 +82,10 @@
 				</li>
 				<li>
 					<span class='command'>
-						fire cannon [power]
+						fire
+					</span>
+					<span class='arguments'>
+						cannon [power]
 					</span>
 					<span class='description'>
 						Fires a projectile from 'cannon'.  If 'power' is given, the projectile will be fired at that strength.  Between 0.0 and 1.0.
@@ -72,7 +93,10 @@
 				</li>
 				<li>
 					<span class='command'>
-						command name { stuff }
+						command
+					</span>
+					<span class='arguments'>
+						name { stuff }
 					</span>
 					<span class='description'>
 						Creates a new command named 'name' which will essentially group all of the commands within the brackets to that name.  You can also use it to alias longer, more complex commands if you wish.  Note that semi-colons are used to separate commands throughout the language, and that includes the 'stuff' here.
@@ -80,7 +104,10 @@
 				</li>
 				<li>
 					<span class='command'>
-						run command
+						run
+					</span>
+					<span class='arguments'>
+						command
 					</span>
 					<span class='description'>
 						Runs the custom command 'command'.  Note that this will not work with the built-in commands.

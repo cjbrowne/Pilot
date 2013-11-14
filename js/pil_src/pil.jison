@@ -469,4 +469,33 @@ command-statement
                 }
             });
         }}
+    | help-expression
+        {{
+            $$ = new StatementNode({
+                f:function() {
+                    if(game.helpText[$1]) {
+                        game.console.showHelp($1,game.helpText[$1][0],game.helpText[$1][1]);
+                    } else {
+                        throw new Error('Could not find help for command: ' + $1);
+                    }
+                }
+            });
+        }} 
+    ;
+
+help-expression
+    : 'help' 'run'
+        { $$ = $2; }
+    | 'help' 'thrust'
+        { $$ = $2; }
+    | 'help' 'help'
+        { $$ = $2; }
+    | 'help' 'stop'
+        { $$ = $2; }
+    | 'help' 'fire'
+        { $$ = $2; }
+    | 'help' 'spawn'
+        { $$ = $2; }
+    | 'help' 'guide'
+        { $$ = $2; }
     ;

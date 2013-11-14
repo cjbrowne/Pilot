@@ -192,6 +192,10 @@ body {
 	color:#FFF;
 }
 
+.help_arguments {
+	color:#6F6;
+}
+
 .help_description {
 	color:#66F;
 }
@@ -202,6 +206,10 @@ body {
 
 .command {
 	color:#FFF;
+}
+
+.arguments {
+	color:#6F6;
 }
 
 .description {

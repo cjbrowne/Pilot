@@ -11,6 +11,15 @@
 		this.audio = audio;
 		this.functions = [];
 		this.version = "0.2.1";
+		this.helpText = [];
+		var self = this;
+		$("#guide ul").each(function() {
+			$(this).children().each(function() {
+				self.helpText[$(this).find(".command").text().replace(/\s/g,'')] = 
+				[$(this).find(".arguments").html(),
+				$(this).find(".description").html()];
+			});
+		});
 	}
 	Game.prototype.run = function() {
 		this.tick();
@@ -224,17 +233,11 @@
 	    })(drone));
 	}
 	Game.prototype.guide = function(target) {
-		var helpText = [];
-		$("#guide ul").each(function() {
-			$(this).children().each(function() {
-				helpText[$(this).find(".command").html()] = $(this).find(".description").html();
-			});
-		});
 		switch(target) {
 			case 'console':
-				for(command in helpText) {
-					if(helpText.hasOwnProperty(command)) {
-						this.console.showHelp(command,helpText[command]);
+				for(command in this.helpText) {
+					if(this.helpText.hasOwnProperty(command)) {
+						this.console.showHelp(command,this.helpText[command][0],this.helpText[command][1]);
 					}
 				}
 			break;
