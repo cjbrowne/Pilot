@@ -18,7 +18,6 @@
 					$("#output").append("[ERROR] " + e + "<br />");
 				} finally {
 					console.history.push($("#prompt").val());
-					$("#output").append(result + "<br />");
 					$("#prompt").val("");
 				}
 			} else if(e.which == 40) {
@@ -51,6 +50,7 @@
 			$("#PS1").show();
 			$("#prompt").focus();
 		});
+		this.bootup();
 	}
 	Console.prototype.log = function(string,logClass) {
 		var stardate = ((Date.now() % 10000000) / 1000).toFixed(3);
@@ -75,6 +75,28 @@
 				break;
 		}
 		$("#output").append("<span class='warning_" + warningLevel + "'>["+warningText+"] " + string + "</span><br />");
+	}
+	Console.prototype.bootup = function() {
+		var self = this;
+		this.log("Pilot Interface Language interpreter version: " + game.version);
+		setTimeout(function() {
+			self.warn("Warning system test message.","low");
+		},500);
+		setTimeout(function() {
+			self.warn("Warning system test message.","medium");
+		},1000);
+		setTimeout(function() {
+			self.warn("Warning system test message.","high");
+		},1500);
+		setTimeout(function() {
+			self.warn("Warning system test message.","critical");
+		},2000);
+		setTimeout(function() {
+			self.log("Well, the warning system works.  Let me know if you need any help (hint: type 'guide').");
+		},2500);
+	}
+	Console.prototype.showHelp = function(command,description) {
+		$("#output").append("<span class='help_command'>"+command+"</span><span class='help_description'>" + description + "</span><br />");
 	}
 	window.Console = Console;
 })();

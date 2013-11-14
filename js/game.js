@@ -10,6 +10,7 @@
 		this.console = console;
 		this.audio = audio;
 		this.functions = [];
+		this.version = "0.2.0";
 	}
 	Game.prototype.run = function() {
 		this.tick();
@@ -222,6 +223,27 @@
 	        }
 	    })(drone));
 	}
-
+	Game.prototype.guide = function(target) {
+		var helpText = [];
+		$("#guide ul").each(function() {
+			$(this).children().each(function() {
+				helpText[$(this).find(".command").html()] = $(this).find(".description").html();
+			});
+		});
+		switch(target) {
+			case 'console':
+				for(command in helpText) {
+					if(helpText.hasOwnProperty(command)) {
+						this.console.showHelp(command,helpText[command]);
+					}
+				}
+			case 'modal':
+				$("#guide").dialog({
+					width: "70vw"
+				});
+			break;
+			break;
+		}
+	}
 	window.Game = Game;
 })();

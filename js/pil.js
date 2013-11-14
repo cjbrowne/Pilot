@@ -74,9 +74,9 @@
 var pil = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,";":7,"booster-statement":8,"command-statement":9,"cannon-statement":10,"booster-thrust-statement":11,"booster-stop-statement":12,"thrust":13,"booster-identifier":14,"booster-power":15,"for-statement":16,"until-statement":17,"booster-position":18,".":19,"booster-orientation":20,"fore":21,"aft":22,"port":23,"starboard":24,"horizontal":25,"vertical":26,"NUMBER":27,"variable":28,"stop":29,"fire":30,"cannon-identifier":31,"cannon-power":32,"for":33,"time-period":34,"until":35,"condition":36,"is":37,"rvalue":38,"not":39,"greater":40,"less":41,"literal":42,"true":43,"false":44,"STRING":45,"seconds":46,"milliseconds":47,"minutes":48,"frames":49,"pitch":50,"yaw":51,"roll":52,"hello":53,"command":54,"identifier":55,"{":56,"}":57,"run":58,"spawn":59,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",7:";",13:"thrust",19:".",21:"fore",22:"aft",23:"port",24:"starboard",25:"horizontal",26:"vertical",27:"NUMBER",29:"stop",30:"fire",33:"for",35:"until",37:"is",39:"not",40:"greater",41:"less",43:"true",44:"false",45:"STRING",46:"seconds",47:"milliseconds",48:"minutes",49:"frames",50:"pitch",51:"yaw",52:"roll",53:"hello",54:"command",55:"identifier",56:"{",57:"}",58:"run",59:"spawn"},
-productions_: [0,[3,2],[4,1],[4,3],[6,1],[6,1],[6,1],[8,1],[8,1],[11,4],[11,4],[11,3],[14,3],[18,1],[18,1],[18,1],[18,1],[20,1],[20,1],[15,1],[15,1],[12,2],[10,2],[10,3],[31,1],[31,1],[32,1],[16,2],[17,2],[36,1],[36,3],[36,4],[36,3],[36,3],[38,1],[38,1],[42,1],[42,1],[42,1],[42,1],[34,2],[34,2],[34,2],[34,2],[28,1],[28,1],[28,1],[9,1],[9,5],[9,2],[9,1]],
+symbols_: {"error":2,"program":3,"statements":4,"EOF":5,"statement":6,";":7,"booster-statement":8,"command-statement":9,"cannon-statement":10,"booster-thrust-statement":11,"booster-stop-statement":12,"thrust":13,"booster-identifier":14,"booster-power":15,"for-statement":16,"until-statement":17,"booster-position":18,".":19,"booster-orientation":20,"fore":21,"aft":22,"port":23,"starboard":24,"horizontal":25,"vertical":26,"NUMBER":27,"variable":28,"stop":29,"all":30,"fire":31,"cannon-identifier":32,"cannon-power":33,"for":34,"time-period":35,"until":36,"condition":37,"is":38,"rvalue":39,"not":40,"greater":41,"less":42,"literal":43,"true":44,"false":45,"STRING":46,"seconds":47,"milliseconds":48,"minutes":49,"frames":50,"pitch":51,"yaw":52,"roll":53,"hello":54,"command":55,"identifier":56,"{":57,"}":58,"run":59,"spawn":60,"help":61,"guide":62,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:";",13:"thrust",19:".",21:"fore",22:"aft",23:"port",24:"starboard",25:"horizontal",26:"vertical",27:"NUMBER",29:"stop",30:"all",31:"fire",34:"for",36:"until",38:"is",40:"not",41:"greater",42:"less",44:"true",45:"false",46:"STRING",47:"seconds",48:"milliseconds",49:"minutes",50:"frames",51:"pitch",52:"yaw",53:"roll",54:"hello",55:"command",56:"identifier",57:"{",58:"}",59:"run",60:"spawn",61:"help",62:"guide"},
+productions_: [0,[3,2],[4,1],[4,3],[6,1],[6,1],[6,1],[8,1],[8,1],[11,4],[11,4],[11,3],[14,3],[18,1],[18,1],[18,1],[18,1],[20,1],[20,1],[15,1],[15,1],[12,2],[12,2],[10,2],[10,3],[32,1],[32,1],[33,1],[16,2],[17,2],[37,1],[37,3],[37,4],[37,3],[37,3],[39,1],[39,1],[43,1],[43,1],[43,1],[43,1],[35,2],[35,2],[35,2],[35,2],[28,1],[28,1],[28,1],[9,1],[9,5],[9,2],[9,1],[9,1],[9,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -196,11 +196,26 @@ case 20:
         
 break;
 case 21:
-            game.ship.boostersByName[$$[$0]].power = 0;
-            this.$ = $$[$0];
+            this.$ = (function(boosterName) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[$$[$0]].power = 0;
+                    }
+                });
+            })($$[$0]);
         
 break;
 case 22:
+            this.$ = new StatementNode({
+                f: function() {
+                    game.ship.boosters.forEach(function(booster) {
+                        booster.power = 0;
+                    });
+                }
+            });
+        
+break;
+case 23:
             this.$ = (function(cannon) {
                 return new StatementNode({
                     f: function() {
@@ -210,7 +225,7 @@ case 22:
             })($$[$0]);
         
 break;
-case 23:
+case 24:
             this.$ = (function(cannon,power) {
                 return new StatementNode({
                     f: function() {
@@ -220,28 +235,28 @@ case 23:
             })($$[$0-1],$$[$0]);
         
 break;
-case 24:this.$ = "fore";
+case 25:this.$ = "fore";
 break;
-case 25:this.$ = "aft";
+case 26:this.$ = "aft";
 break;
-case 26:
+case 27:
             if($$[$0] < 0 || $$[$0] > 1) {
                 throw new Error('Cannon power out of range.  Should be between 0.0 and 1.0.');
             }
             this.$ = new ConstantNode($$[$0]);
         
 break;
-case 27:this.$ = $$[$0];
-break;
 case 28:this.$ = $$[$0];
 break;
-case 29:
+case 29:this.$ = $$[$0];
+break;
+case 30:
             this.$ = new ConditionNode({
                 leftNode: $$[$0]
             });
         
 break;
-case 30:
+case 31:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -249,7 +264,7 @@ case 30:
             });
         
 break;
-case 31:
+case 32:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-3],
                 rightNode: $$[$0-1],
@@ -257,7 +272,7 @@ case 31:
             });
         
 break;
-case 32:
+case 33:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -265,7 +280,7 @@ case 32:
             });
         
 break;
-case 33:
+case 34:
             this.$ = new ConditionNode({
                 leftNode: $$[$0-2],
                 rightNode: $$[$0],
@@ -273,31 +288,31 @@ case 33:
             });
         
 break;
-case 34:
-            this.$ = $$[$0];
-        
-break;
 case 35:
             this.$ = $$[$0];
         
 break;
-case 36:this.$ = new ConstantNode(parseInt($$[$0]));
+case 36:
+            this.$ = $$[$0];
+        
 break;
-case 37:this.$ = new ConstantNode(true);
+case 37:this.$ = new ConstantNode(parseInt($$[$0]));
 break;
-case 38:this.$ = new ConstantNode(false);
+case 38:this.$ = new ConstantNode(true);
 break;
-case 39:this.$ = new ConstantNode($$[$0].substring(1,$$[$0].length-1));
+case 39:this.$ = new ConstantNode(false);
 break;
-case 40:this.$ = new ConstantNode($$[$0-1] * 1000);
+case 40:this.$ = new ConstantNode($$[$0].substring(1,$$[$0].length-1));
 break;
-case 41:this.$ = new ConstantNode($$[$0-1]);
+case 41:this.$ = new ConstantNode($$[$0-1] * 1000);
 break;
-case 42:this.$ = new ConstantNode($$[$0-1] * 60000);
+case 42:this.$ = new ConstantNode($$[$0-1]);
 break;
-case 43:this.$ = new ConstantNode($$[$0-1] / 30);
+case 43:this.$ = new ConstantNode($$[$0-1] * 60000);
 break;
-case 44:
+case 44:this.$ = new ConstantNode($$[$0-1] / 30);
+break;
+case 45:
             this.$ = new PropertyAccessNode({
                 parentObject:game.ship.location.rotation,
                 propertyName:'x',
@@ -307,7 +322,7 @@ case 44:
             });
         
 break;
-case 45:
+case 46:
             this.$ = new PropertyAccessNode({
                 parentObject: game.ship.location.rotation,
                 propertyName:'y',
@@ -317,7 +332,7 @@ case 45:
             });
         
 break;
-case 46:
+case 47:
             this.$ = new PropertyAccessNode({
                 parentObject: game.ship.location.rotation,
                 propertyName:'z',
@@ -327,13 +342,13 @@ case 46:
             });
         
 break;
-case 47:
+case 48:
             this.$ = new StatementNode({
                 f: function() { game.console.log("Hi, friend!"); return false; }
             });
         
 break;
-case 48:
+case 49:
             this.$ = (function(identifier,statements) {
                 if(!statements) {
                     throw new Error('Cannot construct command without statements!');
@@ -346,7 +361,7 @@ case 48:
             })($$[$0-3],$$[$0-1]);
         
 break;
-case 49:
+case 50:
             if(!pil_commands[$$[$0]]) {
                 throw new Error("Command not found: " + $$[$0]);
             }
@@ -357,7 +372,7 @@ case 49:
             })($$[$0]);
         
 break;
-case 50:
+case 51:
             this.$ = new StatementNode({
                 f: function() {
                     game.spawnTargetDrone();
@@ -366,10 +381,26 @@ case 50:
             });
         
 break;
+case 52:
+            this.$ = new StatementNode({
+                f:function() {
+                    game.guide('console');
+                }
+            });
+        
+break;
+case 53:
+            this.$ = new StatementNode({
+                f:function() {
+                    game.guide('modal');
+                }
+            });
+        
+break;
 }
 },
-table: [{3:1,4:2,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{1:[3]},{5:[1,16],7:[1,17]},{5:[2,2],7:[2,2],57:[2,2]},{5:[2,4],7:[2,4],57:[2,4]},{5:[2,5],7:[2,5],57:[2,5]},{5:[2,6],7:[2,6],57:[2,6]},{5:[2,7],7:[2,7],57:[2,7]},{5:[2,8],7:[2,8],57:[2,8]},{5:[2,47],7:[2,47],57:[2,47]},{55:[1,18]},{55:[1,19]},{5:[2,50],7:[2,50],57:[2,50]},{21:[1,21],22:[1,22],31:20},{14:23,18:24,21:[1,25],22:[1,26],23:[1,27],24:[1,28]},{14:29,18:24,21:[1,25],22:[1,26],23:[1,27],24:[1,28]},{1:[2,1]},{6:30,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{56:[1,31]},{5:[2,49],7:[2,49],57:[2,49]},{5:[2,22],7:[2,22],27:[1,33],32:32,57:[2,22]},{5:[2,24],7:[2,24],27:[2,24],57:[2,24]},{5:[2,25],7:[2,25],27:[2,25],57:[2,25]},{15:34,27:[1,35],28:36,50:[1,37],51:[1,38],52:[1,39]},{19:[1,40]},{19:[2,13]},{19:[2,14]},{19:[2,15]},{19:[2,16]},{5:[2,21],7:[2,21],57:[2,21]},{5:[2,3],7:[2,3],57:[2,3]},{4:41,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,14],29:[1,15],30:[1,13],53:[1,9],54:[1,10],58:[1,11],59:[1,12]},{5:[2,23],7:[2,23],57:[2,23]},{5:[2,26],7:[2,26],57:[2,26]},{5:[2,11],7:[2,11],16:42,17:43,33:[1,44],35:[1,45],57:[2,11]},{5:[2,19],7:[2,19],33:[2,19],35:[2,19],57:[2,19]},{5:[2,20],7:[2,20],33:[2,20],35:[2,20],57:[2,20]},{5:[2,44],7:[2,44],33:[2,44],35:[2,44],37:[2,44],40:[2,44],41:[2,44],57:[2,44]},{5:[2,45],7:[2,45],33:[2,45],35:[2,45],37:[2,45],40:[2,45],41:[2,45],57:[2,45]},{5:[2,46],7:[2,46],33:[2,46],35:[2,46],37:[2,46],40:[2,46],41:[2,46],57:[2,46]},{20:46,25:[1,47],26:[1,48]},{7:[1,17],57:[1,49]},{5:[2,9],7:[2,9],57:[2,9]},{5:[2,10],7:[2,10],57:[2,10]},{27:[1,51],34:50},{28:53,36:52,50:[1,37],51:[1,38],52:[1,39]},{5:[2,12],7:[2,12],27:[2,12],50:[2,12],51:[2,12],52:[2,12],57:[2,12]},{5:[2,17],7:[2,17],27:[2,17],50:[2,17],51:[2,17],52:[2,17],57:[2,17]},{5:[2,18],7:[2,18],27:[2,18],50:[2,18],51:[2,18],52:[2,18],57:[2,18]},{5:[2,48],7:[2,48],57:[2,48]},{5:[2,27],7:[2,27],57:[2,27]},{46:[1,54],47:[1,55],48:[1,56],49:[1,57]},{5:[2,28],7:[2,28],57:[2,28]},{5:[2,29],7:[2,29],37:[1,58],40:[1,59],41:[1,60],57:[2,29]},{5:[2,40],7:[2,40],57:[2,40]},{5:[2,41],7:[2,41],57:[2,41]},{5:[2,42],7:[2,42],57:[2,42]},{5:[2,43],7:[2,43],57:[2,43]},{27:[1,65],28:63,38:61,39:[1,62],42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{27:[1,65],28:63,38:69,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{27:[1,65],28:63,38:70,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{5:[2,30],7:[2,30],57:[2,30]},{27:[1,65],28:63,38:71,42:64,43:[1,66],44:[1,67],45:[1,68],50:[1,37],51:[1,38],52:[1,39]},{5:[2,34],7:[2,34],57:[2,34]},{5:[2,35],7:[2,35],57:[2,35]},{5:[2,36],7:[2,36],57:[2,36]},{5:[2,37],7:[2,37],57:[2,37]},{5:[2,38],7:[2,38],57:[2,38]},{5:[2,39],7:[2,39],57:[2,39]},{5:[2,32],7:[2,32],57:[2,32]},{5:[2,33],7:[2,33],57:[2,33]},{5:[2,31],7:[2,31],57:[2,31]}],
-defaultActions: {16:[2,1],25:[2,13],26:[2,14],27:[2,15],28:[2,16]},
+table: [{3:1,4:2,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,16],29:[1,17],31:[1,15],54:[1,9],55:[1,10],59:[1,11],60:[1,12],61:[1,13],62:[1,14]},{1:[3]},{5:[1,18],7:[1,19]},{5:[2,2],7:[2,2],58:[2,2]},{5:[2,4],7:[2,4],58:[2,4]},{5:[2,5],7:[2,5],58:[2,5]},{5:[2,6],7:[2,6],58:[2,6]},{5:[2,7],7:[2,7],58:[2,7]},{5:[2,8],7:[2,8],58:[2,8]},{5:[2,48],7:[2,48],58:[2,48]},{56:[1,20]},{56:[1,21]},{5:[2,51],7:[2,51],58:[2,51]},{5:[2,52],7:[2,52],58:[2,52]},{5:[2,53],7:[2,53],58:[2,53]},{21:[1,23],22:[1,24],32:22},{14:25,18:26,21:[1,27],22:[1,28],23:[1,29],24:[1,30]},{14:31,18:26,21:[1,27],22:[1,28],23:[1,29],24:[1,30],30:[1,32]},{1:[2,1]},{6:33,8:4,9:5,10:6,11:7,12:8,13:[1,16],29:[1,17],31:[1,15],54:[1,9],55:[1,10],59:[1,11],60:[1,12],61:[1,13],62:[1,14]},{57:[1,34]},{5:[2,50],7:[2,50],58:[2,50]},{5:[2,23],7:[2,23],27:[1,36],33:35,58:[2,23]},{5:[2,25],7:[2,25],27:[2,25],58:[2,25]},{5:[2,26],7:[2,26],27:[2,26],58:[2,26]},{15:37,27:[1,38],28:39,51:[1,40],52:[1,41],53:[1,42]},{19:[1,43]},{19:[2,13]},{19:[2,14]},{19:[2,15]},{19:[2,16]},{5:[2,21],7:[2,21],58:[2,21]},{5:[2,22],7:[2,22],58:[2,22]},{5:[2,3],7:[2,3],58:[2,3]},{4:44,6:3,8:4,9:5,10:6,11:7,12:8,13:[1,16],29:[1,17],31:[1,15],54:[1,9],55:[1,10],59:[1,11],60:[1,12],61:[1,13],62:[1,14]},{5:[2,24],7:[2,24],58:[2,24]},{5:[2,27],7:[2,27],58:[2,27]},{5:[2,11],7:[2,11],16:45,17:46,34:[1,47],36:[1,48],58:[2,11]},{5:[2,19],7:[2,19],34:[2,19],36:[2,19],58:[2,19]},{5:[2,20],7:[2,20],34:[2,20],36:[2,20],58:[2,20]},{5:[2,45],7:[2,45],34:[2,45],36:[2,45],38:[2,45],41:[2,45],42:[2,45],58:[2,45]},{5:[2,46],7:[2,46],34:[2,46],36:[2,46],38:[2,46],41:[2,46],42:[2,46],58:[2,46]},{5:[2,47],7:[2,47],34:[2,47],36:[2,47],38:[2,47],41:[2,47],42:[2,47],58:[2,47]},{20:49,25:[1,50],26:[1,51]},{7:[1,19],58:[1,52]},{5:[2,9],7:[2,9],58:[2,9]},{5:[2,10],7:[2,10],58:[2,10]},{27:[1,54],35:53},{28:56,37:55,51:[1,40],52:[1,41],53:[1,42]},{5:[2,12],7:[2,12],27:[2,12],51:[2,12],52:[2,12],53:[2,12],58:[2,12]},{5:[2,17],7:[2,17],27:[2,17],51:[2,17],52:[2,17],53:[2,17],58:[2,17]},{5:[2,18],7:[2,18],27:[2,18],51:[2,18],52:[2,18],53:[2,18],58:[2,18]},{5:[2,49],7:[2,49],58:[2,49]},{5:[2,28],7:[2,28],58:[2,28]},{47:[1,57],48:[1,58],49:[1,59],50:[1,60]},{5:[2,29],7:[2,29],58:[2,29]},{5:[2,30],7:[2,30],38:[1,61],41:[1,62],42:[1,63],58:[2,30]},{5:[2,41],7:[2,41],58:[2,41]},{5:[2,42],7:[2,42],58:[2,42]},{5:[2,43],7:[2,43],58:[2,43]},{5:[2,44],7:[2,44],58:[2,44]},{27:[1,68],28:66,39:64,40:[1,65],43:67,44:[1,69],45:[1,70],46:[1,71],51:[1,40],52:[1,41],53:[1,42]},{27:[1,68],28:66,39:72,43:67,44:[1,69],45:[1,70],46:[1,71],51:[1,40],52:[1,41],53:[1,42]},{27:[1,68],28:66,39:73,43:67,44:[1,69],45:[1,70],46:[1,71],51:[1,40],52:[1,41],53:[1,42]},{5:[2,31],7:[2,31],58:[2,31]},{27:[1,68],28:66,39:74,43:67,44:[1,69],45:[1,70],46:[1,71],51:[1,40],52:[1,41],53:[1,42]},{5:[2,35],7:[2,35],58:[2,35]},{5:[2,36],7:[2,36],58:[2,36]},{5:[2,37],7:[2,37],58:[2,37]},{5:[2,38],7:[2,38],58:[2,38]},{5:[2,39],7:[2,39],58:[2,39]},{5:[2,40],7:[2,40],58:[2,40]},{5:[2,33],7:[2,33],58:[2,33]},{5:[2,34],7:[2,34],58:[2,34]},{5:[2,32],7:[2,32],58:[2,32]}],
+defaultActions: {18:[2,1],27:[2,13],28:[2,14],29:[2,15],30:[2,16]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -863,9 +894,9 @@ case 11:return 13;
 break;
 case 12:return 29;
 break;
-case 13:return 33;
+case 13:return 34;
 break;
-case 14:return 35;
+case 14:return 36;
 break;
 case 15:return 21;
 break;
@@ -879,74 +910,80 @@ case 19:return 25;
 break;
 case 20:return 26;
 break;
-case 21:return 30;
+case 21:return 31;
 break;
-case 22:return 46;
+case 22:return 47;
 break;
-case 23:return 48;
+case 23:return 49;
 break;
-case 24:return 47;
+case 24:return 48;
 break;
-case 25:return 47;
+case 25:return 48;
 break;
-case 26:return 49;
+case 26:return 50;
 break;
 case 27:return 27;
 break;
 case 28:return 5;
 break;
-case 29:return 45;
+case 29:return 46;
 break;
-case 30:return 37;
+case 30:return 38;
 break;
-case 31:return 37;
+case 31:return 38;
 break;
 case 32:return 'is not';
 break;
 case 33:return 'is not';
 break;
-case 34:return 40;
+case 34:return 41;
 break;
-case 35:return 40;
+case 35:return 41;
 break;
-case 36:return 40;
+case 36:return 41;
 break;
-case 37:return 41;
+case 37:return 42;
 break;
-case 38:return 41;
+case 38:return 42;
 break;
-case 39:return 37;
+case 39:return 38;
 break;
-case 40:return 41;
+case 40:return 42;
 break;
-case 41:return 50;
+case 41:return 51;
 break;
-case 42:return 52;
+case 42:return 53;
 break;
-case 43:return 51;
+case 43:return 52;
 break;
 case 44:return 19;
 break;
-case 45:return 56;
+case 45:return 57;
 break;
-case 46:return 57;
+case 46:return 58;
 break;
-case 47:return 53;
+case 47:return 30;
 break;
 case 48:return 54;
 break;
-case 49:return 58;
+case 49:return 55;
 break;
 case 50:return 59;
 break;
-case 51:return 55;
+case 51:return 60;
 break;
-case 52:return 'INVALID';
+case 52:return 61;
+break;
+case 53:return 62;
+break;
+case 54:return 56;
+break;
+case 55:return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore|front\b)/,/^(?:aft|back\b)/,/^(?:port|left\b)/,/^(?:starboard|right\b)/,/^(?:horizontal|h\b)/,/^(?:vertical|v\b)/,/^(?:fire\b)/,/^(?:seconds|second|s\b)/,/^(?:minutes|minute|m\b)/,/^(?:milliseconds|ms\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:is\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:roll\b)/,/^(?:yaw\b)/,/^(?:\.)/,/^(?:\{)/,/^(?:\})/,/^(?:hello|hi|hey|hej\b)/,/^(?:command\b)/,/^(?:run\b)/,/^(?:spawn\b)/,/^(?:[a-zA-Z0-9_]*)/,/^(?:.)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:;)/,/^(?:thrust\b)/,/^(?:stop\b)/,/^(?:for\b)/,/^(?:until\b)/,/^(?:fore|front\b)/,/^(?:aft|back\b)/,/^(?:port|left\b)/,/^(?:starboard|right\b)/,/^(?:horizontal|h\b)/,/^(?:vertical|v\b)/,/^(?:fire\b)/,/^(?:seconds|second|s\b)/,/^(?:minutes|minute|m\b)/,/^(?:milliseconds|ms\b)/,/^(?:ms\b)/,/^(?:frames\b)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:$)/,/^(?:".*")/,/^(?:=)/,/^(?:==)/,/^(?:is not\b)/,/^(?:!=)/,/^(?:greater than\b)/,/^(?:is greater than\b)/,/^(?:>)/,/^(?:less than\b)/,/^(?:is less than\b)/,/^(?:is\b)/,/^(?:<)/,/^(?:pitch\b)/,/^(?:roll\b)/,/^(?:yaw\b)/,/^(?:\.)/,/^(?:\{)/,/^(?:\})/,/^(?:all\b)/,/^(?:hello|hi|hey|hej\b)/,/^(?:command\b)/,/^(?:run\b)/,/^(?:spawn\b)/,/^(?:help|\?)/,/^(?:guide\b)/,/^(?:[a-zA-Z0-9_]*)/,/^(?:.)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],"inclusive":true}}
 };
 return lexer;
 })();

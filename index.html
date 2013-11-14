@@ -3,6 +3,7 @@
 	<head>
 		<title>Pilot</title>
 		<link rel='stylesheet' href='main.css' type='text/css' />
+		<link rel='stylesheet' href='jquery-ui.css' type='text/css' />
 	</head>
 	<body>
 		<canvas id='viewscreen'>
@@ -27,7 +28,68 @@
 			GAME OVER.<br/>
 			Refresh your browser to start again.
 		</div>
+		<div id='guide'>
+			<ul id='commands'>
+				<li>
+					<span class='command'>
+						help
+					</span>
+					<span class='description'>
+						Shows this help
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						thrust booster power [until condition OR for time]
+					</span>
+					<span class='description'>
+						Powers 'booster' to 'power'.  If 'until condition' is used, switches 'booster' off when the given condition evaluates as true (for example, "thrust fore.vertical 1 until pitch is 1" turns fore.vertical on until the ship's pitch reaches 1.00).  If 'fore time' is used, switches 'booster' off when the given time period has elapsed.  Time can be given in seconds, milliseconds, minutes or frames but a unit must be given.  Short units (e.g. "m", "s") are supported but be aware that you need to place a space in between the number and the unit.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						stop booster
+					</span>
+					<span class='description'>
+						Turns off 'booster'
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						spawn
+					</span>
+					<span class='description'>
+						Spawns a target drone for you to practice against.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						fire cannon [power]
+					</span>
+					<span class='description'>
+						Fires a projectile from 'cannon'.  If 'power' is given, the projectile will be fired at that strength.  Between 0.0 and 1.0.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						command name { stuff }
+					</span>
+					<span class='description'>
+						Creates a new command named 'name' which will essentially group all of the commands within the brackets to that name.  You can also use it to alias longer, more complex commands if you wish.  Note that semi-colons are used to separate commands throughout the language, and that includes the 'stuff' here.
+					</span>
+				</li>
+				<li>
+					<span class='command'>
+						run command
+					</span>
+					<span class='description'>
+						Runs the custom command 'command'.  Note that this will not work with the built-in commands.
+					</span>
+				</li>
+			</ul>
+		</div>
 		<script src="js/lib/jquery.js"></script>
+		<script src="js/lib/jquery-ui.js"></script>
 		<script src="js/lib/three.js"></script>
 		<script src="js/audio.js"></script>
 		<script src="js/octree.js"></script>

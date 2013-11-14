@@ -67,12 +67,15 @@
 '.'                         return '.';
 "{"                         return '{';
 "}"                         return '}';
+"all"                       return 'all';
 
 // commands
 "hello"|"hi"|"hey"|"hej"    return 'hello';
 "command"                   return 'command';
 "run"                       return 'run';
 "spawn"                     return 'spawn';
+"help"|"?"                  return 'help';
+"guide"                     return 'guide';
 [a-zA-Z0-9_]*               return 'identifier';
 .                           return 'INVALID';
 
@@ -231,10 +234,25 @@ booster-power
 
 booster-stop-statement
     : 'stop' booster-identifier
-        {
-            game.ship.boostersByName[$2].power = 0;
-            $$ = $2;
-        }
+        {{
+            $$ = (function(boosterName) {
+                return new StatementNode({
+                    f: function() {
+                        game.ship.boostersByName[$2].power = 0;
+                    }
+                });
+            })($2);
+        }}
+    | 'stop' 'all'
+        {{
+            $$ = new StatementNode({
+                f: function() {
+                    game.ship.boosters.forEach(function(booster) {
+                        booster.power = 0;
+                    });
+                }
+            });
+        }}
     ;
 
 cannon-statement
@@ -432,6 +450,22 @@ command-statement
                 f: function() {
                     game.spawnTargetDrone();
                     return true;
+                }
+            });
+        }}
+    | 'help'
+        {{
+            $$ = new StatementNode({
+                f:function() {
+                    game.guide('console');
+                }
+            });
+        }}
+    | 'guide'
+        {{
+            $$ = new StatementNode({
+                f:function() {
+                    game.guide('modal');
                 }
             });
         }}
