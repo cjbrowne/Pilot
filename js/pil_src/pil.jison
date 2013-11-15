@@ -76,6 +76,7 @@
 "spawn"                     return 'spawn';
 "help"|"?"                  return 'help';
 "guide"                     return 'guide';
+"in"                        return 'in';
 [a-zA-Z0-9_]*               return 'identifier';
 .                           return 'INVALID';
 
@@ -480,7 +481,26 @@ command-statement
                     }
                 }
             });
-        }} 
+        }}
+    | 'in' time-period '{' statements '}'
+        {{
+            $$ = (function(time,statements) {
+                if(!statements) {
+                    throw new Error('Cannot run delayed command without statements!');
+                }
+                statements = ((statements instanceof Array) ? statements : [statements]);
+                var fn = new FunctionNode({
+                    statementNodes: statements
+                });
+                return new StatementNode({
+                    f: function() {
+                        setTimeout(function() {
+                            fn.run();
+                        },time);
+                    }
+                });
+            })($2.value(),$4);
+        }}
     ;
 
 help-expression

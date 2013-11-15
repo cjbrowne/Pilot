@@ -4,7 +4,7 @@ Version 0.5:
 	[ ] Shields, both cannons (fore and aft) and indicators for all of that should be implemented and working correctly.
 	  - Optional: since screen real estate is a premium, we can turn off shield and cannon indicators when out of combat, and
 	              allow the player to toggle the 'debug' display(s)
-	[ ] Code should be cleaned up significantly ready for some 1.0 features that I'm putting off
+	[x] Code should be cleaned up significantly ready for some 1.0 features that I'm putting off
 
 Version 1.0:
 	- Native JS interpreter to be switched out for DSL
