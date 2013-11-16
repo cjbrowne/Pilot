@@ -536,17 +536,19 @@ command-statement
 
 help-expression
     : 'help' 'run'
-        { $$ = $2; }
+        { $$ = "run"; }
     | 'help' 'thrust'
-        { $$ = $2; }
+        { $$ = "thrust"; }
     | 'help' 'help'
-        { $$ = $2; }
+        { $$ = "help"; }
     | 'help' 'stop'
-        { $$ = $2; }
+        { $$ = "stop"; }
     | 'help' 'fire'
-        { $$ = $2; }
+        { $$ = "fire"; }
     | 'help' 'spawn'
-        { $$ = $2; }
+        { $$ = "spawn"; }
     | 'help' 'guide'
-        { $$ = $2; }
+        { $$ = "guide"; }
+    | 'help' 'loop'
+        { $$ = "loop"; }
     ;
