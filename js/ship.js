@@ -10,9 +10,10 @@
 		return power;
 	}
 	var Shield = function() {
-		this.power = 0;
-		this.warning = "";
 	}
+	Shield.prototype.power = 100;
+	Shield.prototype.warning = "";
+	Shield.prototype.health = 100;
 	var Booster = function(position,orientation) {
 		this.power = 0;
 		this.warning = "";

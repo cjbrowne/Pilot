@@ -63,6 +63,11 @@
 "roll"                      return 'roll';
 "yaw"                       return 'yaw';
 
+// alert statuses
+"red"|"offensive"           return 'red';
+"yellow"|"defensive"        return 'yellow';
+"none"                      return 'none';
+
 // misc
 '.'                         return '.';
 "{"                         return '{';
@@ -78,6 +83,7 @@
 "guide"                     return 'guide';
 "in"                        return 'in';
 "loop"|"while"|"for"        return 'loop';
+"alert"                     return 'alert';
 [a-zA-Z0-9_]*               return 'identifier';
 .                           return 'INVALID';
 
@@ -532,6 +538,15 @@ command-statement
                 });
             })($2.value(),$4);
         }}
+    | 'alert' alert-status
+        {{
+            $$ = new StatementNode({
+                f: function(done) {
+                    game.setAlert($2);
+                    done();
+                }
+            });
+        }}
     ;
 
 help-expression
@@ -551,4 +566,13 @@ help-expression
         { $$ = "guide"; }
     | 'help' 'loop'
         { $$ = "loop"; }
+    ;
+
+alert-status
+    : 'red'
+        { $$ = $1; }
+    | 'yellow'
+        { $$ = $1; }
+    | 'none'
+        { $$ = $1; }
     ;

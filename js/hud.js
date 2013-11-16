@@ -8,7 +8,7 @@
 		this.ctx.canvas.height = $viewer.height();
 	}
 
-	HUD.prototype.render = function(frameNumber,timeDelta,ship) {
+	HUD.prototype.render = function(frameNumber,timeDelta,ship,alert) {
 		var ctx = this.ctx, $viewer = $("#viewscreen");
 		ctx.clearRect(0,0,$viewer.width(),$viewer.height());
 		ctx.fillStyle = "rgb(255,255,255)";
@@ -68,10 +68,14 @@
 		}
 		ctx.restore();
 
-		// render the fore gun rotation (yaw) indicator
-		ctx.save();
-		ctx.fillStyle = ctx.strokeStyle = "rgba(100,100,255,0.5)";
-		if(frameNumber > 200) {
+		if(alert == "yellow") {
+			this.drawShieldIndicators(ship);
+		}
+
+		if(alert == "red") {
+			// render the fore gun rotation (yaw) indicator
+			ctx.save();
+			ctx.fillStyle = ctx.strokeStyle = "rgba(100,100,255,0.5)";
 			ctx.beginPath();
 			ctx.translate($viewer.width()-75,75);
 			ctx.rotate(ship.cannons.fore.rotation.yaw);
@@ -92,30 +96,67 @@
 			ctx.lineTo(5,100 - (ship.cannons.fore.rotation.pitch / Math.PI)*100);
 			ctx.closePath();
 			ctx.stroke();
-		} else {
-			ctx.fillText("Loading" + Array(Math.floor((frameNumber / 10) % 5)).join("."),$viewer.width() - 125,75)
+			ctx.restore();
+			ctx.save();
+			ctx.scale(0.5,0.5);
+			ctx.translate($viewer.width(),$viewer.height() / 2 + 10);
+			this.drawShieldIndicators(ship);
+			ctx.restore();
 		}
-		
-		ctx.restore();
-
 		
 
 		// debug ship information
+		if(game.debug) {
+			ctx.save();
+			var shipRot = ship.location.rotation.clone();
+			var shipPos = ship.location.position.clone();
+			var shipVel = ship.location.velocity.clone();
+			// TODO: remove references to 'viewer' so that HUD is indepedant from what it's drawn on
+			var $viewer = $("#viewscreen");
+			ctx.fillStyle = "rgb(255,255,255)";
+			ctx.fillText("Yaw: " + shipRot.y.toFixed(2),$viewer.width() - 200, $viewer.height() - 100);
+			ctx.fillText("Pitch: " + shipRot.x.toFixed(2),$viewer.width() - 200, $viewer.height() - 90);
+			ctx.fillText("Roll: " + shipRot.z.toFixed(2),$viewer.width() - 200, $viewer.height() - 80);
+			ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
+			ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
+			ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
+			ctx.fillText("Horizontal velocity: " + -(shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
+			ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
+			ctx.restore();
+		}
+	}
+	HUD.prototype.drawShieldIndicators = function(ship) {
+		var ctx = this.ctx, $viewer = $("#viewscreen");
+		// fore shield
 		ctx.save();
-		var shipRot = ship.location.rotation.clone();
-		var shipPos = ship.location.position.clone();
-		var shipVel = ship.location.velocity.clone();
-		// TODO: remove references to 'viewer' so that HUD is indepedant from what it's drawn on
-		var $viewer = $("#viewscreen");
-		ctx.fillStyle = "rgb(255,255,255)";
-		ctx.fillText("Yaw: " + shipRot.y.toFixed(2),$viewer.width() - 200, $viewer.height() - 100);
-		ctx.fillText("Pitch: " + shipRot.x.toFixed(2),$viewer.width() - 200, $viewer.height() - 90);
-		ctx.fillText("Roll: " + shipRot.z.toFixed(2),$viewer.width() - 200, $viewer.height() - 80);
-		ctx.fillText("X: " + shipPos.x.toFixed(2),$viewer.width() - 200,$viewer.height() - 70);
-		ctx.fillText("Y: " + shipPos.y.toFixed(2),$viewer.width() - 200,$viewer.height() - 60);
-		ctx.fillText("Z: " + shipPos.z.toFixed(2),$viewer.width() - 200,$viewer.height() - 50);
-		ctx.fillText("Horizontal velocity: " + -(shipVel.z*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 40);
-		ctx.fillText("Vertical velocity: " + (shipVel.y*100).toFixed(2),$viewer.width() - 200,$viewer.height() - 30);
+		ctx.fillStyle = "rgba(0,0,255," + (ship.shields.fore.power / 100) + ")";
+		ctx.beginPath();
+		ctx.translate($viewer.width()-75,75);
+		ctx.arc(0,0,50,Math.PI+Math.PI/5,-Math.PI/5);
+		ctx.lineTo(0,0);
+		ctx.lineTo(-40,-30);
+		ctx.closePath();
+		ctx.fill();
+		ctx.restore();
+		ctx.save();
+		ctx.fillStyle = "rgb(0,0,255)";
+		ctx.fillText(ship.shields.fore.health + "%",$viewer.width() - 50,75);
+		ctx.restore();
+
+		// aft shield
+		ctx.save();
+		ctx.fillStyle = "rgba(0,0,255," + (ship.shields.aft.power / 100) + ")";
+		ctx.beginPath();
+		ctx.translate($viewer.width()-75,90);
+		ctx.arc(0,0,50,Math.PI/5,-Math.PI-Math.PI/5);
+		ctx.lineTo(0,0);
+		ctx.lineTo(40,30);
+		ctx.closePath();
+		ctx.fill();
+		ctx.restore();
+		ctx.save();
+		ctx.fillStyle = "rgb(0,0,255)";
+		ctx.fillText(ship.shields.aft.health + "%",$viewer.width() - 50,100);
 		ctx.restore();
 	}
 	window.HUD = HUD;

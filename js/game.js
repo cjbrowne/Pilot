@@ -12,6 +12,8 @@
 		this.functions = [];
 		this.version = "0.2.2";
 		this.helpText = [];
+		this.alert = "none";
+		this.debug = false;
 		var self = this;
 		$("#guide ul").each(function() {
 			$(this).children().each(function() {
@@ -49,7 +51,7 @@
 		this.updateVariables();
 		// do animation updates after logic updates
 		this.renderer.render(this.frameNumber,this.timeDelta,this.ship);
-		this.hud.render(this.frameNumber,this.timeDelta,this.ship);
+		this.hud.render(this.frameNumber,this.timeDelta,this.ship,this.alert);
 		// finally do audio updates last of all, because sound travels slower than light ;)
 		this.audio.update(this.frameNumber,this.timeDelta,this.ship);
 	}
@@ -246,6 +248,44 @@
 					width: "70vw"
 				});
 			break;
+		}
+	}
+	Game.prototype.setAlert = function(to) {
+		this.alert = to;
+		switch(to) {
+			case "none":
+				$("#viewscreen").css({
+					"border":"solid 3px #999"
+				});
+				break;
+			case "yellow":
+				this.addFunction(function() {
+					if(this.frameNumber % 30 == 0) {
+						$("#viewscreen").animate({
+							borderColor: "#990"
+						},'fast').animate({
+							borderColor: "#999"
+						},'fast');
+						this.audio.playSound('yellow-alert');
+					}
+					return (this.alert != "yellow");
+				});
+				break;
+			case "red":
+				this.addFunction(function() {
+					if(this.frameNumber % 30 == 0) {
+						$("#viewscreen").animate({
+							borderColor: "#900"
+						},'fast').animate({
+							borderColor: "#999"
+						},'fast');
+					}
+					if(this.frameNumber % 15 == 0) {
+						this.audio.playSound('red-alert');
+					}
+					return (this.alert != "red");
+				});
+				break;
 		}
 	}
 	window.Game = Game;

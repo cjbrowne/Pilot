@@ -75,6 +75,24 @@
                         osc.noteOff(0);
                 },300);
             break;
+            case 'yellow-alert':
+            	osc.type = "sawtooth";
+                osc.frequency.value = 400;
+                osc.frequency.setTargetAtTime(900,this.speaker.currentTime,0.3);
+                osc.noteOn(0);
+                setTimeout(function() {
+                        osc.noteOff(0);
+                },300);
+            break;
+            case 'red-alert':
+            	osc.type = "sawtooth";
+                osc.frequency.value = 500;
+                osc.frequency.setTargetAtTime(1200,this.speaker.currentTime,0.2);
+                osc.noteOn(0);
+                setTimeout(function() {
+                        osc.noteOff(0);
+                },200);
+            break;
         }
 	}
 	window.PilotAudio = Audio;

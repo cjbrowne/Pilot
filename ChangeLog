@@ -2,6 +2,8 @@ ChangeLog
 
 Version: 0.2.2
 	- Added 'loop' command for processing commands repetitively.
+	- Added yellow/red alert statuses and different HUDs depending on the alert status, PLUS SOUND!!!
+	- Removed debug information from HUD unless game is in 'debug' mode
 
 Version: 0.2.1
 	- Fixed bug where drone wasn't removed from collision detection, meaning it could be destroyed more than once.
