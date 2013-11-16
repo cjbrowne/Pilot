@@ -1,11 +1,13 @@
 ChangeLog
 
+Version: 0.2.2
+	- Added 'loop' command for processing commands repetitively.
+
 Version: 0.2.1
 	- Fixed bug where drone wasn't removed from collision detection, meaning it could be destroyed more than once.
 	- Fixed bug where using 'help' would show the guide as well as the console help text.
 	- Fixed bug where console would not scroll to the bottom after certain output events occurred.
 	- Added 'in' command for delaying processing of commands
-	- Added 'loop' command for processing commands repetitively.
 
 Version: 0.2.0
 	- Updated ship's anatomy slightly, API overhaul to go with it.  Now 8 boosters, up from 6.

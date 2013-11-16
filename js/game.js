@@ -10,7 +10,7 @@
 		this.console = console;
 		this.audio = audio;
 		this.functions = [];
-		this.version = "0.2.1";
+		this.version = "0.2.2";
 		this.helpText = [];
 		var self = this;
 		$("#guide ul").each(function() {
