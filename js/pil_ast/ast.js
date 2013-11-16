@@ -4,5 +4,6 @@ require([
 	"PropertyAccessNode.js",
 	"VariableNode.js",
 	"FunctionNode.js",
-	"StatementNode.js"
+	"StatementNode.js",
+	"DelayNode.js"
 ]);

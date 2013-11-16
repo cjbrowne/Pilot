@@ -77,6 +77,7 @@
 "help"|"?"                  return 'help';
 "guide"                     return 'guide';
 "in"                        return 'in';
+"loop"|"while"|"for"        return 'loop';
 [a-zA-Z0-9_]*               return 'identifier';
 .                           return 'INVALID';
 
@@ -99,11 +100,11 @@ program
             if($1 instanceof Array) {
                 var last;
                 $1.forEach(function(sn) {
-                    last = sn.value();
+                    last = sn.value(function(){});
                 });
                 return last;
             } else if('value' in $1 && $1.value instanceof Function) {
-                return $1.value();
+                return $1.value(function(){});
             } else {
                 return $1;
             }
@@ -153,10 +154,11 @@ booster-thrust-statement
         {{
             $$ = (function(boosterName,boosterPower,time) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         game.ship.boostersByName[boosterName].power = boosterPower.value();
                         setTimeout(function() {
                             game.ship.boostersByName[boosterName].power = 0;
+                            done();
                         },time.value());
                     }
                 });
@@ -166,9 +168,9 @@ booster-thrust-statement
         {{
             $$ = (function(boosterName,boosterPower,cond) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         if(!cond.value())
-                            game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        game.ship.boostersByName[boosterName].power = boosterPower.value();
                         game.addFunction(function() {
                             if(cond.value()) {
                                 game.ship.boostersByName[boosterName].power = 0;
@@ -177,7 +179,7 @@ booster-thrust-statement
                                 return false;
                             }
                         });
-                        return boosterPower.value();
+                        done();
                     }
                 });
             })($2,$3,$4);
@@ -187,8 +189,9 @@ booster-thrust-statement
         {
             $$ = (function(boosterName,boosterPower) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         game.ship.boostersByName[boosterName].power = boosterPower.value();
+                        done();
                     }
                 });
             })($2,$3);
@@ -238,8 +241,9 @@ booster-stop-statement
         {{
             $$ = (function(boosterName) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         game.ship.boostersByName[$2].power = 0;
+                        done();
                     }
                 });
             })($2);
@@ -247,10 +251,11 @@ booster-stop-statement
     | 'stop' 'all'
         {{
             $$ = new StatementNode({
-                f: function() {
+                f: function(done) {
                     game.ship.boosters.forEach(function(booster) {
                         booster.power = 0;
                     });
+                    done();
                 }
             });
         }}
@@ -261,8 +266,9 @@ cannon-statement
         {{
             $$ = (function(cannon) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         game.ship.cannons[cannon].fire();
+                        done();
                     }
                 });
             })($2);
@@ -271,8 +277,9 @@ cannon-statement
         {{
             $$ = (function(cannon,power) {
                 return new StatementNode({
-                    f: function() {
+                    f: function(done) {
                         game.ship.cannons[cannon].fire(power);
+                        done();
                     }
                 });
             })($2,$3);
@@ -418,7 +425,7 @@ command-statement
     : 'hello'
         {
             $$ = new StatementNode({
-                f: function() { game.console.log("Hi, friend!"); return false; }
+                f: function(done) { game.console.log("Hi, friend!"); if(done) done(); }
             });
         }
     | 'command' 'identifier' '{' statements '}'
@@ -441,42 +448,46 @@ command-statement
             }
             $$ = (function(command) {
                 return new StatementNode({
-                    f: function() { return pil_commands[command].run(); }
+                    f: function(done) { pil_commands[command].run(); done(); }
                 });
             })($2);
         }}
     | 'spawn'
         {{
             $$ = new StatementNode({
-                f: function() {
+                f: function(done) {
                     game.spawnTargetDrone();
-                    return true;
+                    done();
                 }
             });
         }}
     | 'help'
         {{
             $$ = new StatementNode({
-                f:function() {
+                f:function(done) {
                     game.guide('console');
+                    if(done) done();
                 }
             });
         }}
     | 'guide'
         {{
             $$ = new StatementNode({
-                f:function() {
+                f:function(done) {
                     game.guide('modal');
+                    if(done) done();
                 }
             });
         }}
     | help-expression
         {{
             $$ = new StatementNode({
-                f:function() {
+                f:function(done) {
                     if(game.helpText[$1]) {
                         game.console.showHelp($1,game.helpText[$1][0],game.helpText[$1][1]);
+                        if(done) done();
                     } else {
+                        if(done) done();
                         throw new Error('Could not find help for command: ' + $1);
                     }
                 }
@@ -489,14 +500,34 @@ command-statement
                     throw new Error('Cannot run delayed command without statements!');
                 }
                 statements = ((statements instanceof Array) ? statements : [statements]);
+                var dn = new PILDelayNode({
+                    statementNodes: statements,
+                    delay: time
+                });
+                return new StatementNode({
+                    f: function(done) {
+                        dn.run(done);
+                    }
+                })
+            })($2.value(),$4);
+        }}
+    | 'loop' time-period '{' statements '}'
+        {{
+            $$ = (function(time,statements) {
+                if(!statements) {
+                    throw new Error('Cannot run looping command without statements!');
+                }
+                statements = ((statements instanceof Array) ? statements : [statements]);
                 var fn = new FunctionNode({
                     statementNodes: statements
                 });
+                var startTime = Date.now();
                 return new StatementNode({
-                    f: function() {
-                        setTimeout(function() {
-                            fn.run();
-                        },time);
+                    f: function(done) {
+                        game.addFunction(function () {
+                            fn.run(done);
+                            return (Date.now() - startTime >= time);
+                        });
                     }
                 });
             })($2.value(),$4);

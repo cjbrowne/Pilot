@@ -124,6 +124,17 @@
 						Executes the statements in 'stuff' after 'time' has elapsed.  Useful for adding a delay to a command.
 					</span>
 				</li>
+				<li>
+					<span class='command'>
+						loop
+					</span>
+					<span class='arguments'>
+						time { stuff } OR condition { stuff }
+					</span>
+					<span class='description'>
+						Executes 'stuff' once per frame until 'time' is up or 'condition' evaluates <i>false</i>.  Important note: if you want to run commands like 'fire' within a loop, it's recommended you add a small delay (100 ms or so) using the 'in' command.
+					</span>
+				</li>
 			</ul>
 		</div>
 		<script src="js/lib/jquery.js"></script>

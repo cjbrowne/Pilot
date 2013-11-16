@@ -5,9 +5,9 @@
 		}
 		this.type = "StatementNode";
 	}
-	this._f = function() { return undefined; }
-	StatementNode.prototype.value = function() {
-		return this._f();
+	this._f = function(done) { done(); return undefined; }
+	StatementNode.prototype.value = function(callback) {
+		return this._f(callback);
 	}
 	StatementNode.prototype.setFunction = function(f) {
 		this._f = f;
