@@ -4,7 +4,8 @@
   "dependencies": {
     "connect": "*",
     "grunt-jison": "*",
-    "grunt-contrib-requirejs": "*"
+    "grunt-contrib-requirejs": "*",
+    "jison": "*"
   },
   "engines": {
     "node": "0.10.x",

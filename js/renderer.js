@@ -23,8 +23,13 @@
 		this.yawObject.position.y = 10;
 		this.yawObject.add(this.pitchObject);
 		this.scene.add(this.yawObject);
+		try {
+			this._renderer = new THREE.WebGLRenderer();
+		} catch(e) {
+			console.log("Could not initiate WebGL, falling back to slower Canvas rendering.");
+			this._renderer = new THREE.CanvasRenderer();
+		}
 
-		this._renderer = new THREE.WebGLRenderer();
 		this._renderer.setSize( this.$viewer.width(), this.$viewer.height() );
 		$("#space").append(this._renderer.domElement);
 

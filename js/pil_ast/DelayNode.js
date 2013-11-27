@@ -39,7 +39,7 @@
 				else {
 					return self._statementNodes[index].value(done);
 				}
-			});
+			};
 		}
 		return setTimeout(function() {
 			return runStatement(0)();
