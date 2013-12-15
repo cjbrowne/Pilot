@@ -1,5 +1,13 @@
 define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
-	function Game(renderer,hud,console,audio) {
+	/**
+		The Game class defines the game engine used to power Pilot
+		@class Game
+		@param {Renderer} renderer - The renderer object used as a front-end.
+		@param {HUD} hud - The HUD object used for abstracting various HUD drawing operations.
+		@param {Console} console - The PIL REPL used to interface with the ship.
+		@param {PilotAudio} audio - An audio wrapper instance used to play sounds on cue.
+	 */
+	var Game = function(renderer,hud,console,audio) {
 		this.victory = false;
 		this.frameNumber = 0;
 		this.lastFrame = Date.now();
@@ -23,11 +31,22 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 			});
 		});
 	}
+	/**
+		@lends Game
+	*/
 	Game.prototype = {
+		/**
+			Starts up the PIL REPL backend and starts the main logic loop running.
+			@method Game#run
+		*/
 		run: function() {
 			this.tick();
 			this.console.repl();
 		},
+		/**
+			The main logic loop for the game.
+			@method Game#tick
+		*/
 		tick: function() {
 			// sanity checks
 			if(!this.ship) {
@@ -56,9 +75,25 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 			// finally do audio updates last of all, because sound travels slower than light ;)
 			this.audio.update(this.frameNumber,this.timeDelta,this.ship);
 		},
+		/**
+			Adds a custom user function to the main logic loop.
+			This interface is provided to make it easy to extend the engine.
+			The function passed in as a parameter should return a truthy value if the function
+			should be removed from the list after executing, and falsy otherwise.  This makes
+			it easy to add functions that only run for a certain duration or until a certain
+			condition is met.
+			@method Game#addFunction
+			@param {function} the custom function to add.  Takes no arguments, exposes the Game instance as the 'this' pointer inside the function body.  Optionally returns truthy value.
+		*/
 		addFunction: function(f) {
 			this.functions.push(f);
 		},
+		/**
+			Runs all the custom functions that have been added to the game function immediately.
+			If a function returns a truthy value, it will be automatically removed from the custom functions
+			array and never run again.
+			@method Game#runCustomFunctions
+		*/
 		runCustomFunctions: function() {
 			var self = this;
 			this.functions.forEach(function(f) {
@@ -67,12 +102,25 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 				}
 			});
 		},
+		/**
+			Helper function to update all the variables that need updating once per tick.
+			Should not ever be called from outside the Game library, hence the recommendation for refactoring.
+			@method Game#updateVariables
+			@deprecated
+			@todo refactor to hide from the Game object
+		*/
 		updateVariables: function() {
 			this.frameNumber++;
 			this.timeDelta = Date.now() - this.lastFrame;
 			this.lastFrame = Date.now();
 			this.stardate = (new Date().getTime()) / 1000;
 		},
+		/**
+			Update the cannons.  Note that this function should not be called outside of the Game#tick function
+			in its current state.
+			@method Game#updateCannons
+			@todo rewrite to be callable from outside the Game#tick function to force a cannon update or refactor as private.
+		*/
 		updateCannons: function() {
 			var self = this;
 			function updateCannon(cannon) {
@@ -99,6 +147,10 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 			updateCannon(this.ship.cannons.fore);
 			updateCannon(this.ship.cannons.aft);
 		},
+		/**
+			Causes the ship to emit a target drone which will bob about automatically until it is destroyed.
+			@method Game#spawnTargetDrone
+		*/
 		spawnTargetDrone: function() {
 		    // add a target drone
 		    var DRONE_SIZE = 50;
@@ -134,6 +186,11 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 		        }
 		    })(drone));
 		},
+		/**
+			Displays a game guide either on the console or as a jQuery-ui dialog, depending on the 'target' parameter.
+			@method Game#guide
+			@param {string} target - One of "console" or "modal".  Defaults to 'modal'.
+		*/
 		guide: function(target) {
 			switch(target) {
 				case 'console':
@@ -143,6 +200,7 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 						}
 					}
 				break;
+				default:
 				case 'modal':
 					$("#guide").dialog({
 						width: "70vw"
@@ -150,9 +208,17 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 				break;
 			}
 		},
+		/**
+			Sets the alert status of the game interface to none, yellow or red.
+			Different alerts produce different effects, and enable different features from the console and
+			on the HUD.
+			@method Game#setAlert
+			@param {string} to - One of "none","yellow" or "red", defaults to "none".
+		*/
 		setAlert: function(to) {
 			this.alert = to;
 			switch(to) {
+				default:
 				case "none":
 					$("#viewscreen").css({
 						"border":"solid 3px #999"

@@ -1,0 +1,13 @@
+{
+	"source": {
+		"include": ["js"],
+		"exclude": ["js/lib/three.js","js/lib/jquery.js","js/lib/jquery-ui.js","js/lib/require.js"],
+		"includePattern": ".+\\.js(doc)?$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"opts": {
+		"destination": "./doc/",
+		"recurse": true,
+		"encoding": "utf8"
+	}
+}
