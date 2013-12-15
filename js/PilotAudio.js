@@ -1,4 +1,4 @@
-(function() {
+define("PilotAudio",[],function() {
 	function Audio() {
 		window.AudioContext = window.AudioContext || window.webkitAudioContext;
 		if('AudioContext' in window) {
@@ -95,5 +95,5 @@
             break;
         }
 	}
-	window.PilotAudio = Audio;
-})();
+	return Audio;
+});

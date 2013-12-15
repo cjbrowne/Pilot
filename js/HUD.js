@@ -1,4 +1,4 @@
-(function() {
+define("HUD",[],function() {
 	function HUD() {
 		var $viewer = $("#viewscreen");
 		this.ctx = $viewer[0].getContext('2d');
@@ -159,5 +159,5 @@
 		ctx.fillText(ship.shields.aft.health + "%",$viewer.width() - 50,100);
 		ctx.restore();
 	}
-	window.HUD = HUD;
-})();
+	return HUD;
+});

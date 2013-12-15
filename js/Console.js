@@ -1,4 +1,4 @@
-(function() {
+define("Console",[],function() {
 	function Console(pil) {
 		this.history = [];
 		this.pil = pil;
@@ -107,5 +107,5 @@
 		$("#output").append("<span class='help_command'>"+command+"</span><span class='help_arguments'>"+args+"</span><span class='help_description'>" + description + "</span><br />");
 		$("#console")[0].scrollTop = $("#console")[0].scrollHeight;
 	}
-	window.Console = Console;
-})();
+	return Console;
+});

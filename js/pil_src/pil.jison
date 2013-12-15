@@ -1,5 +1,12 @@
 %{
-    window.pil_commands = [];
+    var AST = ast_built;
+    var StatementNode = AST.StatementNode,
+        ConditionNode = AST.ConditionNode,
+        ConstantNode = AST.ConstantNode,
+        DelayNode = AST.DelayNode,
+        FunctionNode = AST.FunctionNode,
+        PropertyAccessNode = AST.PropertyAccessNode,
+        VariableNode = AST.VariableNode;
 %}
 
 %lex

@@ -1,4 +1,4 @@
-(function() {
+define("OctTree",[],function() {
 	function OctTree(options) {
 		this.root = new Node(options.rootNodeInformation);
 	}
@@ -230,5 +230,5 @@
 		this.nodes.length = 0;
 	}
 
-	window.OctTree = OctTree;
-})();
+	return OctTree;
+});

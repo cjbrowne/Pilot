@@ -1,4 +1,4 @@
-(function() {
+define("Renderer",["OctTree"],function(OctTree) {
 	var BULLET_SIZE = 1,
 		DRONE_SIZE = 50;
 	var Renderer = function() {
@@ -160,5 +160,5 @@
 			particleSystem.geometry.verticesNeedUpdate = true;
 		});
 	}
-	window.Renderer = Renderer;
-})();
+	return Renderer;
+});

@@ -4,7 +4,9 @@ module.exports = function(grunt) {
 		jison: {
 			pil: {
 				options: {
-					moduleName: "pil"
+					moduleName: "pil",
+					moduleType: "amd",
+					deps: ["ast_built"]
 				},
 				files: {
 					"js/pil.js": "js/pil_src/pil.jison"
@@ -16,7 +18,7 @@ module.exports = function(grunt) {
 				options: {
 					baseUrl: "js/pil_ast/",
 					name: "ast",
-					out: "js/pil_ast/ast-built.js"
+					out: "js/ast_built.js"
 				}
 			}
 		},

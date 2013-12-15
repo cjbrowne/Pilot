@@ -1,2 +1,2 @@
 var connect = require('connect');
-connect.createServer(connect.static(__dirname)).listen(process.env.PORT || 5000);
+connect.createServer(connect.static(__dirname)).listen(process.env.PORT || 80);

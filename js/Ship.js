@@ -1,4 +1,4 @@
-(function() {
+define("Ship",[],function() {
 	var Cannon = function() {
 		this.rotation = new THREE.Euler();
 		this.rotationDelta = new THREE.Euler();
@@ -74,5 +74,5 @@
 		this.meta = new MetaInformation();
 		this.location = new Coordinates();
 	}
-	window.Ship = Ship;
-})();
+	return Ship;
+});
