@@ -1,4 +1,4 @@
-(function() {
+define("StatementNode",[],function() {
 	function StatementNode(options) {
 		if(options.f) {
 			this.setFunction(options.f);
@@ -12,5 +12,5 @@
 	StatementNode.prototype.setFunction = function(f) {
 		this._f = f;
 	}
-	window.StatementNode = StatementNode;
-})();
+	return StatementNode;
+});

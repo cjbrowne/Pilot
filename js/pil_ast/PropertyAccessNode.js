@@ -1,4 +1,4 @@
-(function() {
+define("PropertyAccessNode",[],function() {
 	function PropertyAccessNode(options) {
 		if(options.parentObject) {
 			this.setParentObject(options.parentObject);
@@ -32,5 +32,5 @@
 	PropertyAccessNode.prototype.setAccessFunction = function(f) {
 		this._accessFunction = f;
 	}
-	window.PropertyAccessNode = PropertyAccessNode;
-})();
+	return PropertyAccessNode;
+});

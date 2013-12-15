@@ -1,4 +1,4 @@
-(function() {
+define("VariableNode",[],function() {
 	function VariableNode(options) {
 		this.value = options.initialValue;
 		this.type = "VariableNode";
@@ -10,5 +10,5 @@
 		this.value = v;
 		return this;
 	}
-	window.VariableNode = VariableNode;
-})();
+	return VariableNode;
+});

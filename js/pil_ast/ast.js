@@ -11,6 +11,17 @@ define("ast_built",[
 	"StatementNode",
 	"DelayNode"
 ],function(ConditionNode,ConstantNode,PropertyAccessNode,VariableNode,FunctionNode,StatementNode,DelayNode) {
+	if(
+		!ConditionNode
+		|| !ConstantNode
+		|| !PropertyAccessNode
+		|| !VariableNode
+		|| !FunctionNode
+		|| !StatementNode
+		|| !DelayNode
+	) {
+		throw new Error("A Node came up undefined.  Here's what I got as arguments: " + JSON.stringify(arguments));
+	}
 	return {
 		ConditionNode: ConditionNode,
 		ConstantNode: ConstantNode,

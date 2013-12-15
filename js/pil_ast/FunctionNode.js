@@ -1,4 +1,4 @@
-(function() {
+define("FunctionNode",[],function() {
 	function FunctionNode(options) {
 		if(options.statementNodes) {
 			this.addStatementNodes(options.statementNodes);
@@ -39,5 +39,5 @@
 		}
 		return runStatement(0)();
 	}
-	window.FunctionNode = FunctionNode;
-})();
+	return FunctionNode;
+});

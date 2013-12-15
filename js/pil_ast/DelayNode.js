@@ -1,4 +1,4 @@
-(function() {
+define("DelayNode",[],function() {
 	function DelayNode(options) {
 		if(options.statementNodes) {
 			this.addStatementNodes(options.statementNodes);
@@ -45,5 +45,5 @@
 			return runStatement(0)();
 		},self._delay);
 	}
-	window.PILDelayNode = DelayNode;
-})();
+	return DelayNode;
+});

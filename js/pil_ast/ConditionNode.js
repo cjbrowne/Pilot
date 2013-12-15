@@ -1,4 +1,4 @@
-(function() {
+define("ConditionNode",[],function() {
 	var VALID_OPERATORS = [
 		'==',
 		'!=',
@@ -60,5 +60,5 @@
 			this.operator = o || "";
 		}
 	}
-	window.ConditionNode = ConditionNode;
-})();
+	return ConditionNode;
+});
