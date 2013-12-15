@@ -1,4 +1,4 @@
-define("Node",[],function() {
+define("BehaviourTree/Node",[],function() {
 	var VALID_STATES = [
 		"ready",
 		"success",
@@ -16,16 +16,53 @@ define("Node",[],function() {
 		"action",
 		"condition"
 	];
-	var BTNode = function(type) {
+	var Node = function() {
 		this.state = "ready";
-		this.nodeType = type || "priority";
 	}
-	BTNode.prototype = {
-		/**
-			Must be one of "ready", "success", "running", "failed" or "error"
-			@member BTNode#state
-		*/
-		state: "ready"
+	Node.prototype = {
+		state: "ready",
+		children: [],
+		evaluate: function(decision) {
+			return this.state;
+		}
 	}
-	return BTNode;
+	Node.Priority = function(children) {
+		this.children = children;
+	}
+	Node.Priority.prototype = Node;
+	Node.Priority.prototype.evalute = function(decision) {
+		for(var i = 0; i < this.children.length; i++) {
+			this.state = this.children[i].evaluate(decision);
+			if(this.state == "success") {
+				// early return is cheapest way to implement priority nodes
+				return this.state;
+			}
+		}
+		return this.state;
+	}
+	Node.Sequence = function(children) {
+		this.children = children;
+	}
+	Node.Loop = function(children) {
+		this.children = children;
+	}
+	Node.Random = function(children) {
+		this.children = children;
+	}
+	Node.Concurrent = function(children) {
+		this.children = children;
+	}
+	Node.Decorator = function(children) {
+		if(children.length > 1) {
+			throw new Error("Decorator nodes should only have one child.");
+		}
+		this.children = children;
+	}
+	Node.Action = function(action) {
+		this.action = action;
+	}
+	Node.Condition = function(condition) {
+		this.condition = condition;
+	}
+	return Node;
 });

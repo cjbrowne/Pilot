@@ -1,4 +1,4 @@
-define("Renderer",["OctTree"],function(OctTree) {
+define("Renderer",["OctTree","Ship"],function(OctTree,Ship) {
 	var BULLET_SIZE = 1,
 		DRONE_SIZE = 50;
 	var Renderer = function() {
@@ -77,7 +77,7 @@ define("Renderer",["OctTree"],function(OctTree) {
 		this.bullets.forEach(function(b) {
 			b.translateZ(-10);
             // remove this bullet if it's out of range
-            if(b.position.distanceTo(self.camera.position) > 800) {
+            if(b.position.distanceTo(self.camera.position) > Ship.GUN_RANGE) {
                     self.scene.remove(b);
                     self.bullets.splice(b,1);
             }

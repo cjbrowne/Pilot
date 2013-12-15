@@ -75,5 +75,6 @@ define("Ship",[],function() {
 		this.meta = new MetaInformation();
 		this.location = new Coordinates();
 	}
+	Ship.GUN_RANGE = 800;
 	return Ship;
 });

@@ -1,4 +1,7 @@
-define("Enemy",["BehaviourTreeBrain","Ship"],function(Brain,Ship) {
+require.config({
+	baseUrl: "js/AI"
+});
+define(["BehaviourTreeBrain","Ship"],function(Brain,Ship) {
 	/**
 		The Enemy class controls a single artificially-intelligent enemy.  It's a frontend AI class, used for abstracting
 		away all of the backend into a single uniform interface.  The implementation of the backend is entirely arbitrary, as long
@@ -46,7 +49,7 @@ define("Enemy",["BehaviourTreeBrain","Ship"],function(Brain,Ship) {
 		*/
 		attachToGame: function(game) {
 			var enemy = this;
-			game.addCustomFunction(function() {
+			game.addFunction(function() {
 				// to stop ourselves from starting to make a new decision every frame even if we haven't
 				// finished the old decision yet, the 'brain' implementation must expose a 'state' which
 				// can be one of "idle" (for this purpose), "thinking" or "acting".
@@ -54,7 +57,7 @@ define("Enemy",["BehaviourTreeBrain","Ship"],function(Brain,Ship) {
 					// because we can't guarantee that Brain's algorithm is synchronous, we must provide a callback
 					// to be executed once the brain has reached a decision.
 					brain.decide(function(decision) {
-
+						console.log(decision);
 					});
 				}
 				return !enemy.alive;

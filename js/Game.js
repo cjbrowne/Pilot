@@ -1,4 +1,4 @@
-define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
+define("Game",["Ship","GameUtil","./AI/Enemy"],function(Ship,GameUtil,Enemy) {
 	/**
 		The Game class defines the game engine used to power Pilot
 		@class Game
@@ -22,6 +22,8 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 		this.helpText = [];
 		this.alert = "none";
 		this.debug = false;
+		// to begin with, just spawn one enemy
+		this.spawnRandomEnemies(1);
 		var self = this;
 		$("#guide ul").each(function() {
 			$(this).children().each(function() {
@@ -101,6 +103,23 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 					self.functions.splice(f,1);
 				}
 			});
+		},
+		/**
+			Creates a few random enemies and attaches them to this game instance.
+			@method Game#spawnRandomEnemies
+			@param {number} count - The number of enemies to spawn.
+		*/
+		spawnRandomEnemies: function(count) {
+			var difficulty = Math.floor(Math.random() * 12);
+			difficulty = 0; // TODO: remove this line when we have all 12 difficulties programmed
+			for(var i = 0; i < count; i++) {
+				var enemy = new Enemy(difficulty);
+				enemy.attachToGame(this);
+				// note that although "enemy" goes out of scope here, it does not get cleaned up
+				// the attachToGame function maintains the instance through the "this" pointer,
+				// until the enemy is destroyed and that function is removed.  The scope should die
+				// at that point and get cleaned up, but if it doesn't then we're a bit screwed really.
+			}
 		},
 		/**
 			Helper function to update all the variables that need updating once per tick.
