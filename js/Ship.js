@@ -4,6 +4,7 @@ define("Ship",[],function() {
 		this.rotationDelta = new THREE.Euler();
 		this.power = 0;
 		this.warning = "";
+		this.cooldown = 0;
 	}
 	Cannon.prototype.fire = function(power) {
 		this.power = power || 1;

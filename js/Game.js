@@ -111,9 +111,9 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 		*/
 		updateVariables: function() {
 			this.frameNumber++;
-			this.timeDelta = Date.now() - this.lastFrame;
-			this.lastFrame = Date.now();
-			this.stardate = (new Date().getTime()) / 1000;
+			this.timeDelta = (new Date()).getTime() - this.lastFrame;
+			this.lastFrame = (new Date()).getTime();
+			this.stardate = (new Date()).getTime() / 1000;
 		},
 		/**
 			Update the cannons.  Note that this function should not be called outside of the Game#tick function
@@ -124,6 +124,11 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 		updateCannons: function() {
 			var self = this;
 			function updateCannon(cannon) {
+				if(cannon.cooldown > 0) {
+					cannon.cooldown -= self.timeDelta;
+				} else {
+					cannon.cooldown = 0;
+				}
 				if(Math.abs(cannon.rotationDelta.y) > Math.PI / 64) {
 					cannon.rotation.y += (cannon.rotationDelta.y / Math.abs(cannon.rotationDelta.y)) * (Math.PI / 64);
 					cannon.rotationDelta.y -= (cannon.rotationDelta.y / Math.abs(cannon.rotationDelta.y)) * (Math.PI / 64);
@@ -139,9 +144,14 @@ define("Game",["Ship","GameUtil"],function(Ship,GameUtil) {
 					cannon.rotationDelta.x = 0;
 				}
 				if(cannon.power > 0) {
+					if(cannon.cooldown > 0) {
+						self.console.warn("Firing too fast, cannon needs " + (cannon.cooldown / 1000) + " more seconds to cool down.",'low');
+						cannon.power = 0;
+					}
 					self.renderer.fireBullet(cannon);
 					self.audio.playSound('bullet');
 					cannon.power = 0;
+					cannon.cooldown = 3000;
 				}
 			}
 			updateCannon(this.ship.cannons.fore);
