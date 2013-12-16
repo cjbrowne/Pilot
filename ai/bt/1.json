@@ -1,0 +1,81 @@
+{
+	"root":
+	{
+		"type": "priority",
+		"children":
+		[
+			"attack",
+			"evade",
+			"flank"
+		]
+	},
+	"attack":
+	{
+		"type": "concurrent",
+		"children":
+		[
+			"locate",
+			"aim",
+			"fire"
+		]
+	},
+	"evade":
+	{
+		"type": "sequence",
+		"children":
+		[
+			"locate",
+			{
+				"type": "action",
+				"action": "move away from player"
+			}
+		]
+	},
+	"flank":
+	{
+		"type": "concurrent",
+		"children":
+		[
+			"locate",
+			{
+				"type": "action",
+				"action": "flank player"
+			}
+		]
+	},
+	"locate":
+	{
+		"type": "condition",
+		"condition": "player is nearby"
+	},
+	"aim":
+	{
+		"type": "concurrent",
+		"children":
+		[
+			{
+				"type": "action",
+				"action": "aim fore gun at player"
+			},
+			{
+				"type": "action",
+				"action": "aim aft gun at player"
+			}
+		]
+	},
+	"fire":
+	{
+		"type": "concurrent",
+		"children":
+		[
+			{
+				"type": "action",
+				"action": "fire fore"
+			},
+			{
+				"type": "action",
+				"action": "fire aft"
+			}
+		]
+	}
+}

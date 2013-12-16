@@ -2,6 +2,7 @@ define(["BehaviourTree/Node","Ship"],function(BTNode,Ship) {
 	var ACTIONS = {
 		"move away from player": function() { this.decision.set("evade"); },
 		"move towards player": function() { this.decision.set("close"); },
+		"flank player": function() { this.decision.set("flank"); },
 		"fire fore": function() { this.decision.set("fire_fore"); },
 		"fire aft": function() { this.decision.set("fire_aft"); },
 		"do nothing": function() { this.decision.set("idle"); },
