@@ -78,6 +78,56 @@ define(["BehaviourTreeBrain","Ship"],function(Brain,Ship) {
 		*/
 		triggerDeathAnimation: function(game) {
 
+		},
+		/**
+			Calculates the distance between this enemy instance and the player.
+			@method Enemy#playerDistance
+			@returns {number} - The distance from ourselves to the player.
+		*/
+		playerDistance: function() {
+
+		},
+		/**
+			Returns a string identifying the class.
+			@method Enemy#toString
+			@returns {string} - "Enemy AI Actor"
+		*/
+		toString: function() {
+			return "Enemy AI Actor";
+		},
+		/**
+			Although strictly these should be static, the interface from the BT compiler uses
+			dynamic actions and conditions.  The reasoning being that we could face a situation
+			where the actions and conditions available to an actor change during run-time.
+			@member Enemy#actions
+		*/
+		actions: {
+			"move away from player": function() { this.decision.set("evade"); },
+			"move towards player": function() { this.decision.set("close"); },
+			"flank player": function() { this.decision.set("flank"); },
+			"fire fore": function() { this.decision.set("fire_fore"); },
+			"fire aft": function() { this.decision.set("fire_aft"); },
+			"do nothing": function() { this.decision.set("idle"); },
+			"aim fore gun at player": function() { this.decision.set("aim_fore"); },
+			"aim aft gun at player": function() { this.decision.set("aim_aft"); }
+		},
+		/**
+			See Enemy#actions
+			@member Enemy#conditions
+		*/
+		conditions: {
+			"player is nearby": function() {
+			        return (this.playerDistance() < (Ship.GUN_RANGE * 2));
+			},
+			"player is in range": function() {
+			        return (this.playerDistance() < Ship.GUN_RANGE);
+			},
+			"fore gun is ready": function() {
+			        return (this.ship.cannons.fore.cooldown == 0);
+			},
+			"aft gun is ready": function() {
+			        return (this.ship.cannons.aft.cooldown == 0);
+			}
 		}
 	}
 	return Enemy;

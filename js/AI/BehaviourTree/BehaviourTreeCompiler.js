@@ -1,32 +1,24 @@
 define(["BehaviourTree/Node","Ship"],function(BTNode,Ship) {
-	var ACTIONS = {
-		"move away from player": function() { this.decision.set("evade"); },
-		"move towards player": function() { this.decision.set("close"); },
-		"flank player": function() { this.decision.set("flank"); },
-		"fire fore": function() { this.decision.set("fire_fore"); },
-		"fire aft": function() { this.decision.set("fire_aft"); },
-		"do nothing": function() { this.decision.set("idle"); },
-		"aim fore gun at player": function() { this.decision.set("aim_fore"); },
-		"aim aft gun at player": function() { this.decision.set("aim_aft"); }
-	};
-	var CONDITIONS = {
-		"player is nearby": function(game,enemy) {
-			return (game.player.location.distanceTo(enemy.position) < (Ship.GUN_RANGE * 2));
-		},
-		"player is in range": function(game,enemy) {
-			return (game.player.location.distanceTo(enemy.position) < Ship.GUN_RANGE);
-		},
-		"fore gun is ready": function(game,enemy) {
-			return (enemy.ship.cannons.fore.cooldown == 0);
-		},
-		"aft gun is ready": function(game,enemy) {
-			return (enemy.ship.cannons.aft.cooldown == 0);
-		}
-	}
+	/**
+		The BehaviourTree class provides a structure into which
+		we can compile a raw behaviour tree.  The behaviour tree can then
+		be traversed on demand using a simple function call.
+		@constructor BehaviourTree
+	*/
 	var BehaviourTree = function(rootNode) {
+		if(!rootNode) {
+			throw new Error("Behaviour tree must have a root node");
+		} else if(!(rootNode instanceof Node)) {
+			throw new Error("Root node is not a Node.");
+		}
 		this.root = rootNode;
 	};
+	/** @lends BehaviourTree */
 	BehaviourTree.prototype = {
+		/**
+			The root node of the behaviour tree.
+			@member BehaviourTree#root
+		*/
 		root: null,
 		traverse: function(decision) {
 			switch(this.root.state) {
@@ -34,23 +26,62 @@ define(["BehaviourTree/Node","Ship"],function(BTNode,Ship) {
 					this.root.evaluate(decision);
 					break;
 				}
+				case "running": {
+					break;
+				}
+				case "success": {
+					this.root.clearState();
+					decision.clear();
+					break;
+				}
+				case "failed": {
+					this.root.clearState();
+					decision.clear();
+					break;
+				}
+				case "error": {
+					throw new Error(this.root.getError());
+					this.root.clearState();
+					decision.clear();
+					break;
+				}
+				default: {
+					throw new Error("Unrecognised state of root node.");
+					break;
+				}
 			}
 		}
 	}
-	var BTCompiler = function(rawTree) {
-		if(!rawTree.root) {
-			throw new Error("No root node defined.");
-		}
-		this.raw_bt = rawTree;
-	}
+	var BTCompiler = function() {};
 	BTCompiler.prototype = {
 		bt: null,
-		raw_bt: null,
-		compile: function() {
-			this.bt = new BehaviourTree(this.parseNode(this.raw_bt.root));
+		last_compiled: null,
+		compile: function(rawTree,actor) {
+			if(_.isEqual(rawTree,last_compiled)) {
+				// early return cache value
+				return this.bt;
+			}
+			last_compiled = rawTree;
+			if(!rawTree.root) {
+				throw new Error("No root node defined.");
+			}
+			if(!actor) {
+				throw new Error("Must pass in an actor that the compiled BT will control.");
+			}
+			var raw_root;
+			if(typeof rawTree.root == "string") {
+				raw_root = rawTree[rawTree.root];
+			} else {
+				raw_root = rawTree.root;
+			}
+			// cache the compiled behaviourTree
+			this.bt = new BehaviourTree(this.parseNode(raw_root));
 			return this.bt;
 		},
 		parseNode: function(rawNode) {
+			if(typeof rawNode == "string") {
+				throw new Error("String alias passed instead of raw node object.");
+			}
 			var parsedNode,self=this;
 			if(rawNode.children) {
 				var parsed_children = [];
@@ -88,14 +119,14 @@ define(["BehaviourTree/Node","Ship"],function(BTNode,Ship) {
 					break;
 				}
 				case "action": {
-					if(!(rawNode.action in ACTIONS)) {
-						throw new Error("Unrecognised action in definition of action node: " + rawNode.action);
+					if(!(rawNode.action in this.actor.actions)) {
+						throw new Error("Actor "+this.actor+" cannot " + rawNode.action);
 					}
 					parsedNode = new BTNode.Action(ACTIONS[rawNode.action]);
 					break;
 				}
 				case "condition": {
-					if(!(rawNode.condition in CONDITIONS)) {
+					if(!(rawNode.condition in this.actor.conditions)) {
 						throw new Error("Unrecognised condition in definition of condition node: " + rawNode.condition);
 					}
 					parsedNode = new BTNode.Condition(CONDITIONS[rawNode.condition]);
