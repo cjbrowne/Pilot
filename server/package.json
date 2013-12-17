@@ -1,0 +1,7 @@
+{
+	"name": "pilot-server",
+	"description": "The server module underpinning the Pilot multiplayer online game.",
+	"dependencies": {
+		"socket.io": "*"
+	}
+}

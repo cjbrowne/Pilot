@@ -1,2 +1,4 @@
-var connect = require('connect');
-connect.createServer(connect.static(__dirname)).listen(process.env.PORT || 80);
+var connect = require('connect'),
+	pilot = require('server');
+connect.createServer(connect.static(__dirname + '/client')).listen(process.env.PORT || 80);
+pilot.listen(connect);

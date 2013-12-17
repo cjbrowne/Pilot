@@ -1,7 +1,7 @@
 {
 	"source": {
-		"include": ["js"],
-		"exclude": ["js/lib/three.js","js/lib/jquery.js","js/lib/jquery-ui.js","js/lib/require.js","js/lib/lodash.js"],
+		"include": ["client/js"],
+		"exclude": ["client/js/lib/three.js","client/js/lib/jquery.js","client/js/lib/jquery-ui.js","client/js/lib/require.js","client/js/lib/lodash.js"],
 		"includePattern": ".+\\.js(doc)?$",
 		"excludePattern": "(^|\\/|\\\\)_"
 	},

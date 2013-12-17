@@ -9,26 +9,26 @@ module.exports = function(grunt) {
 					deps: ["ast_built"]
 				},
 				files: {
-					"js/pil.js": "js/pil_src/pil.jison"
+					"client/js/pil.js": "client/js/pil_src/pil.jison"
 				}
 			}
 		},
 		requirejs: {
 			compile: {
 				options: {
-					baseUrl: "js/pil_ast/",
+					baseUrl: "client/js/pil_ast/",
 					name: "ast",
-					out: "js/ast_built.js"
+					out: "client/js/ast_built.js"
 				}
 			}
 		},
 		watch: {
 			ast: {
-				files: ['js/pil_ast/ast.js','js/pil_ast/*Node.js'],
+				files: ['client/js/pil_ast/ast.js','client/js/pil_ast/*Node.js'],
 				tasks: ['requirejs']
 			},
 			jison: {
-				files: ['js/pil_src/pil.jison'],
+				files: ['client/js/pil_src/pil.jison'],
 				tasks: ['jison']
 			}
 		}

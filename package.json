@@ -13,5 +13,8 @@
   },
   "devDependencies": {
     "grunt-contrib-watch": "~0.5.3"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }

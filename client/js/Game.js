@@ -8,7 +8,6 @@ define("Game",["Ship","GameUtil","./AI/Enemy"],function(Ship,GameUtil,Enemy) {
 		@param {PilotAudio} audio - An audio wrapper instance used to play sounds on cue.
 	 */
 	var Game = function(renderer,hud,console,audio) {
-		this.victory = false;
 		this.frameNumber = 0;
 		this.lastFrame = Date.now();
 		this.timeDelta = 0;
