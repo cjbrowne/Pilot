@@ -6,9 +6,9 @@
     "grunt-jison": "*",
     "grunt-contrib-requirejs": "*",
     "jison": "*",
-    "pilot-server": "*" ,
     "should": "*"
   },
+  "bundledDependencies": ["pilot-server"],
   "engines": {
     "node": "0.10.x",
     "npm": "1.2.x"
@@ -17,8 +17,6 @@
     "grunt-contrib-watch": "~0.5.3"
   },
   "scripts": {
-    "test": "mocha",
-    "postinstall": "npm link pilot-server",
-    "postupdate": "npm link pilot-server"
+    "test": "mocha"
   }
 }

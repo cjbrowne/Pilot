@@ -1,5 +1,8 @@
 tutorial
-node_modules
 Thumbs.db
 web.config
 issue_format
+
+node_modules/*
+!node_modules/pilot-server
+node_modules/pilot-server/node_modules
