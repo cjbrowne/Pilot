@@ -6,7 +6,8 @@
     "grunt-jison": "*",
     "grunt-contrib-requirejs": "*",
     "jison": "*",
-    "should": "*"
+    "should": "*",
+    "mocha": "*"
   },
   "bundledDependencies": ["pilot-server"],
   "engines": {
@@ -17,6 +18,6 @@
     "grunt-contrib-watch": "~0.5.3"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   }
 }

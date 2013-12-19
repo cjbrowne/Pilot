@@ -1,5 +1,6 @@
 var should = require("should"),
-	Game = require("../pilot-server/Game.js");
+	pilot_server = require("pilot-server"),
+	Game = pilot_server.Game;
 describe("Game",function() {
 	describe("#run",function() {
 		it("should throw if socket.io has not been set or is undefined",function() {
