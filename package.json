@@ -6,7 +6,8 @@
     "grunt-jison": "*",
     "grunt-contrib-requirejs": "*",
     "jison": "*",
-    "pilot-server": "*" 
+    "pilot-server": "*" ,
+    "should": "*"
   },
   "engines": {
     "node": "0.10.x",

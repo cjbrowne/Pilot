@@ -18,6 +18,9 @@ module.exports = (function() {
 			}
 		}),
 		run: function() {
+			if(!this.io) {
+				throw new Error("Socket.io object unavailable.");
+			}
 			var io = this.io;
 			io.sockets.on('connect',function(socket) {
 				var spawnLocation = Position.random();
