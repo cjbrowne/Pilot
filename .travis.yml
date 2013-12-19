@@ -1,3 +1,10 @@
 language: node_js
 node_js:
   - "0.10"
+notifications:
+  email:
+    recipients:
+      - jiocux668@tumblr.com
+      - yoda2031@gmail.com
+    on_success: change
+    on_failure: never
