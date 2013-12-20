@@ -19,6 +19,6 @@
   },
   "scripts": {
     "preinstall": "cd node_modules/pilot-server; npm install",
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "make test"
   }
 }
